@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
-import { Upload, Check, X, Eye, Settings, Image, RefreshCw, Copy, ExternalLink, ChevronDown } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Upload, Check, Settings, Image, RefreshCw, Copy, ExternalLink, ChevronDown } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
 
@@ -318,7 +318,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
 }
 
 // ── Slots Tab ─────────────────────────────────────────────────────────────────
-function SlotsTab({ creds }: { creds: { cloudName: string; uploadPreset: string } }) {
+function SlotsTab({ creds: _creds }: { creds: { cloudName: string; uploadPreset: string } }) {
   const [uploads] = useState<UploadedAsset[]>(() => {
     try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
   })
@@ -411,7 +411,6 @@ function SlotRow({
   }
 
   function copyConfig() {
-    const line = `  { id: '${slot.id}', ..., cloudinaryUrl: '${currentUrl}' },`
     navigator.clipboard.writeText(currentUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)

@@ -76,7 +76,7 @@ const BLOCKS: Block[] = [
   },
 ]
 
-function ParkBlock({ b, index }: { b: Block; index: number }) {
+function ParkBlock({ b, index: _index }: { b: Block; index: number }) {
   const url = useMediaUrl(b.imageId)
   const { ref, inView } = useInView(0.08)
 

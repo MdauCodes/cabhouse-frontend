@@ -282,7 +282,7 @@ export default function Gallery() {
   }
 
   // Filmstrip height — comfortable on all screens
-  const stripH = 'clamp(160px, 28vw, 320px)'
+  // const stripH = 'clamp(160px, 28vw, 320px)'
 
   return (
     <section id="gallery" ref={sectionRef as React.RefObject<HTMLElement>} className="bg-brand-dark overflow-hidden">

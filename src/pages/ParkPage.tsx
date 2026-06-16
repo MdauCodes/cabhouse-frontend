@@ -177,7 +177,7 @@ function ActivityRow({ a, idx }: { a: typeof ACTIVITIES[0]; idx: number }) {
 }
 
 function PackagesSection() {
-  const img = useMediaUrl('hero-2')
+  useMediaUrl('hero-2')
   const { ref, inView } = useInView()
 
   return (

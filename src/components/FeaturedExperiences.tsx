@@ -99,7 +99,7 @@ type FeatureConfig = {
   blockBg: string
 }
 
-function FeatureBlock({ f, index }: { f: FeatureConfig; index: number }) {
+function FeatureBlock({ f, index: _index }: { f: FeatureConfig; index: number }) {
   const { ref, inView } = useInView(0.1)
 
   const imageSide = (
