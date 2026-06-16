@@ -25,10 +25,10 @@ const SIDES = [
   },
   {
     id: 'apt',
-    name: 'CabHouse Resorts',
+    name: 'CabHouse Apartments',
     tag: 'Book a Stay',
     tagColor: 'bg-brand-gold/90 text-white',
-    desc: 'Furnished cabins, tented camps and rooms — move in today, stay as long as you need. Short or long term.',
+    desc: 'Furnished apartments in Kisii town — move in today, stay as long as you need. Short or long term.',
     cta: 'Book a Stay',
     href: '/apartments',
     imageId: null,
