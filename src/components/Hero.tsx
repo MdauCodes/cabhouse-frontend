@@ -1,8 +1,49 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { SITE } from '../config/site'
 import { useMediaUrl } from '../hooks/useMedia'
 
+const TYPED_LINES = [
+  'Starts Here',
+  'Awaits in Kisii',
+  'Is Unforgettable',
+  'Begins at CabHouse',
+  'Is One Visit Away',
+  'Is Worth Every Minute',
+]
+
+function useTypingEffect(lines: string[]) {
+  const [displayed, setDisplayed] = useState('')
+  const [lineIdx, setLineIdx] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const pauseRef = useRef(false)
+
+  useEffect(() => {
+    const full = lines[lineIdx]
+
+    if (!isDeleting && displayed === full) {
+      pauseRef.current = true
+      const t = setTimeout(() => { pauseRef.current = false; setIsDeleting(true) }, 2000)
+      return () => clearTimeout(t)
+    }
+
+    if (isDeleting && displayed === '') {
+      setIsDeleting(false)
+      setLineIdx(i => (i + 1) % lines.length)
+      return
+    }
+
+    const speed = isDeleting ? 35 : 60
+    const t = setTimeout(() => {
+      setDisplayed(isDeleting ? full.slice(0, displayed.length - 1) : full.slice(0, displayed.length + 1))
+    }, speed)
+    return () => clearTimeout(t)
+  }, [displayed, isDeleting, lineIdx, lines])
+
+  return displayed
+}
+
 export default function Hero() {
+  const typed = useTypingEffect(TYPED_LINES)
   const slide1 = useMediaUrl('hero-1')
   const slide2 = useMediaUrl('hero-2')
   const slide3 = useMediaUrl('hero-3')
@@ -70,7 +111,13 @@ export default function Hero() {
           style={{ fontSize: 'clamp(1.9rem, 3.2vw, 3.2rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}
         >
           Your Best Day Out<br />
-          <em className="not-italic" style={{ color: '#C9A84C' }}>Starts Here</em>
+          <em className="not-italic" style={{ color: '#C9A84C' }}>
+            {typed}
+            <span
+              className="inline-block w-[2px] h-[0.85em] align-middle ml-[2px] bg-brand-gold"
+              style={{ animation: 'blink 0.75s step-end infinite' }}
+            />
+          </em>
         </h1>
 
         <p className="text-white/80 font-body text-sm leading-relaxed mb-10 max-w-[30rem]">
@@ -135,6 +182,10 @@ export default function Hero() {
         @keyframes kenBurns {
           from { transform: scale(1) translate(0, 0); }
           to   { transform: scale(1.05) translate(-1%, -0.5%); }
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
         }
       `}</style>
     </section>
