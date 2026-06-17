@@ -20,8 +20,7 @@ const SIDES = [
     desc: 'Cold, clean water delivered to your home, office or event. Bulk or domestic — we bring it to your door.',
     cta: 'Order Water',
     href: '/water',
-    imageId: null,
-    placeholderColor: '#0c4a6e',
+    imageSrc: '/assets/cabhouse-water.png',
   },
   {
     id: 'apt',
@@ -31,8 +30,7 @@ const SIDES = [
     desc: 'Furnished apartments in Kisii town — move in today, stay as long as you need. Short or long term.',
     cta: 'Book a Stay',
     href: '/apartments',
-    imageId: null,
-    placeholderColor: '#451a03',
+    imageSrc: '/assets/cabhouse-apartments.png',
   },
 ]
 
@@ -89,8 +87,6 @@ function ParkCard({ inView }: { inView: boolean }) {
 }
 
 function SideCard({ brand, idx, inView }: { brand: typeof SIDES[0]; idx: number; inView: boolean }) {
-  const url = useMediaUrl(brand.imageId ?? '')
-
   return (
     <a
       href={brand.href}
@@ -105,10 +101,7 @@ function SideCard({ brand, idx, inView }: { brand: typeof SIDES[0]; idx: number;
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.04]"
-        style={{
-          backgroundImage: url ? `url(${url})` : undefined,
-          backgroundColor: brand.placeholderColor,
-        }}
+        style={{ backgroundImage: `url(${brand.imageSrc})` }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/85 via-brand-dark/30 to-transparent" />
 
