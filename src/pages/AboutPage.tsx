@@ -235,7 +235,7 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="lg:w-1/2 flex flex-col gap-3">
-                {BRANDS.map((b, i) => (
+                {BRANDS.map((b) => (
                   <a key={b.name} href={b.href}
                     className="flex items-center gap-4 border border-brand-dark/8 rounded-xl px-5 py-3.5 hover:border-brand-gold/40 hover:bg-brand-cream transition-all duration-200 group">
                     <div className={`w-8 h-8 ${b.color} text-white rounded-lg flex items-center justify-center flex-shrink-0`}>
