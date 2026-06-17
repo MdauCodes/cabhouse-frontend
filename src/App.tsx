@@ -7,6 +7,7 @@ import EventsPage from './pages/EventsPage'
 import ApartmentsPage from './pages/ApartmentsPage'
 import WaterPage from './pages/WaterPage'
 import MdauDev from './pages/MdauDev'
+import AboutPage from './pages/AboutPage'
 import LoadingScreen from './components/LoadingScreen'
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/apartments" element={<ApartmentsPage />} />
           <Route path="/water" element={<WaterPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/mdau/dev" element={<MdauDev />} />
         </Routes>
       </BrowserRouter>
