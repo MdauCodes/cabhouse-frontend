@@ -298,7 +298,7 @@ function PhotoGallery() {
           <p className="text-brand-dark/35 font-body text-xs mb-6">Tap any photo to view full size</p>
 
           {/* Compact masonry grid */}
-          <div style={{ columns: '3 110px', columnGap: '8px' }}>
+          <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5" style={{ columnGap: '6px' }}>
             {APT_PHOTOS.map((p, i) => (
               <button
                 key={i}
