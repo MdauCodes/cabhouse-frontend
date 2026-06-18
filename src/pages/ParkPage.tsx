@@ -258,60 +258,77 @@ function PackagesSection() {
   )
 }
 
+const CAMPING_PHOTOS = [
+  { src: '/assets/wooden-tent-31.jpeg', label: 'Wooden Cabin' },
+  { src: '/assets/inside-tent-29.jpeg', label: 'Inside — Tent with Bed' },
+  { src: '/assets/camping-outside-1.jpeg', label: 'Campsite' },
+  { src: '/assets/outside-tent-28.jpeg', label: 'Tent Exterior' },
+  { src: '/assets/camping-outside-2.jpeg', label: 'Outdoor Camp' },
+  { src: '/assets/just-tent-camp-34.jpeg', label: 'Tent Camp' },
+  { src: '/assets/outdoor-tent-32.jpeg', label: 'Outdoor Tents' },
+  { src: '/assets/outdoor-vegetation-33.jpeg', label: 'Nature Surroundings' },
+  { src: '/assets/camping-outside-3.jpeg', label: 'Camp Grounds' },
+  { src: '/assets/camping-4.jpeg', label: 'Camping Experience' },
+  { src: '/assets/camping-5.jpeg', label: 'Camp Life' },
+]
+
 function StaySection() {
-  const img = useMediaUrl('feat-resort')
-  const { ref, inView } = useInView(0.1)
+  const { ref, inView } = useInView(0.08)
 
   return (
     <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-16">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+      <div className="max-w-7xl mx-auto">
 
-        {/* Image */}
-        <div
-          className="w-full lg:w-[45%] rounded-2xl overflow-hidden flex-shrink-0"
-          style={{ height: 300 }}
-        >
-          <div
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#0D1B12' }}
-          />
-        </div>
-
-        {/* Content */}
+        {/* Header */}
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
-          className="flex-1"
-          style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(16px)', transition: 'all 0.6s ease' }}
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8"
+          style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
         >
-          <h2
-            className="font-display font-black text-brand-dark leading-[0.93] mb-4"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
-          >
-            Stay the <em className="not-italic" style={{ color: '#C9A84C' }}>Night</em>
-          </h2>
-          <p className="text-brand-dark/50 font-body text-xs leading-relaxed mb-6 max-w-sm">
-            Extend your day into a full overnight experience. Choose from wooden cabins, tented cabins, or camping under the stars.
-          </p>
-
-          <div className="space-y-2 mb-7">
-            {STAYS.map((s, i) => (
-              <div key={i} className="flex items-center justify-between py-2.5 border-b border-brand-dark/[0.07] last:border-0">
-                <p className="font-body text-xs font-medium text-brand-dark">{s.name}</p>
-                <span className="text-brand-gold font-display font-bold text-sm">KES {s.base.toLocaleString()}<span className="text-brand-dark/30 font-body text-[9px] font-normal">/night</span></span>
-              </div>
-            ))}
+          <div>
+            <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
+              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+              Stay the <em className="not-italic" style={{ color: '#C9A84C' }}>Night</em>
+            </h2>
+            <p className="text-brand-dark/50 font-body text-xs leading-relaxed max-w-sm">
+              Extend your day into a full overnight experience. Wooden cabins, tented cabins or camping under the stars.
+            </p>
           </div>
+          <div className="flex flex-col gap-2 lg:items-end">
+            <div className="flex flex-wrap gap-2">
+              {STAYS.map((s, i) => (
+                <span key={i} className="flex items-center gap-2 border border-brand-dark/[0.08] rounded-lg px-3 py-1.5">
+                  <span className="font-body text-xs text-brand-dark/60">{s.name}</span>
+                  <span className="text-brand-gold font-display font-bold text-xs">KES {s.base.toLocaleString()}<span className="text-brand-dark/30 font-body text-[9px] font-normal">/night</span></span>
+                </span>
+              ))}
+            </div>
+            <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book an overnight stay at CabHouse Park")}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-xs px-6 py-3 rounded-full transition-all duration-200 uppercase tracking-wide self-start lg:self-end">
+              Book a Stay
+              <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </a>
+          </div>
+        </div>
 
-          <a
-            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book an overnight stay at CabHouse Park")}`}
-            target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-xs px-6 py-3 rounded-full transition-all duration-200 uppercase tracking-wide"
-          >
-            Book a Stay
-            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </a>
+        {/* Masonry photo grid */}
+        <div style={{ columns: '2 160px', columnGap: '12px' }}>
+          {CAMPING_PHOTOS.map((p, i) => (
+            <div key={i} className="mb-3 overflow-hidden rounded-xl break-inside-avoid group relative">
+              <img
+                src={p.src}
+                alt={p.label}
+                loading="lazy"
+                className="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <p className="text-white font-body text-[10px] font-semibold">{p.label}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

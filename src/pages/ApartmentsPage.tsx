@@ -276,6 +276,49 @@ export default function ApartmentsPage() {
         </div>
       </section>
 
+      {/* Photo gallery */}
+      <section className="bg-white px-6 lg:px-10 py-14 lg:py-16">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
+            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+            Inside Your <em className="not-italic" style={{ color: '#C9A84C' }}>Home Away</em>
+          </h2>
+          <p className="text-brand-dark/40 font-body text-xs mb-8">Furnished, comfortable, and ready for you</p>
+          <div style={{ columns: '2 180px', columnGap: '12px' }}>
+            {[
+              { src: '/assets/apartments-6.jpeg', label: 'Apartment' },
+              { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
+              { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
+              { src: '/assets/confortable-bed-11.jpeg', label: 'Bedroom' },
+              { src: '/assets/apartments-9.jpeg', label: 'Apartment View' },
+              { src: '/assets/kitchen-14.jpeg', label: 'Kitchen' },
+              { src: '/assets/confortable-bed-18.jpeg', label: 'Bedroom' },
+              { src: '/assets/sitting-room-23.jpeg', label: 'Sitting Room' },
+              { src: '/assets/apartments-10.jpeg', label: 'Apartment' },
+              { src: '/assets/kitchen-17.jpeg', label: 'Kitchen' },
+              { src: '/assets/comfortable-bed-24.jpeg', label: 'Bedroom' },
+              { src: '/assets/living-room-far-13.jpeg', label: 'Living Area' },
+              { src: '/assets/apartments-7.jpeg', label: 'Apartment' },
+              { src: '/assets/confortable-bed-15.jpeg', label: 'Bedroom' },
+              { src: '/assets/confortable-bed-22.jpeg', label: 'Bedroom' },
+              { src: '/assets/clean-toilet-30.jpeg', label: 'Bathroom' },
+            ].map((p, i) => (
+              <div key={i} className="mb-3 overflow-hidden rounded-xl break-inside-avoid group relative">
+                <img
+                  src={p.src}
+                  alt={p.label}
+                  loading="lazy"
+                  className="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <p className="text-white font-body text-[10px] font-semibold">{p.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <DualCTA />
     </Layout>
   )
