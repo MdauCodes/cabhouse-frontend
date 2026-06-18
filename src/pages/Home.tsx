@@ -1,6 +1,4 @@
 import Navbar from '../components/Navbar'
-import Hero from '../components/Hero'
-import TrustStrip from '../components/TrustStrip'
 import BrandPillars from '../components/BrandPillars'
 import Gallery from '../components/Gallery'
 import ParkDeepDive from '../components/ParkDeepDive'
@@ -17,8 +15,6 @@ export default function Home() {
     <div className="overflow-x-hidden">
       <Navbar />
       <BrandPillars />
-      <Hero />
-      <TrustStrip />
       <Gallery />
       <ParkDeepDive />
       <Pricing />

@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Layout from '../components/Layout'
-import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -189,37 +188,194 @@ function DualCTA() {
 }
 
 function HeroSection() {
-  const img = useMediaUrl('hero-3')
   const { ref, inView } = useInView(0.05)
   return (
-    <section className="relative overflow-hidden" style={{ height: '60dvh', minHeight: 340 }}>
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#0D1B12' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #0D1B12 0%, #0D1B12 30%, rgba(13,27,18,0.6) 60%, rgba(13,27,18,0.15) 100%)' }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/30" />
-      <div ref={ref as React.RefObject<HTMLDivElement>}
+    <section className="relative overflow-hidden" style={{ height: '65dvh', minHeight: 380 }}>
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('/assets/cabhouse-apartments.png')`, backgroundColor: '#0D1B12' }}
+      />
+      {/* Mobile: full dark cover */}
+      <div className="absolute inset-0 bg-brand-dark/60 lg:hidden" />
+      {/* Desktop: directional gradient */}
+      <div
+        className="absolute inset-0 hidden lg:block"
+        style={{ background: 'linear-gradient(to right, #0D1B12 0%, #0D1B12 28%, rgba(13,27,18,0.75) 50%, rgba(13,27,18,0.2) 80%, transparent 100%)' }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
+
+      <div
+        ref={ref as React.RefObject<HTMLDivElement>}
         className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
-        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}>
-        <h1 className="font-display font-black text-white leading-[0.93] mb-4"
-          style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}>
+        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}
+      >
+        <p className="text-brand-gold/70 font-body text-[9px] uppercase tracking-[0.3em] font-bold mb-3">CabHouse Apartments · Kisii Town</p>
+        <h1
+          className="font-display font-black text-white leading-[0.93] mb-4"
+          style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}
+        >
           Your Home<br />
           <em className="not-italic" style={{ color: '#C9A84C' }}>in Kisii Town</em>
         </h1>
-        <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
+        <p className="text-white/70 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
           Fully furnished, serviced apartments in the heart of Kisii. Whether you're here for a night or a year, we have a space for you.
         </p>
-        <div className="flex items-center gap-4">
-          <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
+        <div className="flex items-center gap-4 flex-wrap">
+          <a
+            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
             target="_blank" rel="noopener noreferrer"
-            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide">
+            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide"
+          >
             Check Availability
           </a>
-          <a href="#enquire"
-            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide">
+          <a
+            href="#enquire"
+            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide"
+          >
             Corporate Enquiry
           </a>
         </div>
       </div>
     </section>
+  )
+}
+
+const APT_PHOTOS = [
+  { src: '/assets/apartments-6.jpeg', label: 'Apartment' },
+  { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
+  { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
+  { src: '/assets/confortable-bed-11.jpeg', label: 'Bedroom' },
+  { src: '/assets/apartments-9.jpeg', label: 'Apartment View' },
+  { src: '/assets/kitchen-14.jpeg', label: 'Kitchen' },
+  { src: '/assets/confortable-bed-18.jpeg', label: 'Bedroom' },
+  { src: '/assets/sitting-room-23.jpeg', label: 'Sitting Room' },
+  { src: '/assets/apartments-10.jpeg', label: 'Apartment' },
+  { src: '/assets/kitchen-17.jpeg', label: 'Kitchen' },
+  { src: '/assets/comfortable-bed-24.jpeg', label: 'Bedroom' },
+  { src: '/assets/living-room-far-13.jpeg', label: 'Living Area' },
+  { src: '/assets/apartments-7.jpeg', label: 'Apartment' },
+  { src: '/assets/confortable-bed-15.jpeg', label: 'Bedroom' },
+  { src: '/assets/confortable-bed-22.jpeg', label: 'Bedroom' },
+  { src: '/assets/clean-toilet-30.jpeg', label: 'Bathroom' },
+]
+
+function PhotoGallery() {
+  const [lightbox, setLightbox] = useState<{ src: string; label: string; idx: number } | null>(null)
+
+  const close = useCallback(() => setLightbox(null), [])
+  const prev = useCallback(() => {
+    if (!lightbox) return
+    const i = (lightbox.idx - 1 + APT_PHOTOS.length) % APT_PHOTOS.length
+    setLightbox({ ...APT_PHOTOS[i], idx: i })
+  }, [lightbox])
+  const next = useCallback(() => {
+    if (!lightbox) return
+    const i = (lightbox.idx + 1) % APT_PHOTOS.length
+    setLightbox({ ...APT_PHOTOS[i], idx: i })
+  }, [lightbox])
+
+  useEffect(() => {
+    if (!lightbox) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+      if (e.key === 'ArrowLeft') prev()
+      if (e.key === 'ArrowRight') next()
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [lightbox, close, prev, next])
+
+  return (
+    <>
+      <section className="bg-white px-5 lg:px-10 py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto">
+          <h2
+            className="font-display font-black text-brand-dark leading-[0.93] mb-1"
+            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+          >
+            Inside Your <em className="not-italic" style={{ color: '#C9A84C' }}>Home Away</em>
+          </h2>
+          <p className="text-brand-dark/35 font-body text-xs mb-6">Tap any photo to view full size</p>
+
+          {/* Compact masonry grid */}
+          <div style={{ columns: '3 110px', columnGap: '8px' }}>
+            {APT_PHOTOS.map((p, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setLightbox({ ...p, idx: i })}
+                className="mb-2 overflow-hidden rounded-lg break-inside-avoid group relative w-full text-left block cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              >
+                <img
+                  src={p.src}
+                  alt={p.label}
+                  loading="lazy"
+                  className="w-full h-auto object-cover block transition-transform duration-400 group-hover:scale-[1.04]"
+                />
+                <div className="absolute inset-0 bg-brand-dark/0 group-hover:bg-brand-dark/25 transition-colors duration-200 rounded-lg" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <p className="text-white font-body text-[9px] font-semibold leading-tight">{p.label}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+          onClick={close}
+        >
+          {/* Image container — stop propagation so clicking image doesn't close */}
+          <div
+            className="relative max-w-[92vw] max-h-[90dvh] flex flex-col items-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <img
+              src={lightbox.src}
+              alt={lightbox.label}
+              className="max-w-full max-h-[82dvh] object-contain rounded-xl shadow-2xl"
+            />
+            <p className="text-white/60 font-body text-xs mt-3">{lightbox.label} · {lightbox.idx + 1} / {APT_PHOTOS.length}</p>
+          </div>
+
+          {/* Prev */}
+          <button
+            type="button"
+            onClick={e => { e.stopPropagation(); prev() }}
+            className="absolute left-3 lg:left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth="2.5">
+              <path d="M10 3L5 8l5 5" />
+            </svg>
+          </button>
+
+          {/* Next */}
+          <button
+            type="button"
+            onClick={e => { e.stopPropagation(); next() }}
+            className="absolute right-3 lg:right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth="2.5">
+              <path d="M6 3l5 5-5 5" />
+            </svg>
+          </button>
+
+          {/* Close */}
+          <button
+            type="button"
+            onClick={close}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 text-white" stroke="currentColor" strokeWidth="2.5">
+              <path d="M3 3l10 10M13 3L3 13" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -233,11 +389,15 @@ export default function ApartmentsPage() {
       {/* Units */}
       <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-16">
         <div className="max-w-7xl mx-auto">
-          <div ref={ref as React.RefObject<HTMLDivElement>}
+          <div
+            ref={ref as React.RefObject<HTMLDivElement>}
             className="mb-10"
-            style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}>
-            <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
-              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+            style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
+          >
+            <h2
+              className="font-display font-black text-brand-dark leading-[0.93] mb-2"
+              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+            >
               Short Stay. Long Stay. <em className="not-italic" style={{ color: '#C9A84C' }}>Your Choice.</em>
             </h2>
             <p className="text-brand-dark/40 font-body text-xs">Daily · Weekly · Monthly · Annual leasing available</p>
@@ -254,9 +414,11 @@ export default function ApartmentsPage() {
                 </h3>
                 <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-2">{u.desc}</p>
                 <p className="text-brand-dark/30 font-body text-[10px] mb-5">Sleeps up to {u.beds} · Wi-Fi · Fully furnished</p>
-                <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="block text-center bg-brand-dark hover:bg-brand-green text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200">
+                  className="block text-center bg-brand-dark hover:bg-brand-green text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200"
+                >
                   Enquire
                 </a>
               </div>
@@ -276,48 +438,7 @@ export default function ApartmentsPage() {
         </div>
       </section>
 
-      {/* Photo gallery */}
-      <section className="bg-white px-6 lg:px-10 py-14 lg:py-16">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
-            Inside Your <em className="not-italic" style={{ color: '#C9A84C' }}>Home Away</em>
-          </h2>
-          <p className="text-brand-dark/40 font-body text-xs mb-8">Furnished, comfortable, and ready for you</p>
-          <div style={{ columns: '2 180px', columnGap: '12px' }}>
-            {[
-              { src: '/assets/apartments-6.jpeg', label: 'Apartment' },
-              { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
-              { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
-              { src: '/assets/confortable-bed-11.jpeg', label: 'Bedroom' },
-              { src: '/assets/apartments-9.jpeg', label: 'Apartment View' },
-              { src: '/assets/kitchen-14.jpeg', label: 'Kitchen' },
-              { src: '/assets/confortable-bed-18.jpeg', label: 'Bedroom' },
-              { src: '/assets/sitting-room-23.jpeg', label: 'Sitting Room' },
-              { src: '/assets/apartments-10.jpeg', label: 'Apartment' },
-              { src: '/assets/kitchen-17.jpeg', label: 'Kitchen' },
-              { src: '/assets/comfortable-bed-24.jpeg', label: 'Bedroom' },
-              { src: '/assets/living-room-far-13.jpeg', label: 'Living Area' },
-              { src: '/assets/apartments-7.jpeg', label: 'Apartment' },
-              { src: '/assets/confortable-bed-15.jpeg', label: 'Bedroom' },
-              { src: '/assets/confortable-bed-22.jpeg', label: 'Bedroom' },
-              { src: '/assets/clean-toilet-30.jpeg', label: 'Bathroom' },
-            ].map((p, i) => (
-              <div key={i} className="mb-3 overflow-hidden rounded-xl break-inside-avoid group relative">
-                <img
-                  src={p.src}
-                  alt={p.label}
-                  loading="lazy"
-                  className="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <p className="text-white font-body text-[10px] font-semibold">{p.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PhotoGallery />
 
       <DualCTA />
     </Layout>
