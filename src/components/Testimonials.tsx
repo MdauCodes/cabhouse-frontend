@@ -5,12 +5,12 @@ import { useInView } from '../hooks/useInView'
 const GOOGLE_REVIEWS_URL = 'https://www.google.com/maps/search/CabHouse+Park+Kisii'
 
 const REVIEWS = [
-  { name: 'Sarah M.',  month: 'June 2025',  rating: 5, text: 'The zip line and sky bike were unforgettable. Staff were warm and professional throughout. CabHouse is genuinely world-class "” right here in Kisii.' },
-  { name: 'James K.',  month: 'May 2025',   rating: 5, text: "Brought the family for my daughter's birthday. Kids loved the pool and inflatables. Stayed in a wooden cabin "” very comfortable. Already planning the next visit." },
+  { name: 'Sarah M.',  month: 'June 2025',  rating: 5, text: 'The zip line and sky bike were unforgettable. Staff were warm and professional throughout. CabHouse is genuinely world-class —right here in Kisii.' },
+  { name: 'James K.',  month: 'May 2025',   rating: 5, text: "Brought the family for my daughter's birthday. Kids loved the pool and inflatables. Stayed in a wooden cabin —very comfortable. Already planning the next visit." },
   { name: 'Mercy A.',  month: 'April 2025', rating: 5, text: 'Our company retreat was outstanding. The team-building course kept everyone engaged and the garden dinner venue was stunning. Highly recommend for corporate events.' },
-  { name: 'David O.',  month: 'March 2025', rating: 4, text: 'The mountain challenge course is no joke "” challenging and exhilarating. Rainbow slide was the highlight. Great package value for what you get.' },
+  { name: 'David O.',  month: 'March 2025', rating: 4, text: 'The mountain challenge course is no joke —challenging and exhilarating. Rainbow slide was the highlight. Great package value for what you get.' },
   { name: 'Faith W.',  month: 'June 2025',  rating: 5, text: 'Finally a world-class recreation spot in Kisii. Beautiful gardens, great food, top-tier activities. CabHouse has genuinely set a new standard for this region.' },
-  { name: 'Peter N.',  month: 'May 2025',   rating: 5, text: 'Came for a day trip, ended up booking a camping tent for the night. Falling asleep to nature with everything the park offers right there "” pure magic.' },
+  { name: 'Peter N.',  month: 'May 2025',   rating: 5, text: 'Came for a day trip, ended up booking a camping tent for the night. Falling asleep to nature with everything the park offers right there —pure magic.' },
 ]
 
 // Characters before "Read more" kicks in
