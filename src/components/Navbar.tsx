@@ -64,7 +64,7 @@ export default function Navbar() {
           <img
             src={logo}
             alt="CabHouse Agencies"
-            className="h-11 w-auto object-contain"
+            className="h-16 w-auto object-contain"
             style={{ mixBlendMode: 'darken' }}
           />
         </a>
