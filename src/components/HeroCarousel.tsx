@@ -76,7 +76,7 @@ export default function HeroCarousel() {
   }, [active, goTo])
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: 'clamp(560px, 90vh, 860px)' }}>
+    <section className="relative w-full overflow-hidden" style={{ height: '85dvh', minHeight: 560, maxHeight: 900 }}>
 
       {/* Slide backgrounds — crossfade */}
       {SLIDES.map((s, i) => (
@@ -102,14 +102,14 @@ export default function HeroCarousel() {
         {/* Heading */}
         <h1
           className="font-display font-black text-white leading-[1.0] mb-2"
-          style={{ fontSize: 'clamp(2.4rem, 6vw, 5.5rem)', letterSpacing: '-0.03em' }}
+          style={{ fontSize: 'clamp(2.2rem, 4vw, 4rem)', letterSpacing: '-0.03em' }}
         >
           Your Best Day Out
         </h1>
         <h1
           className="font-display font-black leading-[1.0] mb-6"
           style={{
-            fontSize: 'clamp(2.4rem, 6vw, 5.5rem)',
+            fontSize: 'clamp(2.2rem, 4vw, 4rem)',
             letterSpacing: '-0.03em',
             color: 'var(--color-gold)',
             minHeight: '1.05em',

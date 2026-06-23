@@ -34,7 +34,7 @@ const INTENTS = [
 export default function IntentSection() {
   const wa = SITE.contact.whatsapp.replace('+', '')
   return (
-    <section className="bg-brand-forest px-5 lg:px-10 py-16 lg:py-20">
+    <section className="px-5 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: 'var(--color-forest)' }}>
       <div className="max-w-7xl mx-auto">
         <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-gold)' }}>
           Tell us what you need
