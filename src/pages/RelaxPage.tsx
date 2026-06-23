@@ -2,6 +2,26 @@
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
+import MasonryGallery from '../components/MasonryGallery'
+
+const RELAX_PHOTOS = [
+  { src: '/assets/raw-33.jpeg', label: 'Overnight Stay' },
+  { src: '/assets/raw-34.jpeg', label: 'Cabin Life' },
+  { src: '/assets/raw-35.jpeg', label: 'CabHouse Grounds' },
+  { src: '/assets/raw-36.jpeg', label: 'Nature' },
+  { src: '/assets/raw-37.jpeg', label: 'Camp Morning' },
+  { src: '/assets/raw-38.jpeg', label: 'Tent View' },
+  { src: '/assets/raw-39.jpeg', label: 'Campfire Ready' },
+  { src: '/assets/raw-40.jpeg', label: 'Waking Up Here' },
+  { src: '/assets/raw-41.jpeg', label: 'Peaceful' },
+  { src: '/assets/raw-42.jpeg', label: 'Outdoors' },
+  { src: '/assets/raw-43.jpeg', label: 'Nature Stay' },
+  { src: '/assets/raw-44.jpeg', label: 'Camping' },
+  { src: '/assets/raw-45.jpeg', label: 'Rest' },
+  { src: '/assets/raw-46.jpeg', label: 'Glamping' },
+  { src: '/assets/raw-47.jpeg', label: 'Starry Nights' },
+  { src: '/assets/raw-48.jpeg', label: 'CabHouse Stay' },
+]
 
 const STAYS = [
   { name: 'Wooden Cabin', desc: 'En-suite cabin with private veranda and garden views. Sleeps 2.', base: 3000, b1: 3500, b2: 4000 },
@@ -96,6 +116,14 @@ export default function RelaxPage() {
           </div>
         </div>
       </section>
+
+      <MasonryGallery
+        photos={RELAX_PHOTOS}
+        title='Sleeping Under <em class="not-italic" style="color:var(--color-gold)">the Stars</em>'
+        subtitle="Tap any photo to view full size"
+        columns="columns-2 sm:columns-3 lg:columns-4"
+        gap={8}
+      />
 
       {/* Info strip */}
       <section className="bg-brand-dark px-6 lg:px-10 py-12">

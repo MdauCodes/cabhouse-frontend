@@ -1,7 +1,7 @@
-﻿import { useState, useEffect, useCallback } from 'react'
-import Layout from '../components/Layout'
+﻿import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
+import MasonryGallery from '../components/MasonryGallery'
 
 const UNITS = [
   {
@@ -259,126 +259,6 @@ const APT_PHOTOS = [
   { src: '/assets/clean-toilet-30.jpeg', label: 'Bathroom' },
 ]
 
-function PhotoGallery() {
-  const [lightbox, setLightbox] = useState<{ src: string; label: string; idx: number } | null>(null)
-
-  const close = useCallback(() => setLightbox(null), [])
-  const prev = useCallback(() => {
-    if (!lightbox) return
-    const i = (lightbox.idx - 1 + APT_PHOTOS.length) % APT_PHOTOS.length
-    setLightbox({ ...APT_PHOTOS[i], idx: i })
-  }, [lightbox])
-  const next = useCallback(() => {
-    if (!lightbox) return
-    const i = (lightbox.idx + 1) % APT_PHOTOS.length
-    setLightbox({ ...APT_PHOTOS[i], idx: i })
-  }, [lightbox])
-
-  useEffect(() => {
-    if (!lightbox) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
-      if (e.key === 'ArrowLeft') prev()
-      if (e.key === 'ArrowRight') next()
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [lightbox, close, prev, next])
-
-  return (
-    <>
-      <section className="bg-white px-5 lg:px-10 py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto">
-          <h2
-            className="font-display font-black text-brand-dark leading-[0.93] mb-1"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
-          >
-            Inside Your <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Home Away</em>
-          </h2>
-          <p className="text-brand-dark/35 font-body text-xs mb-6">Tap any photo to view full size</p>
-
-          {/* Compact masonry grid */}
-          <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5" style={{ columnGap: '6px' }}>
-            {APT_PHOTOS.map((p, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setLightbox({ ...p, idx: i })}
-                className="mb-2 overflow-hidden rounded-lg break-inside-avoid group relative w-full text-left block cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
-              >
-                <img
-                  src={p.src}
-                  alt={p.label}
-                  loading="lazy"
-                  className="w-full h-auto object-cover block transition-transform duration-400 group-hover:scale-[1.04]"
-                />
-                <div className="absolute inset-0 bg-brand-dark/0 group-hover:bg-brand-dark/25 transition-colors duration-200 rounded-lg" />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <p className="text-white font-body text-[9px] font-semibold leading-tight">{p.label}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-          onClick={close}
-        >
-          {/* Image container "” stop propagation so clicking image doesn't close */}
-          <div
-            className="relative max-w-[92vw] max-h-[90dvh] flex flex-col items-center"
-            onClick={e => e.stopPropagation()}
-          >
-            <img
-              src={lightbox.src}
-              alt={lightbox.label}
-              className="max-w-full max-h-[82dvh] object-contain rounded-xl shadow-2xl"
-            />
-            <p className="text-white/60 font-body text-xs mt-3">{lightbox.label} · {lightbox.idx + 1} / {APT_PHOTOS.length}</p>
-          </div>
-
-          {/* Prev */}
-          <button
-            type="button"
-            onClick={e => { e.stopPropagation(); prev() }}
-            className="absolute left-3 lg:left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-          >
-            <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth="2.5">
-              <path d="M10 3L5 8l5 5" />
-            </svg>
-          </button>
-
-          {/* Next */}
-          <button
-            type="button"
-            onClick={e => { e.stopPropagation(); next() }}
-            className="absolute right-3 lg:right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-          >
-            <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth="2.5">
-              <path d="M6 3l5 5-5 5" />
-            </svg>
-          </button>
-
-          {/* Close */}
-          <button
-            type="button"
-            onClick={close}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-          >
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 text-white" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 3l10 10M13 3L3 13" />
-            </svg>
-          </button>
-        </div>
-      )}
-    </>
-  )
-}
-
 export default function ApartmentsPage() {
   const { ref, inView } = useInView(0.1)
 
@@ -438,7 +318,13 @@ export default function ApartmentsPage() {
         </div>
       </section>
 
-      <PhotoGallery />
+      <MasonryGallery
+        photos={APT_PHOTOS}
+        title='Inside Your <em class="not-italic" style="color:var(--color-gold)">Home Away</em>'
+        subtitle="Tap any photo to view full size"
+        columns="columns-2 sm:columns-3 lg:columns-4 xl:columns-5"
+        gap={6}
+      />
 
       <DualCTA />
     </Layout>

@@ -2,6 +2,7 @@
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
+import MasonryGallery from '../components/MasonryGallery'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500', icon: 'â†—' },
@@ -258,6 +259,25 @@ function PackagesSection() {
   )
 }
 
+const PARK_PHOTOS = [
+  { src: '/assets/park-adventure.jpeg', label: 'Adventure Activities' },
+  { src: '/assets/raw-1.jpg',           label: 'CabHouse Park' },
+  { src: '/assets/park-pool.jpeg',      label: 'Swimming Pool' },
+  { src: '/assets/raw-2.jpg',           label: 'Park Grounds' },
+  { src: '/assets/park-bridge.jpeg',    label: 'Bridge Challenge' },
+  { src: '/assets/raw-3.jpg',           label: 'CabHouse Experience' },
+  { src: '/assets/park-games.jpeg',     label: 'Games & Rides' },
+  { src: '/assets/raw-4.jpeg',          label: 'Park Views' },
+  { src: '/assets/park-group.jpeg',     label: 'Group Fun' },
+  { src: '/assets/raw-5.jpeg',          label: 'Activities' },
+  { src: '/assets/park-extra-1.png',    label: 'Park Highlights' },
+  { src: '/assets/raw-6.jpeg',          label: 'Park Life' },
+  { src: '/assets/raw-7.jpeg',          label: 'Outdoors' },
+  { src: '/assets/raw-8.jpeg',          label: 'Adventure' },
+  { src: '/assets/raw-9.jpeg',          label: 'CabHouse' },
+  { src: '/assets/raw-10.jpeg',         label: 'Park' },
+]
+
 const CAMPING_PHOTOS = [
   { src: '/assets/wooden-tent-31.jpeg', label: 'Wooden Cabin' },
   { src: '/assets/inside-tent-29.jpeg', label: 'Inside "” Tent with Bed' },
@@ -314,24 +334,16 @@ function StaySection() {
           </div>
         </div>
 
-        {/* Masonry photo grid */}
-        <div style={{ columns: '2 160px', columnGap: '12px' }}>
-          {CAMPING_PHOTOS.map((p, i) => (
-            <div key={i} className="mb-3 overflow-hidden rounded-xl break-inside-avoid group relative">
-              <img
-                src={p.src}
-                alt={p.label}
-                loading="lazy"
-                className="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <p className="text-white font-body text-[10px] font-semibold">{p.label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
+
+    <MasonryGallery
+      photos={CAMPING_PHOTOS}
+      title='Stay the Night <em class="not-italic" style="color:var(--color-gold)">Gallery</em>'
+      subtitle="Tap any photo to view full size"
+      columns="columns-2 sm:columns-3 lg:columns-4"
+      gap={8}
+    />
   )
 }
 
@@ -340,6 +352,13 @@ export default function ParkPage() {
     <Layout>
       <HeroSection />
       <ActivitiesSection />
+      <MasonryGallery
+        photos={PARK_PHOTOS}
+        title='The Park <em class="not-italic" style="color:var(--color-gold)">In Pictures</em>'
+        subtitle="Tap any photo to view full size"
+        columns="columns-2 sm:columns-3 lg:columns-4 xl:columns-5"
+        gap={8}
+      />
       <PackagesSection />
       <StaySection />
     </Layout>
