@@ -1,6 +1,6 @@
 import AnnouncementBar from '../components/AnnouncementBar'
 import Navbar from '../components/Navbar'
-import BrandPillars from '../components/BrandPillars'
+import HeroCarousel from '../components/HeroCarousel'
 import IntentSection from '../components/IntentSection'
 import BrandShowcase from '../components/BrandShowcase'
 import ExperiencesStrip from '../components/ExperiencesStrip'
@@ -18,7 +18,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
       <AnnouncementBar />
       <Navbar />
-      <BrandPillars />
+      <HeroCarousel />
       <IntentSection />
       <BrandShowcase />
       <ExperiencesStrip />
