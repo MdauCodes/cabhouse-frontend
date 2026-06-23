@@ -204,6 +204,13 @@ export default function HeroCarousel() {
         </span>
       </div>
 
+      {/* Bottom wave */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 leading-none">
+        <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 48 }}>
+          <path d="M0,24 C240,48 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" fill="#ffffff" />
+        </svg>
+      </div>
+
       <style>{`
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
       `}</style>
