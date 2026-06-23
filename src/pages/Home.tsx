@@ -1,10 +1,13 @@
+import AnnouncementBar from '../components/AnnouncementBar'
 import Navbar from '../components/Navbar'
-import BrandPillars from '../components/BrandPillars'
-import Gallery from '../components/Gallery'
+import HeroCarousel from '../components/HeroCarousel'
+import IntentSection from '../components/IntentSection'
+import BrandShowcase from '../components/BrandShowcase'
+import ExperiencesStrip from '../components/ExperiencesStrip'
 import ParkDeepDive from '../components/ParkDeepDive'
 import Pricing from '../components/Pricing'
-import BrandEcosystem from '../components/BrandEcosystem'
 import Testimonials from '../components/Testimonials'
+import Gallery from '../components/Gallery'
 import MapSection from '../components/MapSection'
 import BookingCTA from '../components/BookingCTA'
 import Footer from '../components/Footer'
@@ -13,13 +16,16 @@ import FloatingWhatsApp from '../components/FloatingWhatsApp'
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
+      <AnnouncementBar />
       <Navbar />
-      <BrandPillars />
-      <Gallery />
+      <HeroCarousel />
+      <IntentSection />
+      <BrandShowcase />
+      <ExperiencesStrip />
       <ParkDeepDive />
       <Pricing />
-      <BrandEcosystem />
       <Testimonials />
+      <Gallery />
       <MapSection />
       <BookingCTA />
       <Footer />
