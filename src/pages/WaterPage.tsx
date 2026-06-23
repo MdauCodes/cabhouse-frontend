@@ -181,6 +181,7 @@ function HeroSection() {
       <div ref={ref as React.RefObject<HTMLDivElement>}
         className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}>
+        <img src="/assets/logo-water.png" alt="CabHouse Water" className="h-16 w-auto object-contain mb-5" style={{ mixBlendMode: 'screen' }} />
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}>
           Pure Water,<br />

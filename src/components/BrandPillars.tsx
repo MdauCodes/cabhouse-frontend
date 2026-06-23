@@ -57,6 +57,7 @@ const SIDES = [
     cta: 'Order Water',
     href: '/water',
     imageSrc: '/assets/cabhouse-water.png',
+    logoSrc: '/assets/logo-water.png',
   },
   {
     id: 'apt',
@@ -68,6 +69,7 @@ const SIDES = [
     cta: 'Book a Stay',
     href: '/apartments',
     imageSrc: '/assets/cabhouse-apartments.png',
+    logoSrc: '/assets/logo-apartments.png',
   },
 ]
 
@@ -194,6 +196,7 @@ function SideCard({ brand, idx, inView }: { brand: typeof SIDES[0]; idx: number;
 
       {/* Content */}
       <div className="relative z-10 mt-auto p-4 rounded-b-2xl" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 60%, transparent 100%)' }}>
+        <img src={brand.logoSrc} alt={brand.name} className="h-8 w-auto object-contain mb-2" style={{ mixBlendMode: 'screen' }} />
         <h3
           className="font-display font-black text-white text-sm leading-tight mb-1.5 drop-shadow-md"
           style={{ letterSpacing: '-0.02em' }}

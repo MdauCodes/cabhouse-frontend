@@ -21,7 +21,13 @@ const PACKAGES_LINKS = [
 
 export default function Navbar() {
   const { pathname } = useLocation()
-  const logo = pathname.startsWith('/park') ? '/assets/park-logo.png' : '/assets/agency-logo.png'
+  const logo = pathname.startsWith('/park')
+    ? '/assets/park-logo.png'
+    : pathname.startsWith('/water')
+    ? '/assets/logo-water.png'
+    : pathname.startsWith('/apartments')
+    ? '/assets/logo-apartments.png'
+    : '/assets/logo-agencies.png'
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [parkOpen, setParkOpen] = useState(false)
