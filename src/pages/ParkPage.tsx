@@ -296,6 +296,7 @@ function StaySection() {
   const { ref, inView } = useInView(0.08)
 
   return (
+    <>
     <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-16">
       <div className="max-w-7xl mx-auto">
 
@@ -344,6 +345,7 @@ function StaySection() {
       columns="columns-2 sm:columns-3 lg:columns-4"
       gap={8}
     />
+    </>
   )
 }
 
