@@ -45,16 +45,16 @@ export default function BrandShowcase() {
           className="text-center mb-12"
           style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
         >
-          <p className="font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
+          <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-gold)' }}>
             CabHouse Agencies Ltd
           </p>
           <h2
             className="font-display font-black text-brand-dark leading-tight"
-            style={{ fontSize: 'clamp(1.7rem, 3.8vw, 3.2rem)', letterSpacing: '-0.03em' }}
+            style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.03em' }}
           >
             One company. Three experiences.
           </h2>
-          <p className="text-brand-dark/50 font-body text-sm mt-3 max-w-xl mx-auto leading-relaxed">
+          <p className="text-brand-dark/65 font-body text-base mt-4 max-w-xl mx-auto leading-relaxed">
             CabHouse Agencies is the home of Park, Water and Apartments — all in one destination in Kisii.
           </p>
         </div>
@@ -90,10 +90,10 @@ export default function BrandShowcase() {
 
               {/* Content */}
               <div className="p-5">
-                <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
+                <p className="font-body text-xs uppercase tracking-[0.2em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
                   {b.tagline}
                 </p>
-                <p className="text-brand-dark/60 font-body text-sm leading-relaxed mb-4">{b.desc}</p>
+                <p className="text-brand-dark/70 font-body text-sm leading-relaxed mb-4">{b.desc}</p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
                   {b.tags.map(t => (
                     <span key={t} className="text-[10px] font-body text-brand-dark/50 border border-brand-dark/12 px-2.5 py-1 rounded-full">{t}</span>

@@ -79,10 +79,10 @@ export default function Pricing() {
           style={{ opacity: inView ? 1 : 0, transition: 'all 0.5s ease' }}
         >
           <h2 className="font-display font-black text-white leading-none"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+            style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2rem)', letterSpacing: '-0.02em' }}>
             Packages & <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Pricing</em>
           </h2>
-          <p className="text-white/25 font-body text-[10px] hidden lg:block">All prices in KES · WhatsApp booking</p>
+          <p className="text-white/45 font-body text-xs hidden lg:block">All prices in KES · WhatsApp booking</p>
         </div>
 
         {/* Tabs */}

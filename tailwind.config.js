@@ -6,6 +6,7 @@ export default {
       colors: {
         brand: {
           green:  'var(--color-green)',
+          forest: 'var(--color-forest)',
           gold:   'var(--color-gold)',
           dark:   'var(--color-dark)',
           cream:  'var(--color-cream)',
@@ -14,7 +15,7 @@ export default {
       },
       fontFamily: {
         display: ['"Playfair Display"', 'Georgia', 'serif'],
-        body:    ['"Inter"', 'system-ui', 'sans-serif'],
+        body:    ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-up':    'fadeUp 0.7s ease forwards',

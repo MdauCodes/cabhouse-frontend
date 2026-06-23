@@ -34,36 +34,36 @@ const INTENTS = [
 export default function IntentSection() {
   const wa = SITE.contact.whatsapp.replace('+', '')
   return (
-    <section className="bg-brand-dark px-5 lg:px-10 py-14 lg:py-16">
+    <section className="bg-brand-forest px-5 lg:px-10 py-16 lg:py-20">
       <div className="max-w-7xl mx-auto">
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
+        <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-gold)' }}>
           Tell us what you need
         </p>
         <h2
-          className="font-display font-black text-white leading-[1.0] mb-10"
-          style={{ fontSize: 'clamp(1.6rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}
+          className="font-display font-black text-white leading-[1.05] mb-12"
+          style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.03em' }}
         >
           We'll handle{' '}
-          <span className="text-white/25">the rest from here.</span>
+          <span className="text-white/40">the rest from here.</span>
         </h2>
 
-        <div className="border border-white/8 rounded-2xl p-4 lg:p-6" style={{ background: 'rgba(255,255,255,0.02)' }}>
-          <p className="text-white/30 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-5">
+        <div className="border border-white/10 rounded-2xl p-5 lg:p-7" style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <p className="text-white/40 font-body text-xs uppercase tracking-[0.22em] font-semibold mb-6">
             What are you here for?
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {INTENTS.map(intent => (
               <a
                 key={intent.num}
                 href={`https://wa.me/${wa}?text=${encodeURIComponent(intent.waMsg)}`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex flex-col bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.07] hover:border-brand-gold/40 rounded-xl p-4 transition-all duration-200 group"
+                className="flex flex-col bg-white/[0.05] hover:bg-white/[0.10] border border-white/[0.08] hover:border-brand-gold/50 rounded-xl p-5 transition-all duration-200 group"
               >
-                <span className="font-body text-xs font-bold mb-2" style={{ color: 'var(--color-gold)' }}>{intent.num}</span>
-                <h3 className="font-display font-bold text-white text-base leading-tight mb-1">{intent.title}</h3>
-                <p className="text-white/40 font-body text-xs leading-relaxed mb-4 flex-1">{intent.sub}</p>
+                <span className="font-body text-xs font-bold mb-3" style={{ color: 'var(--color-gold)' }}>{intent.num}</span>
+                <h3 className="font-display font-bold text-white text-lg leading-tight mb-1.5">{intent.title}</h3>
+                <p className="text-white/55 font-body text-sm leading-relaxed mb-5 flex-1">{intent.sub}</p>
                 <span
-                  className="inline-flex items-center justify-center w-full py-2.5 rounded-lg font-body font-bold text-xs uppercase tracking-wide transition-all duration-200 group-hover:brightness-110"
+                  className="inline-flex items-center justify-center w-full py-3 rounded-lg font-body font-bold text-xs uppercase tracking-wide transition-all duration-200 group-hover:brightness-110"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#111' }}
                 >
                   {intent.cta}

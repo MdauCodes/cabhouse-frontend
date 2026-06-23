@@ -51,12 +51,12 @@ export default function ExperiencesStrip() {
           style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.5s ease' }}
         >
           <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
+            <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
               CabHouse Park · Flagship
             </p>
             <h2
               className="font-display font-black text-white leading-tight"
-              style={{ fontSize: 'clamp(1.4rem, 3vw, 2.4rem)', letterSpacing: '-0.03em' }}
+              style={{ fontSize: 'clamp(1.7rem, 3.4vw, 2.8rem)', letterSpacing: '-0.03em' }}
             >
               Five experiences, one destination.
             </h2>
