@@ -76,7 +76,7 @@ export default function HeroCarousel() {
   }, [active, goTo])
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: '85dvh', minHeight: 560, maxHeight: 900 }}>
+    <section className="relative w-full overflow-hidden" style={{ height: '75dvh', minHeight: 500, maxHeight: 800 }}>
 
       {/* Slide backgrounds — crossfade */}
       {SLIDES.map((s, i) => (
