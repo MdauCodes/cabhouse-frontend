@@ -148,7 +148,7 @@ function DualCTA() {
                 <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening"¦</p>
+            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening…</p>
             <p className="text-brand-dark/40 font-body text-xs">Your enquiry is pre-filled and ready to send.</p>
           </div>
         ) : (
@@ -170,7 +170,7 @@ function DualCTA() {
             </select>
             <input value={form.dates} onChange={set('dates')} placeholder="Preferred move-in date / duration" className={inputCls} />
             <textarea required value={form.message} onChange={set('message')}
-              placeholder="Tell us about your requirements"¦"
+              placeholder="Tell us about your requirements…"
               rows={3} className={`${inputCls} resize-none`} />
             <button type="submit"
               className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide">

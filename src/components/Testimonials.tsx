@@ -50,7 +50,7 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
         <p className="text-brand-dark/65 font-body text-sm leading-relaxed">
           {expanded || !needsTruncation
             ? r.text
-            : `${r.text.slice(0, TRUNCATE_AT).trimEnd()}"¦`}
+            : `${r.text.slice(0, TRUNCATE_AT).trimEnd()}…`}
         </p>
         {needsTruncation && (
           <button

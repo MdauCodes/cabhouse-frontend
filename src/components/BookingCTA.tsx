@@ -141,7 +141,7 @@ function EmailPanel() {
           </div>
           <textarea
             required value={form.message} onChange={set('message')}
-            placeholder="Tell us about your event, group size, preferred dates"¦"
+            placeholder="Tell us about your event, group size, preferred dates..."
             rows={5}
             className={`${inputCls} resize-none flex-1`}
           />

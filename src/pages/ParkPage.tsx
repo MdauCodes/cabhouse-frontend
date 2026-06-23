@@ -11,7 +11,7 @@ const ACTIVITIES = [
   { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families.', price: 'KES 500', icon: '~' },
   { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500', icon: 'â–¶' },
   { title: 'Bumper Cars',      desc: 'Classic arena fun. 10-min, 30-min or 1-hour sessions available.', price: 'From KES 300', icon: 'â—' },
-  { title: 'Bouncing Castles', desc: 'Kids\' inflatables, swings and safe play areas.', price: 'In packages', icon: 'â™¦' },
+  { title: 'Bouncing Castles', desc: 'Kids\' inflatables, swings and safe play areas.', price: 'In packages', icon: '◆' },
 ]
 
 const PACKAGES = [
