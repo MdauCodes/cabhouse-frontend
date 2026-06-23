@@ -1,4 +1,5 @@
-﻿import Layout from '../components/Layout'
+﻿import { useState } from 'react'
+import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
