@@ -1,17 +1,17 @@
-import Layout from '../components/Layout'
+﻿import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
 const ACTIVITIES = [
-  { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500', icon: '↗' },
-  { title: 'Sky Bike',          desc: 'Pedal along a suspended aerial track high above the ground.', price: 'KES 500', icon: '⟳' },
-  { title: 'Rainbow Slide',     desc: 'Kenya\'s most colourful mega-slide — unlimited rides all day.', price: 'KES 500', icon: '↓' },
-  { title: 'Mountain & Bridge', desc: 'Rope bridges and climbing structures set against open sky.', price: 'KES 500', icon: '▲' },
+  { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500', icon: 'â†—' },
+  { title: 'Sky Bike',          desc: 'Pedal along a suspended aerial track high above the ground.', price: 'KES 500', icon: 'âŸ³' },
+  { title: 'Rainbow Slide',     desc: 'Kenya\'s most colourful mega-slide "” unlimited rides all day.', price: 'KES 500', icon: 'â†“' },
+  { title: 'Mountain & Bridge', desc: 'Rope bridges and climbing structures set against open sky.', price: 'KES 500', icon: 'â–²' },
   { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families.', price: 'KES 500', icon: '~' },
-  { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500', icon: '▶' },
-  { title: 'Bumper Cars',      desc: 'Classic arena fun. 10-min, 30-min or 1-hour sessions available.', price: 'From KES 300', icon: '●' },
-  { title: 'Bouncing Castles', desc: 'Kids\' inflatables, swings and safe play areas.', price: 'In packages', icon: '♦' },
+  { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500', icon: 'â–¶' },
+  { title: 'Bumper Cars',      desc: 'Classic arena fun. 10-min, 30-min or 1-hour sessions available.', price: 'From KES 300', icon: 'â—' },
+  { title: 'Bouncing Castles', desc: 'Kids\' inflatables, swings and safe play areas.', price: 'In packages', icon: 'â™¦' },
 ]
 
 const PACKAGES = [
@@ -48,11 +48,11 @@ function HeroSection() {
     <section className="relative overflow-hidden" style={{ height: '70dvh', minHeight: 420 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#0D1B12' }}
+        style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: 'var(--color-dark)' }}
       />
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(to right, #0D1B12 0%, #0D1B12 28%, rgba(13,27,18,0.55) 55%, rgba(13,27,18,0.1) 80%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 28%, rgba(17,17,17,0.55) 55%, rgba(17,17,17,0.1) 80%, transparent 100%)' }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/30" />
 
@@ -66,18 +66,18 @@ function HeroSection() {
           style={{ fontSize: 'clamp(2.2rem, 4.5vw, 4.2rem)', letterSpacing: '-0.025em' }}
         >
           Play Hard.<br />
-          <em className="not-italic" style={{ color: '#C9A84C' }}>Play All Day.</em>
+          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Play All Day.</em>
         </h1>
 
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Eight activity zones, three pool areas and a go-kart track — all in one admission at Kisii's biggest recreation destination.
+          Eight activity zones, three pool areas and a go-kart track "” all in one admission at Kisii's biggest recreation destination.
         </p>
 
         <div className="flex items-center gap-5 mb-10">
           {[
             { v: '8', l: 'Activity Zones' },
             { v: 'KES 1K', l: 'Entry from' },
-            { v: 'Daily', l: '8 AM – 8 PM' },
+            { v: 'Daily', l: '8 AM "“ 8 PM' },
           ].map((s, i) => (
             <div key={i} className="flex items-center gap-5">
               <div>
@@ -124,12 +124,12 @@ function ActivitiesSection() {
             className="font-display font-black text-brand-dark leading-[0.93]"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
           >
-            Eight Ways to <em className="not-italic" style={{ color: '#C9A84C' }}>Have Fun</em>
+            Eight Ways to <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Have Fun</em>
           </h2>
           <p className="text-brand-dark/45 font-body text-xs mt-1.5">All prices per person · some activities also included in packages</p>
         </div>
 
-        {/* Activity list — elegant rows instead of cards */}
+        {/* Activity list "” elegant rows instead of cards */}
         <div className="divide-y divide-brand-dark/[0.06]">
           {ACTIVITIES.map((a, i) => (
             <ActivityRow key={i} a={a} idx={i} />
@@ -193,7 +193,7 @@ function PackagesSection() {
             className="font-display font-black text-white leading-[0.93]"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
           >
-            Day <em className="not-italic" style={{ color: '#C9A84C' }}>Packages</em>
+            Day <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Packages</em>
           </h2>
           <p className="text-white/25 font-body text-[10px]">All prices per person in KES · book via WhatsApp</p>
         </div>
@@ -260,7 +260,7 @@ function PackagesSection() {
 
 const CAMPING_PHOTOS = [
   { src: '/assets/wooden-tent-31.jpeg', label: 'Wooden Cabin' },
-  { src: '/assets/inside-tent-29.jpeg', label: 'Inside — Tent with Bed' },
+  { src: '/assets/inside-tent-29.jpeg', label: 'Inside "” Tent with Bed' },
   { src: '/assets/camping-outside-1.jpeg', label: 'Campsite' },
   { src: '/assets/outside-tent-28.jpeg', label: 'Tent Exterior' },
   { src: '/assets/camping-outside-2.jpeg', label: 'Outdoor Camp' },
@@ -288,7 +288,7 @@ function StaySection() {
           <div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
-              Stay the <em className="not-italic" style={{ color: '#C9A84C' }}>Night</em>
+              Stay the <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Night</em>
             </h2>
             <p className="text-brand-dark/50 font-body text-xs leading-relaxed max-w-sm">
               Extend your day into a full overnight experience. Wooden cabins, tented cabins or camping under the stars.

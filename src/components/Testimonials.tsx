@@ -1,16 +1,16 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 
 // Replace with the actual Google Maps Place URL for CabHouse Park once confirmed
 const GOOGLE_REVIEWS_URL = 'https://www.google.com/maps/search/CabHouse+Park+Kisii'
 
 const REVIEWS = [
-  { name: 'Sarah M.',  month: 'June 2025',  rating: 5, text: 'The zip line and sky bike were unforgettable. Staff were warm and professional throughout. CabHouse is genuinely world-class — right here in Kisii.' },
-  { name: 'James K.',  month: 'May 2025',   rating: 5, text: "Brought the family for my daughter's birthday. Kids loved the pool and inflatables. Stayed in a wooden cabin — very comfortable. Already planning the next visit." },
+  { name: 'Sarah M.',  month: 'June 2025',  rating: 5, text: 'The zip line and sky bike were unforgettable. Staff were warm and professional throughout. CabHouse is genuinely world-class "” right here in Kisii.' },
+  { name: 'James K.',  month: 'May 2025',   rating: 5, text: "Brought the family for my daughter's birthday. Kids loved the pool and inflatables. Stayed in a wooden cabin "” very comfortable. Already planning the next visit." },
   { name: 'Mercy A.',  month: 'April 2025', rating: 5, text: 'Our company retreat was outstanding. The team-building course kept everyone engaged and the garden dinner venue was stunning. Highly recommend for corporate events.' },
-  { name: 'David O.',  month: 'March 2025', rating: 4, text: 'The mountain challenge course is no joke — challenging and exhilarating. Rainbow slide was the highlight. Great package value for what you get.' },
+  { name: 'David O.',  month: 'March 2025', rating: 4, text: 'The mountain challenge course is no joke "” challenging and exhilarating. Rainbow slide was the highlight. Great package value for what you get.' },
   { name: 'Faith W.',  month: 'June 2025',  rating: 5, text: 'Finally a world-class recreation spot in Kisii. Beautiful gardens, great food, top-tier activities. CabHouse has genuinely set a new standard for this region.' },
-  { name: 'Peter N.',  month: 'May 2025',   rating: 5, text: 'Came for a day trip, ended up booking a camping tent for the night. Falling asleep to nature with everything the park offers right there — pure magic.' },
+  { name: 'Peter N.',  month: 'May 2025',   rating: 5, text: 'Came for a day trip, ended up booking a camping tent for the night. Falling asleep to nature with everything the park offers right there "” pure magic.' },
 ]
 
 // Characters before "Read more" kicks in
@@ -50,7 +50,7 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
         <p className="text-brand-dark/65 font-body text-sm leading-relaxed">
           {expanded || !needsTruncation
             ? r.text
-            : `${r.text.slice(0, TRUNCATE_AT).trimEnd()}…`}
+            : `${r.text.slice(0, TRUNCATE_AT).trimEnd()}"¦`}
         </p>
         {needsTruncation && (
           <button
@@ -108,7 +108,7 @@ export default function Testimonials() {
           <div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93]"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
-              Rated <em className="not-italic" style={{ color: '#C9A84C' }}>4.7 Stars</em> on Google
+              Rated <em className="not-italic" style={{ color: 'var(--color-gold)' }}>4.7 Stars</em> on Google
             </h2>
             <p className="text-brand-dark/40 font-body text-xs mt-1">Real reviews from real visitors</p>
           </div>
@@ -188,7 +188,7 @@ export default function Testimonials() {
 
       <div className="-mx-6 lg:-mx-10 mt-12" style={{ lineHeight: 0 }}>
         <svg viewBox="0 0 1440 32" preserveAspectRatio="none" style={{ width: '100%', height: 32, display: 'block' }}>
-          <path d="M0,8 C240,32 480,0 720,16 C960,32 1200,0 1440,8 L1440,32 L0,32 Z" fill="#0D1B12" />
+          <path d="M0,8 C240,32 480,0 720,16 C960,32 1200,0 1440,8 L1440,32 L0,32 Z" fill="var(--color-dark)" />
         </svg>
       </div>
     </section>

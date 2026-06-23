@@ -1,4 +1,4 @@
-import { useMediaUrl } from '../hooks/useMedia'
+﻿import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -7,7 +7,7 @@ const EXPERIENCES = [
   { id: 'exp-play',      pillar: 'Play',      unit: 'CabHouse Park',       desc: 'Pools, inflatables, go-karts and bumper cars. Joy for every age.', href: '/park' },
   { id: 'exp-explore',   pillar: 'Explore',   unit: 'CabHouse Adventures', desc: 'Zip lines, sky bikes and rope courses. Push your limits.', href: '/park' },
   { id: 'exp-celebrate', pillar: 'Celebrate', unit: 'CabHouse Events',     desc: 'Weddings, galas and team-building hosted to perfection.', href: '/events' },
-  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Car Hire',   desc: 'Rentals and transfers — freedom on every road.', href: '/contact' },
+  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Car Hire',   desc: 'Rentals and transfers "” freedom on every road.', href: '/contact' },
 ]
 
 function Card({ exp, idx, tall }: { exp: typeof EXPERIENCES[0]; idx: number; tall?: boolean }) {
@@ -77,7 +77,7 @@ export default function ExperienceCards() {
             </div>
             <h2 className="font-display font-black text-brand-dark leading-[0.9]"
               style={{ fontSize: 'clamp(1.7rem, 3.2vw, 2.8rem)', letterSpacing: '-0.03em' }}>
-              How Do You Want To <em className="not-italic" style={{ color: '#C9A84C' }}>Feel</em> Today?
+              How Do You Want To <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Feel</em> Today?
             </h2>
           </div>
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer"
@@ -86,9 +86,9 @@ export default function ExperienceCards() {
           </a>
         </div>
 
-        {/* Bento grid — 3 cols, 2 rows: Relax tall on left, 2x2 on right */}
+        {/* Bento grid "” 3 cols, 2 rows: Relax tall on left, 2x2 on right */}
         <div className="grid grid-cols-2 lg:grid-cols-3 grid-rows-2 gap-3 flex-1 min-h-0">
-          {/* Relax — spans both rows */}
+          {/* Relax "” spans both rows */}
           <div className="col-span-1 row-span-2">
             <Card exp={EXPERIENCES[0]} idx={0} tall />
           </div>

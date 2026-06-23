@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -46,7 +46,7 @@ function DualCTA() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Apartment Enquiry — ${form.company || form.name}`)
+    const subject = encodeURIComponent(`Apartment Enquiry "” ${form.company || form.name}`)
     const body = encodeURIComponent(
       [
         `Name: ${form.name}`,
@@ -129,16 +129,16 @@ function DualCTA() {
         <p className="text-white/20 font-body text-[10px] mt-4">{SITE.contact.phone} · {SITE.contact.phone2}</p>
       </div>
 
-      {/* Email — corporate / long-term */}
+      {/* Email "” corporate / long-term */}
       <div className="flex-1 bg-brand-cream flex flex-col p-8 lg:p-12"
         style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}>
         <p className="text-brand-green font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3">Corporate & Long-Term</p>
         <h3 className="font-display font-black text-brand-dark leading-[0.95] mb-3"
           style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)', letterSpacing: '-0.02em' }}>
-          Send a Formal <em className="not-italic" style={{ color: '#C9A84C' }}>Enquiry</em>
+          Send a Formal <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
         </h3>
         <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
-          For company relocations, long-term lettings and staff accommodation — we'll respond with availability and rates.
+          For company relocations, long-term lettings and staff accommodation "” we'll respond with availability and rates.
         </p>
 
         {sent ? (
@@ -148,7 +148,7 @@ function DualCTA() {
                 <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening…</p>
+            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening"¦</p>
             <p className="text-brand-dark/40 font-body text-xs">Your enquiry is pre-filled and ready to send.</p>
           </div>
         ) : (
@@ -170,7 +170,7 @@ function DualCTA() {
             </select>
             <input value={form.dates} onChange={set('dates')} placeholder="Preferred move-in date / duration" className={inputCls} />
             <textarea required value={form.message} onChange={set('message')}
-              placeholder="Tell us about your requirements…"
+              placeholder="Tell us about your requirements"¦"
               rows={3} className={`${inputCls} resize-none`} />
             <button type="submit"
               className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide">
@@ -193,14 +193,14 @@ function HeroSection() {
     <section className="relative overflow-hidden" style={{ height: '65dvh', minHeight: 380 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/assets/cabhouse-apartments.png')`, backgroundColor: '#0D1B12' }}
+        style={{ backgroundImage: `url('/assets/cabhouse-apartments.png')`, backgroundColor: 'var(--color-dark)' }}
       />
       {/* Mobile: full dark cover */}
       <div className="absolute inset-0 bg-brand-dark/60 lg:hidden" />
       {/* Desktop: directional gradient */}
       <div
         className="absolute inset-0 hidden lg:block"
-        style={{ background: 'linear-gradient(to right, #0D1B12 0%, #0D1B12 28%, rgba(13,27,18,0.75) 50%, rgba(13,27,18,0.2) 80%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 28%, rgba(17,17,17,0.75) 50%, rgba(17,17,17,0.2) 80%, transparent 100%)' }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
 
@@ -215,7 +215,7 @@ function HeroSection() {
           style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}
         >
           Your Home<br />
-          <em className="not-italic" style={{ color: '#C9A84C' }}>in Kisii Town</em>
+          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>in Kisii Town</em>
         </h1>
         <p className="text-white/70 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
           Fully furnished, serviced apartments in the heart of Kisii. Whether you're here for a night or a year, we have a space for you.
@@ -293,7 +293,7 @@ function PhotoGallery() {
             className="font-display font-black text-brand-dark leading-[0.93] mb-1"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
           >
-            Inside Your <em className="not-italic" style={{ color: '#C9A84C' }}>Home Away</em>
+            Inside Your <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Home Away</em>
           </h2>
           <p className="text-brand-dark/35 font-body text-xs mb-6">Tap any photo to view full size</p>
 
@@ -328,7 +328,7 @@ function PhotoGallery() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
           onClick={close}
         >
-          {/* Image container — stop propagation so clicking image doesn't close */}
+          {/* Image container "” stop propagation so clicking image doesn't close */}
           <div
             className="relative max-w-[92vw] max-h-[90dvh] flex flex-col items-center"
             onClick={e => e.stopPropagation()}
@@ -398,7 +398,7 @@ export default function ApartmentsPage() {
               className="font-display font-black text-brand-dark leading-[0.93] mb-2"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
             >
-              Short Stay. Long Stay. <em className="not-italic" style={{ color: '#C9A84C' }}>Your Choice.</em>
+              Short Stay. Long Stay. <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Your Choice.</em>
             </h2>
             <p className="text-brand-dark/40 font-body text-xs">Daily · Weekly · Monthly · Annual leasing available</p>
           </div>

@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar'
+﻿import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import FloatingWhatsApp from '../components/FloatingWhatsApp'
 import { useInView } from '../hooks/useInView'
@@ -12,7 +12,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Holistic Well-Being',
-    desc: 'We promote healthy, active living across all our entertainment and hospitality services — mind, body and spirit.',
+    desc: 'We promote healthy, active living across all our entertainment and hospitality services "” mind, body and spirit.',
   },
   {
     icon: (
@@ -21,7 +21,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Uncompromising Quality',
-    desc: 'From meticulously maintained facilities to pristine water filtration — your safety and comfort always come first.',
+    desc: 'From meticulously maintained facilities to pristine water filtration "” your safety and comfort always come first.',
   },
   {
     icon: (
@@ -30,7 +30,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Unified Convenience',
-    desc: 'Your single, trusted partner for recreation, accommodation and hydration — everything under one roof in Kisii.',
+    desc: 'Your single, trusted partner for recreation, accommodation and hydration "” everything under one roof in Kisii.',
   },
 ]
 
@@ -65,7 +65,7 @@ const BRANDS = [
     name: 'CabHouse Apartments',
     href: '/apartments',
     color: 'bg-brand-gold',
-    desc: 'The sophisticated comfort of home blended with world-class hospitality. Furnished apartments in the heart of Kisii town — short or long stay.',
+    desc: 'The sophisticated comfort of home blended with world-class hospitality. Furnished apartments in the heart of Kisii town "” short or long stay.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
         <path d="M3 22V12M21 22V12M1 12h22M12 2L2 7h20L12 2z"/><rect x="9" y="17" width="6" height="5"/>
@@ -94,7 +94,7 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="bg-brand-dark relative overflow-hidden" style={{ minHeight: 380 }}>
         <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, #C9A84C 0%, transparent 60%), radial-gradient(circle at 80% 20%, #2D6A4F 0%, transparent 50%)' }} />
+          style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, var(--color-gold) 0%, transparent 60%), radial-gradient(circle at 80% 20%, var(--color-green) 0%, transparent 50%)' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-28">
           <FadeIn>
             <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">About Us</p>
@@ -107,7 +107,7 @@ export default function AboutPage() {
               Converge.
             </h1>
             <p className="text-white/60 font-body text-sm leading-relaxed max-w-xl">
-              At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations — all under one roof in Kisii.
+              At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations "” all under one roof in Kisii.
             </p>
           </FadeIn>
         </div>
@@ -199,7 +199,7 @@ export default function AboutPage() {
             <em className="not-italic text-brand-gold">Nourish Your Soul.</em>
           </h2>
           <p className="text-white/50 font-body text-sm leading-relaxed max-w-xl mx-auto mb-8">
-            From high-flying thrills to serene gardens — a vibrant sanctuary of fun and wellness crafted for every generation. Make Kisii your next destination.
+            From high-flying thrills to serene gardens "” a vibrant sanctuary of fun and wellness crafted for every generation. Make Kisii your next destination.
           </p>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to know more about CabHouse Agencies")}`}
@@ -243,7 +243,7 @@ export default function AboutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-display font-bold text-brand-dark text-sm" style={{ letterSpacing: '-0.01em' }}>{b.name}</p>
-                      <p className="text-brand-dark/40 font-body text-[10px]">{b.label === 'Park' ? 'Open daily 8AM – 8PM' : b.label === 'Water' ? 'Delivery available' : 'Short & long stays'}</p>
+                      <p className="text-brand-dark/40 font-body text-[10px]">{b.label === 'Park' ? 'Open daily 8AM "“ 8PM' : b.label === 'Water' ? 'Delivery available' : 'Short & long stays'}</p>
                     </div>
                     <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-brand-dark/25 group-hover:text-brand-gold transition-colors" stroke="currentColor" strokeWidth="2.5">
                       <path d="M3 8h10M9 4l4 4-4 4" />

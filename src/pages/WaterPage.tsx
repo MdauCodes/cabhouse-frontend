@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
@@ -47,7 +47,7 @@ function DualCTA() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Water Supply Enquiry — ${form.company || form.name}`)
+    const subject = encodeURIComponent(`Water Supply Enquiry "” ${form.company || form.name}`)
     const body = encodeURIComponent(
       [
         `Name: ${form.name}`,
@@ -68,7 +68,7 @@ function DualCTA() {
 
   return (
     <section id="order" className="flex flex-col lg:flex-row">
-      {/* WhatsApp — quick individual orders */}
+      {/* WhatsApp "” quick individual orders */}
       <div
         ref={ref as React.RefObject<HTMLDivElement>}
         className="flex-1 bg-brand-dark flex flex-col p-8 lg:p-12"
@@ -111,13 +111,13 @@ function DualCTA() {
         <p className="text-white/20 font-body text-[10px] mt-4">{SITE.contact.phone} · {SITE.contact.phone2}</p>
       </div>
 
-      {/* Email — bulk / trade / institutional */}
+      {/* Email "” bulk / trade / institutional */}
       <div className="flex-1 bg-brand-cream flex flex-col p-8 lg:p-12"
         style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}>
         <p className="text-brand-green font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3">Bulk & Trade</p>
         <h3 className="font-display font-black text-brand-dark leading-[0.95] mb-3"
           style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)', letterSpacing: '-0.02em' }}>
-          Send a Supply <em className="not-italic" style={{ color: '#C9A84C' }}>Enquiry</em>
+          Send a Supply <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
         </h3>
         <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
           For institutions, businesses and resellers needing regular supply, custom volumes or trade pricing.
@@ -130,7 +130,7 @@ function DualCTA() {
                 <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening…</p>
+            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening"¦</p>
             <p className="text-brand-dark/40 font-body text-xs">Your enquiry is pre-filled and ready to send.</p>
           </div>
         ) : (
@@ -153,7 +153,7 @@ function DualCTA() {
               <option>Mixed / multiple formats</option>
             </select>
             <textarea required value={form.message} onChange={set('message')}
-              placeholder="Delivery location, frequency, quantity per order…"
+              placeholder="Delivery location, frequency, quantity per order"¦"
               rows={4} className={`${inputCls} resize-none flex-1`} />
             <button type="submit"
               className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide">
@@ -176,7 +176,7 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden" style={{ height: '60dvh', minHeight: 340 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#0a1f2e' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #0D1B12 0%, #0D1B12 30%, rgba(13,27,18,0.6) 60%, rgba(13,27,18,0.15) 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 30%, rgba(17,17,17,0.6) 60%, rgba(17,17,17,0.15) 100%)' }} />
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/30" />
       <div ref={ref as React.RefObject<HTMLDivElement>}
         className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
@@ -184,10 +184,10 @@ function HeroSection() {
 <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}>
           Pure Water,<br />
-          <em className="not-italic" style={{ color: '#C9A84C' }}>Delivered to You</em>
+          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Delivered to You</em>
         </h1>
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          CabHouse Water is purified and bottled right here in Kisii — clean, safe and ready for your home, office or event.
+          CabHouse Water is purified and bottled right here in Kisii "” clean, safe and ready for your home, office or event.
         </p>
         <div className="flex items-center gap-4">
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
@@ -220,7 +220,7 @@ export default function WaterPage() {
             style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
-              Water for Every <em className="not-italic" style={{ color: '#C9A84C' }}>Need</em>
+              Water for Every <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Need</em>
             </h2>
             <p className="text-brand-dark/40 font-body text-xs">Domestic · Commercial · Events · Trade</p>
           </div>
@@ -245,7 +245,7 @@ export default function WaterPage() {
 
           {/* Formats */}
           <h3 className="font-display font-black text-brand-dark mb-5" style={{ fontSize: 'clamp(1rem, 1.5vw, 1.25rem)', letterSpacing: '-0.02em' }}>
-            Available <em className="not-italic" style={{ color: '#C9A84C' }}>Formats</em>
+            Available <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Formats</em>
           </h3>
           <div className="flex flex-wrap gap-3">
             {FORMATS.map((f, i) => (

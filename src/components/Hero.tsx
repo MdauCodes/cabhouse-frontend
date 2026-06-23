@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+﻿import { useState, useEffect, useCallback, useRef } from 'react'
 import { SITE } from '../config/site'
 import { useMediaUrl } from '../hooks/useMedia'
 
@@ -97,7 +97,7 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none hidden lg:block"
         style={{
           background:
-            'linear-gradient(to right, #0D1B12 0%, #0D1B12 36%, rgba(13,27,18,0.9) 46%, rgba(13,27,18,0.5) 57%, rgba(13,27,18,0.1) 72%, transparent 86%)',
+            'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 36%, rgba(17,17,17,0.9) 46%, rgba(17,17,17,0.5) 57%, rgba(17,17,17,0.1) 72%, transparent 86%)',
         }}
       />
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/30 via-transparent to-black/50" />
@@ -111,7 +111,7 @@ export default function Hero() {
           style={{ fontSize: 'clamp(1.9rem, 3.2vw, 3.2rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}
         >
           Your Best Day Out<br />
-          <em className="not-italic" style={{ color: '#C9A84C' }}>
+          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>
             {typed}
             <span
               className="inline-block w-[2px] h-[0.85em] align-middle ml-[2px] bg-brand-gold"
@@ -121,7 +121,7 @@ export default function Hero() {
         </h1>
 
         <p className="text-white/80 font-body text-sm leading-relaxed mb-10 max-w-[30rem]">
-          Play, stay, dine and celebrate — everything you need for an unforgettable day is waiting for you in Kisii.
+          Play, stay, dine and celebrate "” everything you need for an unforgettable day is waiting for you in Kisii.
         </p>
 
         {/* Proof stats */}
@@ -129,7 +129,7 @@ export default function Hero() {
           {[
             { v: '8+', l: 'Activities' },
             { v: '4.7★', l: 'Google Rating' },
-            { v: 'Daily', l: '8 AM – 8 PM' },
+            { v: 'Daily', l: '8 AM "“ 8 PM' },
           ].map((s, i) => (
             <div key={i} className="flex items-center gap-6">
               <div>

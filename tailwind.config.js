@@ -5,11 +5,11 @@ export default {
     extend: {
       colors: {
         brand: {
-          green:  '#4A4A4A',
-          gold:   '#CC1F1F',
-          dark:   '#111111',
-          cream:  '#F4F4F4',
-          orange: '#E02222',
+          green:  'var(--color-green)',
+          gold:   'var(--color-gold)',
+          dark:   'var(--color-dark)',
+          cream:  'var(--color-cream)',
+          orange: 'var(--color-orange)',
         },
       },
       fontFamily: {

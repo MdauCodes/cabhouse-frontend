@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Brand color palette ─────────────────────────────────────────────────────
+   All brand colors are controlled here. Change these variables to retheme
+   the entire site. Tailwind tokens in tailwind.config.js reference these.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-dark:   #111111;
+  --color-green:  #4A4A4A;
+  --color-gold:   #CC1F1F;
+  --color-orange: #E02222;
+  --color-cream:  #F4F4F4;
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body { @apply font-body antialiased; }

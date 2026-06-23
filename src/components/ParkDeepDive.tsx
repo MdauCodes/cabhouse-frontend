@@ -1,4 +1,4 @@
-import { useMediaUrl } from '../hooks/useMedia'
+﻿import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -22,22 +22,22 @@ const BLOCKS: Block[] = [
     eyebrow: 'Adventures',
     title: 'Push Your',
     accent: 'Limits',
-    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide — all set against the open Kisii sky.',
-    bullets: ['100m Rainbow Slide', 'Sky Bike — aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
+    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide "” all set against the open Kisii sky.',
+    bullets: ['100m Rainbow Slide', 'Sky Bike "” aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
     cta: 'Book Adventures',
     waMsg: 'Hi, I want to book adventure activities at CabHouse Park',
     href: '/park',
     imageId: 'hero-1',
     reverse: false,
     dark: true,
-    bg: '#0D1B12',
+    bg: 'var(--color-dark)',
   },
   {
     eyebrow: 'Games & Rides',
     title: 'Play All',
     accent: 'Day',
-    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park — non-stop action for every age.',
-    bullets: ['Bumper Cars — 10 / 30 min / 1 hr', 'Go-Karts — 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
+    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park "” non-stop action for every age.',
+    bullets: ['Bumper Cars "” 10 / 30 min / 1 hr', 'Go-Karts "” 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
     cta: 'See All Games',
     waMsg: 'Hi, I want to book games at CabHouse Park',
     href: '/park',
@@ -58,21 +58,21 @@ const BLOCKS: Block[] = [
     imageId: 'feat-resort',
     reverse: false,
     dark: true,
-    bg: '#0D1B12',
+    bg: 'var(--color-dark)',
   },
   {
     eyebrow: 'Events & Stays',
     title: 'Celebrate &',
     accent: 'Stay',
     body: 'Elegant halls, garden spaces and premium tents for events. Stay the night in cozy cabins or under the stars in a tented camp.',
-    bullets: ['Gardens — up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
+    bullets: ['Gardens "” up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
     cta: 'Plan Your Event',
     waMsg: 'Hi, I want to inquire about events or stays at CabHouse',
     href: '/events',
     imageId: 'feat-events',
     reverse: true,
     dark: false,
-    bg: '#F5F0E8',
+    bg: 'var(--color-cream)',
   },
 ]
 
@@ -93,13 +93,13 @@ function ParkBlock({ b, index: _index }: { b: Block; index: number }) {
         background: b.bg,
       }}
     >
-      {/* Image — 280px on mobile, full height on desktop */}
+      {/* Image "” 280px on mobile, full height on desktop */}
       <div className="relative w-full lg:w-[55%] overflow-hidden flex-shrink-0 h-[280px] lg:h-full">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: url ? `url(${url})` : undefined, backgroundColor: '#0D1B12' }}
+          style={{ backgroundImage: url ? `url(${url})` : undefined, backgroundColor: 'var(--color-dark)' }}
         />
-        {/* Fade — bottom on mobile, side on desktop */}
+        {/* Fade "” bottom on mobile, side on desktop */}
         <div
           className="absolute inset-0 pointer-events-none hidden lg:block"
           style={{ background: `linear-gradient(${fadeDir}, transparent 30%, ${b.bg} 90%)` }}
@@ -122,7 +122,7 @@ function ParkBlock({ b, index: _index }: { b: Block; index: number }) {
           style={{ fontSize: 'clamp(1.3rem, 2vw, 1.9rem)', letterSpacing: '-0.025em' }}
         >
           {b.title}{' '}
-          <em className="not-italic" style={{ color: '#C9A84C' }}>{b.accent}</em>
+          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>{b.accent}</em>
         </h3>
 
         <p className={`font-body text-xs leading-relaxed mb-4 max-w-xs ${b.dark ? 'text-white/50' : 'text-brand-dark/50'}`}>
@@ -178,8 +178,8 @@ export default function ParkDeepDive() {
             className="font-display font-black text-brand-dark leading-[0.93]"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
           >
-            CabHouse Park —{' '}
-            <em className="not-italic" style={{ color: '#C9A84C' }}>Your Playground</em>
+            CabHouse Park "”{' '}
+            <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Your Playground</em>
           </h2>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}`}
@@ -191,7 +191,7 @@ export default function ParkDeepDive() {
         </div>
       </div>
 
-      {/* Alternating panels — full width */}
+      {/* Alternating panels "” full width */}
       <div className="flex flex-col">
         {BLOCKS.map((b, i) => (
           <ParkBlock key={i} b={b} index={i} />

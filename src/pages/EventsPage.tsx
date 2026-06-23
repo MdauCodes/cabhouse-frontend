@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+﻿import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -9,7 +9,7 @@ const EVENT_TYPES = [
   { title: 'Birthday Parties', desc: 'Private park access with catering packages from our kitchen.', tag: 'All Ages' },
   { title: 'Galas & Dinners', desc: 'Formal dinners under premium tents or in the garden with full lighting.', tag: 'Premium Tents' },
   { title: 'School Trips', desc: 'Safe, monitored group packages with activity guides and catering.', tag: 'Group Packages' },
-  { title: 'Photo & Film Shoots', desc: 'Our grounds — rope bridges, gardens and pools — as your backdrop.', tag: 'By Appointment' },
+  { title: 'Photo & Film Shoots', desc: 'Our grounds "” rope bridges, gardens and pools "” as your backdrop.', tag: 'By Appointment' },
 ]
 
 function Hero() {
@@ -28,10 +28,10 @@ function Hero() {
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'clamp(2.4rem, 5vw, 4.5rem)', letterSpacing: '-0.02em' }}>
-          Your Celebration.<br /><em className="not-italic" style={{ color: '#C9A84C' }}>Our Venue.</em>
+          Your Celebration.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Our Venue.</em>
         </h1>
         <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled — so you can be fully present.
+          Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled "” so you can be fully present.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20hosting%20an%20event%20at%20CabHouse`}
           target="_blank" rel="noopener noreferrer"
@@ -61,7 +61,7 @@ export default function EventsPage() {
             </div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
               style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
-              Every Kind of <em className="not-italic" style={{ color: '#C9A84C' }}>Celebration</em>
+              Every Kind of <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Celebration</em>
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

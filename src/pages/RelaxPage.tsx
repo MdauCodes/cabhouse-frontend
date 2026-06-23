@@ -1,14 +1,14 @@
-import Layout from '../components/Layout'
+﻿import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
 const STAYS = [
   { name: 'Wooden Cabin', desc: 'En-suite cabin with private veranda and garden views. Sleeps 2.', base: 3000, b1: 3500, b2: 4000 },
-  { name: 'Tented Cabin (Big)', desc: 'Spacious glamping tent with real beds and power. Sleeps 2–3.', base: 2500, b1: 3000, b2: 3500 },
+  { name: 'Tented Cabin (Big)', desc: 'Spacious glamping tent with real beds and power. Sleeps 2"“3.', base: 2500, b1: 3000, b2: 3500 },
   { name: 'Tented Cabin (Small)', desc: 'Cosy tented accommodation for solo or couple travellers.', base: 2000, b1: 2500, b2: 3000 },
   { name: 'Camping Tent (Small)', desc: 'Standard camping tent under the open sky. BYO sleeping bag.', base: 1500, b1: 2000, b2: null },
-  { name: 'Camping Tent (Big)', desc: 'Group camping tent — perfect for youth outings and large families.', base: 5000, b1: 7500, b2: null },
+  { name: 'Camping Tent (Big)', desc: 'Group camping tent "” perfect for youth outings and large families.', base: 5000, b1: 7500, b2: null },
 ]
 
 function Hero() {
@@ -27,10 +27,10 @@ function Hero() {
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'clamp(2.4rem, 5vw, 4.5rem)', letterSpacing: '-0.02em' }}>
-          Stay the Night.<br /><em className="not-italic" style={{ color: '#C9A84C' }}>Wake Up to This.</em>
+          Stay the Night.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Wake Up to This.</em>
         </h1>
         <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Wooden cabins, glamping tents and camping — all set within the CabHouse grounds. Breakfast available. Activities right outside your door.
+          Wooden cabins, glamping tents and camping "” all set within the CabHouse grounds. Breakfast available. Activities right outside your door.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20a%20stay%20at%20CabHouse`}
           target="_blank" rel="noopener noreferrer"
@@ -60,7 +60,7 @@ export default function RelaxPage() {
             </div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
               style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
-              Five Ways to <em className="not-italic" style={{ color: '#C9A84C' }}>Sleep Here</em>
+              Five Ways to <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Sleep Here</em>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -102,7 +102,7 @@ export default function RelaxPage() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 justify-between">
           {[
             { label: 'Check-in', value: '2:00 PM', sub: 'Check-out 11:00 AM' },
-            { label: 'Breakfast', value: 'Available', sub: 'Served 7:00–10:00 AM' },
+            { label: 'Breakfast', value: 'Available', sub: 'Served 7:00"“10:00 AM' },
             { label: 'Park Access', value: 'Included', sub: 'Guests have full park access' },
             { label: 'Contact', value: SITE.contact.phone, sub: 'WhatsApp or call' },
           ].map((item, i) => (

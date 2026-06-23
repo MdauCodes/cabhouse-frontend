@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 
-// ─── Typing effect ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Typing effect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PARK_LINES = [
   'Starts Here',
   'Awaits in Kisii',
@@ -38,9 +38,9 @@ function useTyping(lines: string[]) {
   return displayed
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PARK = {
-  tag: 'Open Daily · 8 AM – 8 PM',
+  tag: 'Open Daily · 8 AM "“ 8 PM',
   cta: 'Plan Your Visit',
   href: '/park',
   imageId: 'hero-1',
@@ -64,7 +64,7 @@ const SIDES = [
     name: 'CabHouse Apartments',
     label: 'Stay',
     tagColor: 'bg-brand-gold/90 text-white',
-    accentColor: '#C9A84C',
+    accentColor: 'var(--color-gold)',
     desc: 'Furnished apartments in Kisii town. Short or long term.',
     cta: 'Book a Stay',
     href: '/apartments',
@@ -73,7 +73,7 @@ const SIDES = [
   },
 ]
 
-// ─── Park card ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Park card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ParkCard({ inView }: { inView: boolean }) {
   const url = useMediaUrl(PARK.imageId)
   const typed = useTyping(PARK_LINES)
@@ -94,7 +94,7 @@ function ParkCard({ inView }: { inView: boolean }) {
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.04]"
-        style={{ backgroundImage: url ? `url(${url})` : undefined, backgroundColor: '#0D1B12' }}
+        style={{ backgroundImage: url ? `url(${url})` : undefined, backgroundColor: 'var(--color-dark)' }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/40 to-brand-dark/10" />
       <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/25 to-transparent" />
@@ -118,7 +118,7 @@ function ParkCard({ inView }: { inView: boolean }) {
         </h2>
         <h2
           className="font-display font-black leading-[1.0] mb-5"
-          style={{ fontSize: 'clamp(1.7rem, 2.5vw, 2.8rem)', letterSpacing: '-0.03em', color: '#C9A84C', minHeight: '1.1em' }}
+          style={{ fontSize: 'clamp(1.7rem, 2.5vw, 2.8rem)', letterSpacing: '-0.03em', color: 'var(--color-gold)', minHeight: '1.1em' }}
         >
           {typed}
           <span
@@ -128,7 +128,7 @@ function ParkCard({ inView }: { inView: boolean }) {
         </h2>
 
         <p className="text-white/80 font-body text-xs leading-relaxed mb-5 max-w-[30rem]">
-          Zip lines, go-karts, pools, dining and overnight camping — everything for an unforgettable day, all in one place in Kisii.
+          Zip lines, go-karts, pools, dining and overnight camping "” everything for an unforgettable day, all in one place in Kisii.
         </p>
 
         {/* Mini stats */}
@@ -151,7 +151,7 @@ function ParkCard({ inView }: { inView: boolean }) {
   )
 }
 
-// ─── Side card ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Side card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function SideCard({ brand, idx, inView }: { brand: typeof SIDES[0]; idx: number; inView: boolean }) {
   return (
     <a
@@ -223,7 +223,7 @@ function SideCard({ brand, idx, inView }: { brand: typeof SIDES[0]; idx: number;
   )
 }
 
-// ─── Section ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function BrandPillars() {
   const { ref, inView } = useInView(0.05)
 
@@ -236,7 +236,7 @@ export default function BrandPillars() {
       {/* Subtle background glow */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.06]"
-        style={{ backgroundImage: 'radial-gradient(ellipse at 20% 80%, #C9A84C 0%, transparent 55%), radial-gradient(ellipse at 78% 10%, #2D6A4F 0%, transparent 50%)' }}
+        style={{ backgroundImage: 'radial-gradient(ellipse at 20% 80%, var(--color-gold) 0%, transparent 55%), radial-gradient(ellipse at 78% 10%, var(--color-green) 0%, transparent 50%)' }}
       />
 
       <div
@@ -254,7 +254,7 @@ export default function BrandPillars() {
             style={{ fontSize: 'clamp(1rem, 1.6vw, 1.45rem)', letterSpacing: '-0.025em' }}
           >
             One Family.{' '}
-            <em className="not-italic" style={{ color: '#C9A84C' }}>Every Need Covered.</em>
+            <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Every Need Covered.</em>
           </h1>
         </div>
 

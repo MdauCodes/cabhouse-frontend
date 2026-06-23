@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+﻿import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Play, ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
@@ -17,7 +17,7 @@ const ITEMS: { id: string; type: 'image' | 'video' }[] = [
   { id: 'gallery-v8', type: 'video' },
 ]
 
-// ── Featured video (first item, auto-plays on scroll) ─────────────────────
+// â”€â”€ Featured video (first item, auto-plays on scroll) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function FeaturedVideo({
   url, sectionInView, onOpen,
@@ -100,7 +100,7 @@ function FeaturedVideo({
   )
 }
 
-// ── Strip tile ─────────────────────────────────────────────────────────────
+// â”€â”€ Strip tile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function VideoTile({ url, idx, onOpen }: { url: string; idx: number; onOpen: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -188,7 +188,7 @@ function StripTile({ item, idx, onOpen }: { item: typeof ITEMS[0]; idx: number; 
     : <ImageTile url={url} idx={idx} onOpen={onOpen} />
 }
 
-// ── Lightbox ───────────────────────────────────────────────────────────────
+// â”€â”€ Lightbox â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Lightbox({ items, startIdx, onClose }: { items: typeof ITEMS; startIdx: number; onClose: () => void }) {
   const [idx, setIdx] = useState(startIdx)
@@ -265,7 +265,7 @@ function Lightbox({ items, startIdx, onClose }: { items: typeof ITEMS; startIdx:
   )
 }
 
-// ── Main component ─────────────────────────────────────────────────────────
+// â”€â”€ Main component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const STRIP_ITEMS = ITEMS.slice(1) // everything after the featured first video
 const FEATURED = ITEMS[0]
@@ -281,7 +281,7 @@ export default function Gallery() {
     stripRef.current?.scrollBy({ left: dir === 'r' ? 260 : -260, behavior: 'smooth' })
   }
 
-  // Filmstrip height — comfortable on all screens
+  // Filmstrip height "” comfortable on all screens
   // const stripH = 'clamp(160px, 28vw, 320px)'
 
   return (
@@ -299,7 +299,7 @@ export default function Gallery() {
               className="font-display font-black text-white leading-[0.93]"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
             >
-              Moments Worth <em className="not-italic" style={{ color: '#C9A84C' }}>Remembering</em>
+              Moments Worth <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Remembering</em>
             </h2>
             <p className="text-white/25 font-body text-[10px] mt-1.5">
               Tap any tile to open · scroll to explore
@@ -334,7 +334,7 @@ export default function Gallery() {
           </div>
         )}
 
-        {/* Filmstrip — horizontal scroll of remaining tiles */}
+        {/* Filmstrip "” horizontal scroll of remaining tiles */}
         <div className="flex-1 min-w-0">
           <div
             ref={stripRef}

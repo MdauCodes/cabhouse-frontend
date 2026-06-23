@@ -17,7 +17,7 @@ export default function LoadingScreen() {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: '#0D1B12',
+        background: 'var(--color-dark)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -81,7 +81,7 @@ export default function LoadingScreen() {
         <div
           style={{
             height: '100%',
-            background: '#C9A84C',
+            background: 'var(--color-gold)',
             borderRadius: 1,
             width: phase === 'hold' || phase === 'out' ? '100%' : '0%',
             transition: phase === 'hold' ? 'width 1.1s cubic-bezier(0.4,0,0.2,1)' : 'none',

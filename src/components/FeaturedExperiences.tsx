@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -117,7 +117,7 @@ function FeatureBlock({ f, index: _index }: { f: FeatureConfig; index: number })
       <h3 className={`font-display font-black leading-[0.93] mb-4 ${f.dark ? 'text-white' : 'text-brand-dark'}`}
         style={{ fontSize: 'clamp(1.7rem, 3vw, 2.8rem)', letterSpacing: '-0.02em' }}>
         {f.title}{' '}
-        <em className="not-italic" style={{ color: '#C9A84C' }}>{f.accent}</em>
+        <em className="not-italic" style={{ color: 'var(--color-gold)' }}>{f.accent}</em>
       </h3>
       <p className={`font-body text-sm leading-relaxed mb-6 max-w-sm ${f.dark ? 'text-white/60' : 'text-gray-500'}`}>
         {f.body}
@@ -198,18 +198,18 @@ const FEATURES: FeatureConfig[] = [
     imageBlock: 'background', reverse: false, imageId: 'feat-resort',
     imageRatio: 'lg:w-[60%]',
     contentBg: 'bg-brand-dark',
-    blockBg: '#0D1B12',
+    blockBg: 'var(--color-dark)',
   },
   {
     eyebrow: 'CabHouse Events',
     title: 'Celebrate', accent: 'Here',
-    body: 'Gardens for 200, indoor halls, premium tents, restaurant and bar. Weddings, corporate retreats and galas — complete venue.',
+    body: 'Gardens for 200, indoor halls, premium tents, restaurant and bar. Weddings, corporate retreats and galas "” complete venue.',
     stats: [{ v: '200', l: 'Guests' }, { v: 'Gardens', l: 'Hall & Tents' }, { v: 'Full', l: 'Catering' }],
     cta: 'Plan an Event', href: '/events', dark: false,
     imageBlock: 'bleed', reverse: true, imageId: 'feat-events',
     imageRatio: 'lg:w-[50%]',
     contentBg: 'bg-brand-cream',
-    blockBg: '#F5F0E8',
+    blockBg: 'var(--color-cream)',
   },
 ]
 
@@ -227,7 +227,7 @@ export default function FeaturedExperiences() {
           </div>
           <h2 className="font-display font-black text-brand-dark leading-[0.93]"
             style={{ fontSize: 'clamp(1.7rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
-            Experiences Worth the <em className="not-italic" style={{ color: '#C9A84C' }}>Journey</em>
+            Experiences Worth the <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Journey</em>
           </h2>
         </div>
       </div>

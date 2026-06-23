@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -80,7 +80,7 @@ export default function Pricing() {
         >
           <h2 className="font-display font-black text-white leading-none"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
-            Packages & <em className="not-italic" style={{ color: '#C9A84C' }}>Pricing</em>
+            Packages & <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Pricing</em>
           </h2>
           <p className="text-white/25 font-body text-[10px] hidden lg:block">All prices in KES · WhatsApp booking</p>
         </div>
@@ -100,7 +100,7 @@ export default function Pricing() {
         {/* Content */}
         <div className="lg:flex-1 lg:min-h-0">
 
-          {/* ── Packages ── */}
+          {/* â”€â”€ Packages â”€â”€ */}
           {tab === 'packages' && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:h-full">
               {PACKAGES.map(pkg => (
@@ -162,7 +162,7 @@ export default function Pricing() {
             </div>
           )}
 
-          {/* ── Activities ── */}
+          {/* â”€â”€ Activities â”€â”€ */}
           {tab === 'activities' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:h-full">
               <div className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col">
@@ -196,7 +196,7 @@ export default function Pricing() {
             </div>
           )}
 
-          {/* ── Stays ── */}
+          {/* â”€â”€ Stays â”€â”€ */}
           {tab === 'stays' && (
             <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 lg:h-full flex flex-col">
               <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Stay With Us</h3>
@@ -215,8 +215,8 @@ export default function Pricing() {
                       <tr key={i} className={i < STAYS.length - 1 ? 'border-b border-white/5' : ''}>
                         <td className="py-2.5 text-white font-medium">{s.name}</td>
                         <td className="py-2.5 text-right text-brand-gold font-display font-bold">{s.base.toLocaleString()}</td>
-                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b1 ? s.b1.toLocaleString() : '—'}</td>
-                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b2 ? s.b2.toLocaleString() : '—'}</td>
+                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b1 ? s.b1.toLocaleString() : '"”'}</td>
+                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b2 ? s.b2.toLocaleString() : '"”'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -226,7 +226,7 @@ export default function Pricing() {
             </div>
           )}
 
-          {/* ── Venues ── */}
+          {/* â”€â”€ Venues â”€â”€ */}
           {tab === 'venues' && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:h-full">
               {VENUES.map((v, i) => (

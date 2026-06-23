@@ -1,4 +1,4 @@
-import { SITE } from '../config/site'
+﻿import { SITE } from '../config/site'
 
 export default function MapSection() {
   return (
@@ -15,14 +15,14 @@ export default function MapSection() {
             className="font-display font-black text-white leading-tight"
             style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
           >
-            Get Here. Make <em className="not-italic" style={{ color: '#C9A84C' }}>Memories</em>.
+            Get Here. Make <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Memories</em>.
           </h2>
         </div>
 
         {/* Body grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 flex-1 min-h-0">
 
-          {/* Info panel — single compact block */}
+          {/* Info panel "” single compact block */}
           <div className="lg:col-span-2 flex flex-col gap-3 min-h-0">
 
             {/* Compact info rows in one card */}
@@ -37,7 +37,7 @@ export default function MapSection() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-white font-body text-xs font-semibold">Kisii, Kenya</p>
-                  <p className="text-white/40 font-body text-[10px] mt-0.5">Near Nyankororo Forest · Kisii–Riana Road</p>
+                  <p className="text-white/40 font-body text-[10px] mt-0.5">Near Nyankororo Forest · Kisii"“Riana Road</p>
                 </div>
               </div>
 
@@ -49,7 +49,7 @@ export default function MapSection() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white font-body text-xs font-semibold">Open Daily · 8 AM – 8 PM</p>
+                  <p className="text-white font-body text-xs font-semibold">Open Daily · 8 AM "“ 8 PM</p>
                   <p className="text-white/40 font-body text-[10px] mt-0.5">Monday through Sunday, year-round</p>
                 </div>
               </div>
@@ -72,7 +72,7 @@ export default function MapSection() {
               </div>
             </div>
 
-            {/* Action buttons — side by side */}
+            {/* Action buttons "” side by side */}
             <div className="grid grid-cols-2 gap-2 flex-shrink-0">
               <a
                 href={SITE.location.mapsLink}

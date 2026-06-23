@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { SITE } from '../config/site'
 import { useInView } from '../hooks/useInView'
 
@@ -30,7 +30,7 @@ function WhatsAppPanel() {
         <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
       </h3>
       <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
-        Quick answers, same-day bookings, and personal help — we reply in minutes.
+        Quick answers, same-day bookings, and personal help "” we reply in minutes.
       </p>
 
       <div className="space-y-2 mb-8 flex-1">
@@ -113,10 +113,10 @@ function EmailPanel() {
         style={{ fontSize: 'clamp(1.15rem, 1.9vw, 1.65rem)', letterSpacing: '-0.02em' }}
       >
         Send a Formal{' '}
-        <em className="not-italic" style={{ color: '#C9A84C' }}>Enquiry</em>
+        <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
       </h3>
       <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
-        For team events, school trips, weddings and bulk bookings — we'll come back with a tailored proposal.
+        For team events, school trips, weddings and bulk bookings "” we'll come back with a tailored proposal.
       </p>
 
       {sent ? (
@@ -141,7 +141,7 @@ function EmailPanel() {
           </div>
           <textarea
             required value={form.message} onChange={set('message')}
-            placeholder="Tell us about your event, group size, preferred dates…"
+            placeholder="Tell us about your event, group size, preferred dates"¦"
             rows={5}
             className={`${inputCls} resize-none flex-1`}
           />
