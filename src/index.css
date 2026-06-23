@@ -7,12 +7,18 @@
    the entire site. Tailwind tokens in tailwind.config.js reference these.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --color-dark:   #141210;
-  --color-green:  #2D6A4F;
-  --color-forest: #192B1D;
-  --color-gold:   #D4920A;
-  --color-orange: #E8811F;
-  --color-cream:  #FBF7EF;
+  --color-dark:   #1E0C0C;
+  --color-grey:   #374151;
+  --color-crimson: #220A0A;
+  --color-red:    #DC2626;
+  --color-red-hot: #EF4444;
+  --color-cream:  #F5E3CC;
+
+  /* legacy aliases — keeps existing var() refs working */
+  --color-green:  #374151;
+  --color-forest: #220A0A;
+  --color-gold:   #DC2626;
+  --color-orange: #EF4444;
 }
 
 @layer base {
