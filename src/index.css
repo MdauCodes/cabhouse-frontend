@@ -7,11 +7,11 @@
    the entire site. Tailwind tokens in tailwind.config.js reference these.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --color-dark:   #141410;
+  --color-dark:   #141210;
   --color-green:  #2D6A4F;
-  --color-gold:   #C9A84C;
-  --color-orange: #E07B39;
-  --color-cream:  #F5F0E8;
+  --color-gold:   #D4920A;
+  --color-orange: #E8811F;
+  --color-cream:  #FBF7EF;
 }
 
 @layer base {
