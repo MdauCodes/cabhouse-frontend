@@ -6,6 +6,7 @@ import BrandShowcase from '../components/BrandShowcase'
 import ExperiencesStrip from '../components/ExperiencesStrip'
 import ParkDeepDive from '../components/ParkDeepDive'
 import Pricing from '../components/Pricing'
+import OffersStrip from '../components/OffersStrip'
 import Testimonials from '../components/Testimonials'
 import Gallery from '../components/Gallery'
 import MapSection from '../components/MapSection'
@@ -24,6 +25,7 @@ export default function Home() {
       <ExperiencesStrip />
       <ParkDeepDive />
       <Pricing />
+      <OffersStrip />
       <Testimonials />
       <Gallery />
       <MapSection />

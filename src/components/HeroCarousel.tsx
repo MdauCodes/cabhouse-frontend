@@ -96,7 +96,7 @@ export default function HeroCarousel() {
 
         {/* Eyebrow */}
         <p className="font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-5" style={{ color: 'var(--color-gold)' }}>
-          The Adventure Park · Kisii, Kenya
+          Where Joy Meets Well-Being · Kisii, Kenya
         </p>
 
         {/* Heading */}
@@ -128,7 +128,7 @@ export default function HeroCarousel() {
 
         {/* Subtext */}
         <p className="text-white/65 font-body text-sm lg:text-base leading-relaxed mb-8 max-w-md">
-          Play, stay, dine and celebrate — everything you need for an unforgettable day is waiting for you in Kisii.
+          Discover the ultimate outdoor destination where thrilling adventures meet natural wellness — designed to recharge your body and uplift your spirit.
         </p>
 
         {/* Stats */}
@@ -207,7 +207,7 @@ export default function HeroCarousel() {
       {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0 z-20 leading-none">
         <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 48 }}>
-          <path d="M0,24 C240,48 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" fill="#ffffff" />
+          <path d="M0,24 C240,48 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" style={{ fill: 'var(--color-forest)' }} />
         </svg>
       </div>
 

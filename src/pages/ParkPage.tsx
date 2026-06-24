@@ -6,12 +6,12 @@ import MasonryGallery from '../components/MasonryGallery'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500', icon: 'â†—' },
-  { title: 'Sky Bike',          desc: 'Pedal along a suspended aerial track high above the ground.', price: 'KES 500', icon: 'âŸ³' },
+  { title: 'Sky Bike',          desc: 'Pedal through the air for an exhilarating cardio workout with panoramic views.', price: 'KES 500', icon: 'âŸ³' },
   { title: 'Rainbow Slide',     desc: 'Kenya\'s most colourful mega-slide "” unlimited rides all day.', price: 'KES 500', icon: 'â†“' },
-  { title: 'Mountain & Bridge', desc: 'Rope bridges and climbing structures set against open sky.', price: 'KES 500', icon: 'â–²' },
-  { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families.', price: 'KES 500', icon: '~' },
+  { title: 'Mountain & Bridge', desc: 'Build strength and confidence on rugged, professionally guided outdoor courses.', price: 'KES 500', icon: 'â–²' },
+  { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families and groups.', price: 'KES 500', icon: '~' },
   { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500', icon: 'â–¶' },
-  { title: 'Bumper Cars',      desc: 'Classic arena fun. 10-min, 30-min or 1-hour sessions available.', price: 'From KES 300', icon: 'â—' },
+  { title: 'Bumper Cars',      desc: 'Active, laughter-filled play spaces built to keep the young ones moving.', price: 'From KES 300', icon: 'â—' },
   { title: 'Bouncing Castles', desc: 'Kids\' inflatables, swings and safe play areas.', price: 'In packages', icon: '◆' },
 ]
 

@@ -120,7 +120,7 @@ function VideoTile({ url, idx, onOpen }: { url: string; idx: number; onOpen: () 
       ref={ref as React.RefObject<HTMLDivElement>}
       className="flex-shrink-0 relative overflow-hidden rounded-xl cursor-pointer group h-full"
       style={{
-        width: 150,
+        width: 130,
         opacity: inView ? 1 : 0,
         transform: inView ? 'none' : 'translateY(8px)',
         transition: `opacity 0.45s ease ${(idx + 1) * 0.04}s, transform 0.45s ease ${(idx + 1) * 0.04}s`,
@@ -132,22 +132,33 @@ function VideoTile({ url, idx, onOpen }: { url: string; idx: number; onOpen: () 
       <video
         ref={videoRef}
         src={url}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
         muted loop playsInline preload="metadata"
       />
-      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className={`rounded-full flex items-center justify-center transition-all duration-300 ${
-          playing
-            ? 'w-7 h-7 bg-brand-gold/90'
-            : 'w-9 h-9 bg-white/20 backdrop-blur-sm group-hover:bg-brand-gold/80 group-hover:scale-110'
-        }`}>
-          <Play size={playing ? 10 : 12} className="text-white fill-white ml-0.5" />
+      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/15 transition-colors duration-300" />
+
+      {/* Reel badge top-left */}
+      <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-full">
+        {playing ? (
+          <span className="flex items-end gap-px h-2.5">
+            <span className="w-0.5 rounded-sm bg-brand-gold" style={{ height: '40%', animation: 'barA 0.7s ease-in-out infinite alternate' }} />
+            <span className="w-0.5 rounded-sm bg-brand-gold" style={{ height: '100%', animation: 'barB 0.7s ease-in-out infinite alternate 0.15s' }} />
+            <span className="w-0.5 rounded-sm bg-brand-gold" style={{ height: '60%', animation: 'barA 0.7s ease-in-out infinite alternate 0.3s' }} />
+          </span>
+        ) : (
+          <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
+        )}
+        <span className="text-white text-[7px] font-body font-bold tracking-widest uppercase">Reel</span>
+      </div>
+
+      {/* Centre play button — only when not playing */}
+      {!playing && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-brand-gold/80 group-hover:scale-110 transition-all duration-300">
+            <Play size={12} className="text-white fill-white ml-0.5" />
+          </div>
         </div>
-      </div>
-      <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[7px] font-body font-bold px-1.5 py-0.5 rounded tracking-widest uppercase">
-        Video
-      </div>
+      )}
     </div>
   )
 }
@@ -295,14 +306,17 @@ export default function Gallery() {
           style={{ opacity: headerInView ? 1 : 0, transform: headerInView ? 'none' : 'translateY(12px)', transition: 'all 0.5s ease' }}
         >
           <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
+              Reels &amp; Moments
+            </p>
             <h2
               className="font-display font-black text-white leading-[0.93]"
               style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
             >
-              Moments Worth <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Remembering</em>
+              Live from <em className="not-italic" style={{ color: 'var(--color-gold)' }}>CabHouse Park</em>
             </h2>
             <p className="text-white/25 font-body text-[10px] mt-1.5">
-              Tap any tile to open · scroll to explore
+              Hover to preview · tap to watch full screen
             </p>
           </div>
           <div className="flex gap-2 flex-shrink-0">
@@ -323,8 +337,8 @@ export default function Gallery() {
 
         {/* Featured video */}
         {featuredUrl && (
-          <div style={{ height: 'clamp(220px, 48vw, 440px)' }} className="lg:h-auto lg:flex-shrink-0 lg:self-stretch">
-            <div className="h-full" style={{ height: 'clamp(220px, 48vw, 440px)' }}>
+          <div style={{ height: 'clamp(260px, 52vw, 500px)' }} className="lg:h-auto lg:flex-shrink-0 lg:self-stretch">
+            <div className="h-full" style={{ height: 'clamp(260px, 52vw, 500px)' }}>
               <FeaturedVideo
                 url={featuredUrl}
                 sectionInView={sectionInView}
@@ -340,7 +354,7 @@ export default function Gallery() {
             ref={stripRef}
             className="flex gap-2 overflow-x-auto"
             style={{
-              height: 'clamp(220px, 48vw, 440px)',
+              height: 'clamp(260px, 52vw, 500px)',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             }}
@@ -361,6 +375,10 @@ export default function Gallery() {
       {lightboxIdx !== null && (
         <Lightbox items={ITEMS} startIdx={lightboxIdx} onClose={() => setLightboxIdx(null)} />
       )}
+      <style>{`
+        @keyframes barA { from { height: 30% } to { height: 100% } }
+        @keyframes barB { from { height: 80% } to { height: 20% } }
+      `}</style>
     </section>
   )
 }

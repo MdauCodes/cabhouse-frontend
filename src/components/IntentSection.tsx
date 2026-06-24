@@ -34,20 +34,20 @@ const INTENTS = [
 export default function IntentSection() {
   const wa = SITE.contact.whatsapp.replace('+', '')
   return (
-    <section className="px-5 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: 'var(--color-forest)' }}>
+    <section className="px-5 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: 'var(--color-cream)' }}>
       <div className="max-w-7xl mx-auto">
         <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-gold)' }}>
           Tell us what you need
         </p>
         <h2
-          className="font-display font-black text-white leading-[1.05] mb-12"
+          className="font-display font-black text-brand-dark leading-[1.05] mb-12"
           style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.03em' }}
         >
           We'll handle{' '}
-          <span className="text-white/40">the rest from here.</span>
+          <span className="text-brand-dark/40">the rest from here.</span>
         </h2>
 
-        <div className="border border-white/10 rounded-2xl p-5 lg:p-7" style={{ background: 'rgba(255,255,255,0.04)' }}>
+        <div className="rounded-2xl p-5 lg:p-7" style={{ backgroundColor: 'var(--color-forest)' }}>
           <p className="text-white/40 font-body text-xs uppercase tracking-[0.22em] font-semibold mb-6">
             What are you here for?
           </p>
