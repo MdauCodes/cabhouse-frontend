@@ -92,24 +92,19 @@ export default function HeroCarousel() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-16 max-w-3xl">
-
-        {/* Eyebrow */}
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-5" style={{ color: 'var(--color-gold)' }}>
-          Where Joy Meets Well-Being · Kisii, Kenya
-        </p>
+      <div className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-16 max-w-2xl">
 
         {/* Heading */}
         <h1
-          className="font-display font-black text-white leading-[1.0] mb-2"
-          style={{ fontSize: 'clamp(2.2rem, 4vw, 4rem)', letterSpacing: '-0.03em' }}
+          className="font-display font-black text-white leading-[1.0] mb-1.5"
+          style={{ fontSize: 'clamp(1.7rem, 3vw, 3rem)', letterSpacing: '-0.03em' }}
         >
           Your Best Day Out
         </h1>
         <h1
-          className="font-display font-black leading-[1.0] mb-6"
+          className="font-display font-black leading-[1.0] mb-5"
           style={{
-            fontSize: 'clamp(2.2rem, 4vw, 4rem)',
+            fontSize: 'clamp(1.7rem, 3vw, 3rem)',
             letterSpacing: '-0.03em',
             color: 'var(--color-gold)',
             minHeight: '1.05em',
@@ -117,7 +112,7 @@ export default function HeroCarousel() {
         >
           {typed}
           <span
-            className="inline-block w-[4px] rounded-sm align-middle ml-1"
+            className="inline-block w-[3px] rounded-sm align-middle ml-1"
             style={{
               height: '0.8em',
               backgroundColor: 'var(--color-gold)',
@@ -126,25 +121,20 @@ export default function HeroCarousel() {
           />
         </h1>
 
-        {/* Subtext */}
-        <p className="text-white/65 font-body text-sm lg:text-base leading-relaxed mb-8 max-w-md">
-          Discover the ultimate outdoor destination where thrilling adventures meet natural wellness — designed to recharge your body and uplift your spirit.
-        </p>
-
         {/* Stats */}
-        <div className="flex items-center gap-6 mb-8">
+        <div className="flex items-center gap-5 mb-6">
           <div>
-            <p className="font-display font-black text-white text-2xl leading-none">8+</p>
+            <p className="font-display font-black text-white text-xl leading-none">8+</p>
             <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">Activities</p>
           </div>
-          <div className="w-px h-8 bg-white/15" />
+          <div className="w-px h-6 bg-white/15" />
           <div>
-            <p className="font-display font-black text-white text-2xl leading-none">4.7<span style={{ color: 'var(--color-gold)' }}>★</span></p>
+            <p className="font-display font-black text-white text-xl leading-none">4.7<span style={{ color: 'var(--color-gold)' }}>★</span></p>
             <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">Google Rating</p>
           </div>
-          <div className="w-px h-8 bg-white/15" />
+          <div className="w-px h-6 bg-white/15" />
           <div>
-            <p className="font-display font-black text-white text-2xl leading-none">Daily</p>
+            <p className="font-display font-black text-white text-xl leading-none">Daily</p>
             <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">8 AM – 8 PM</p>
           </div>
         </div>
