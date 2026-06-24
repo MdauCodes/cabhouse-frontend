@@ -102,7 +102,7 @@ export default function HeroCarousel() {
           Your Best Day Out
         </h1>
         <h1
-          className="font-display font-black leading-[1.0] mb-5"
+          className="font-display font-black leading-[1.0] mb-3"
           style={{
             fontSize: 'clamp(1.7rem, 3vw, 3rem)',
             letterSpacing: '-0.03em',
@@ -120,6 +120,11 @@ export default function HeroCarousel() {
             }}
           />
         </h1>
+
+        {/* Tagline */}
+        <p className="font-body text-white/40 text-xs italic tracking-wide mb-5">
+          Unleash Your Energy, Nourish Your Soul.
+        </p>
 
         {/* Stats */}
         <div className="flex items-center gap-5 mb-6">

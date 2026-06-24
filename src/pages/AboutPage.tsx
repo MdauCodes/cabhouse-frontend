@@ -39,7 +39,7 @@ const BRANDS = [
     label: 'Park',
     name: 'CabHouse Park',
     href: '/park',
-    color: 'bg-brand-green',
+    color: 'bg-brand-gold',
     desc: 'Your ultimate playground for active fun, family bonding and corporate milestones. Eight activity zones, dining, events and overnight stays.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
@@ -144,7 +144,7 @@ export default function AboutPage() {
                   <p className="text-brand-dark/35 font-body text-[9px] uppercase tracking-widest mb-1">{b.label}</p>
                   <h3 className="font-display font-black text-brand-dark text-base mb-2" style={{ letterSpacing: '-0.02em' }}>{b.name}</h3>
                   <p className="text-brand-dark/55 font-body text-xs leading-relaxed mb-4">{b.desc}</p>
-                  <span className="inline-flex items-center gap-1 text-brand-green font-body font-semibold text-[10px] uppercase tracking-wider group-hover:gap-2 transition-all duration-200">
+                  <span className="inline-flex items-center gap-1 text-brand-gold font-body font-semibold text-[10px] uppercase tracking-wider group-hover:gap-2 transition-all duration-200">
                     Explore
                     <svg viewBox="0 0 16 16" fill="none" className="w-2.5 h-2.5" stroke="currentColor" strokeWidth="2.5">
                       <path d="M3 8h10M9 4l4 4-4 4" />
@@ -225,12 +225,12 @@ export default function AboutPage() {
                   <p>{SITE.location.address}</p>
                   <p>{SITE.location.poBox}</p>
                   <p>
-                    <a href={`tel:${SITE.contact.phone}`} className="hover:text-brand-green transition-colors">{SITE.contact.phone}</a>
+                    <a href={`tel:${SITE.contact.phone}`} className="hover:text-brand-gold transition-colors">{SITE.contact.phone}</a>
                     {' · '}
-                    <a href={`tel:${SITE.contact.phone2}`} className="hover:text-brand-green transition-colors">{SITE.contact.phone2}</a>
+                    <a href={`tel:${SITE.contact.phone2}`} className="hover:text-brand-gold transition-colors">{SITE.contact.phone2}</a>
                   </p>
                   <p>
-                    <a href={`mailto:${SITE.contact.email}`} className="hover:text-brand-green transition-colors">{SITE.contact.email}</a>
+                    <a href={`mailto:${SITE.contact.email}`} className="hover:text-brand-gold transition-colors">{SITE.contact.email}</a>
                   </p>
                 </div>
               </div>
