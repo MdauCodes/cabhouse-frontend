@@ -42,7 +42,8 @@ export default function ExperiencesStrip() {
   const { ref, inView } = useInView(0.08)
 
   return (
-    <section className="bg-brand-dark px-5 lg:px-10 py-14 lg:py-16">
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-5 lg:px-10 py-14 lg:py-16">
       <div className="max-w-7xl mx-auto">
 
         <div
@@ -123,6 +124,7 @@ export default function ExperiencesStrip() {
         <a href="/park" className="mt-5 flex lg:hidden items-center gap-1.5 font-body text-sm font-semibold" style={{ color: 'var(--color-gold)' }}>
           View all Park experiences →
         </a>
+      </div>
       </div>
     </section>
   )

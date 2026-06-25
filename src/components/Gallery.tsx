@@ -296,7 +296,8 @@ export default function Gallery() {
   // const stripH = 'clamp(160px, 28vw, 320px)'
 
   return (
-    <section id="gallery" ref={sectionRef as React.RefObject<HTMLElement>} className="bg-brand-dark overflow-hidden">
+    <section id="gallery" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div ref={sectionRef as React.RefObject<HTMLDivElement>} className="bg-brand-dark rounded-3xl overflow-hidden">
 
       {/* Header */}
       <div className="px-6 lg:px-10 pt-8 lg:pt-10 pb-5">
@@ -379,6 +380,7 @@ export default function Gallery() {
         @keyframes barA { from { height: 30% } to { height: 100% } }
         @keyframes barB { from { height: 80% } to { height: 20% } }
       `}</style>
+    </div>
     </section>
   )
 }

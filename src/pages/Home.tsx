@@ -16,7 +16,7 @@ import FloatingWhatsApp from '../components/FloatingWhatsApp'
 
 export default function Home() {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden" style={{ background: 'var(--canvas)' }}>
       <AnnouncementBar />
       <Navbar />
       <HeroCarousel />

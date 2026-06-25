@@ -165,7 +165,8 @@ export default function ParkDeepDive() {
   const { ref, inView } = useInView()
 
   return (
-    <section id="park">
+    <section id="park" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden">
 
       {/* Section header */}
       <div
@@ -198,6 +199,7 @@ export default function ParkDeepDive() {
         ))}
       </div>
 
+    </div>
     </section>
   )
 }

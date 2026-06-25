@@ -165,9 +165,11 @@ function EmailPanel() {
 
 export default function BookingCTA() {
   return (
-    <section id="contact" className="flex flex-col lg:flex-row">
-      <WhatsAppPanel />
-      <EmailPanel />
+    <section id="contact" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden flex flex-col lg:flex-row">
+        <WhatsAppPanel />
+        <EmailPanel />
+      </div>
     </section>
   )
 }

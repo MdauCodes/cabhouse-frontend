@@ -67,9 +67,10 @@ export default function Pricing() {
   return (
     <section
       id="packages"
-      className="bg-brand-dark px-6 lg:px-10 flex flex-col lg:h-[80dvh]"
-      style={{ minHeight: 480 }}
+      style={{ background: 'var(--canvas)' }}
+      className="px-3 md:px-5 pt-3"
     >
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col lg:h-[80dvh]" style={{ minHeight: 480 }}>
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:h-full py-8 lg:py-10">
 
         {/* Header row */}
@@ -253,6 +254,7 @@ export default function Pricing() {
           )}
 
         </div>
+      </div>
       </div>
     </section>
   )

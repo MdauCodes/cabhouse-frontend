@@ -7,24 +7,52 @@
    the entire site. Tailwind tokens in tailwind.config.js reference these.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --color-dark:   #1E0C0C;
-  --color-grey:   #374151;
-  --color-crimson: #220A0A;
-  --color-red:    #DC2626;
-  --color-red-hot: #EF4444;
-  --color-cream:  #F5E3CC;
+  /* ── True palette: white / grey / near-black / red ─────── */
+  --canvas:        #ECEAE8;   /* warm off-white page canvas shown between floating cards */
+  --color-dark:    #111111;   /* near-black — all dark surfaces */
+  --color-grey:    #6B7280;   /* mid grey */
+  --color-crimson: #111111;   /* alias → near-black */
+  --color-red:     #DC2626;   /* primary red */
+  --color-red-hot: #EF4444;   /* hover red */
+  --color-cream:   #FFFFFF;   /* light surfaces → pure white */
 
-  /* legacy aliases — keeps existing var() refs working */
-  --color-green:  #374151;
-  --color-forest: #220A0A;
-  --color-gold:   #DC2626;
-  --color-orange: #EF4444;
+  /* legacy aliases — keeps all existing var() refs working */
+  --color-green:   #6B7280;
+  --color-forest:  #111111;   /* dark sections now true near-black */
+  --color-gold:    #DC2626;   /* stays red */
+  --color-orange:  #EF4444;
 }
 
 @layer base {
   html { scroll-behavior: smooth; }
-  body { @apply font-body antialiased; }
+  body {
+    @apply font-body antialiased;
+    background-color: var(--canvas);
+  }
   * { box-sizing: border-box; }
+
+  /* Eyebrow pill — red brand tint, matches Ushirika .eyebrow pattern */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(220, 38, 38, 0.08);
+    color: #DC2626;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    border: 1px solid rgba(220, 38, 38, 0.16);
+  }
+
+  /* Eyebrow on dark card backgrounds */
+  .eyebrow.on-dark {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
 }
 
 @layer utilities {

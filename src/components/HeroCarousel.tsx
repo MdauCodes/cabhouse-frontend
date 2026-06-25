@@ -76,7 +76,8 @@ export default function HeroCarousel() {
   }, [active, goTo])
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: '70dvh', minHeight: 480, maxHeight: 760 }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="relative overflow-hidden rounded-3xl" style={{ height: '70dvh', minHeight: 480, maxHeight: 760 }}>
 
       {/* Slide backgrounds — crossfade */}
       {SLIDES.map((s, i) => (
@@ -199,16 +200,10 @@ export default function HeroCarousel() {
         </span>
       </div>
 
-      {/* Bottom wave */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 leading-none">
-        <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 48 }}>
-          <path d="M0,24 C240,48 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" style={{ fill: 'var(--color-forest)' }} />
-        </svg>
-      </div>
-
       <style>{`
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
       `}</style>
+    </div>
     </section>
   )
 }

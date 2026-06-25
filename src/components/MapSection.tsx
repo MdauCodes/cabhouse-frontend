@@ -4,7 +4,11 @@ export default function MapSection() {
   return (
     <section
       id="location"
-      className="bg-brand-dark px-6 lg:px-10 flex flex-col"
+      style={{ background: 'var(--canvas)' }}
+      className="px-3 md:px-5 pt-3"
+    >
+    <div
+      className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col"
       style={{ height: '80dvh', minHeight: 420 }}
     >
       <div className="max-w-7xl mx-auto w-full flex flex-col h-full py-8 lg:py-10">
@@ -115,6 +119,7 @@ export default function MapSection() {
           </div>
         </div>
       </div>
+    </div>
     </section>
   )
 }
