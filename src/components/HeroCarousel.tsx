@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { SITE } from '../config/site'
 
 const SLIDES = [
-  { img: '/assets/park-bridge.jpeg' },
-  { img: '/assets/park-pool.jpeg' },
-  { img: '/assets/park-adventure.jpeg' },
-  { img: '/assets/park-games.jpeg' },
+  { img: '/assets/hero-5.webp' },
+  { img: '/assets/hero-4.webp' },
+  { img: '/assets/hero-7.png' },
+  { img: '/assets/hero-8.png' },
+  { img: '/assets/hero-6.png' },
+  { img: '/assets/hero-10.png' },
 ]
 
 const TYPING_LINES = [
