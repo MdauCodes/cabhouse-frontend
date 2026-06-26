@@ -34,7 +34,7 @@ export default function HeroCarousel() {
             />
           ))}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(20,52,20,1) 0%, rgba(20,52,20,0.85) 25%, rgba(20,52,20,0.40) 55%, transparent 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,28,8,1) 0%, rgba(8,28,8,1) 30%, rgba(8,28,8,0.55) 60%, transparent 100%)' }} />
 
           <div className="absolute inset-0 flex flex-col justify-end p-8 lg:p-10">
             <p className="font-body text-[9px] font-bold uppercase tracking-[0.28em] mb-3" style={{ color: '#C8873A' }}>
