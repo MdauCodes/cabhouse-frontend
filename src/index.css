@@ -7,20 +7,20 @@
    the entire site. Tailwind tokens in tailwind.config.js reference these.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  /* ── True palette: white / grey / near-black / red ─────── */
-  --canvas:        #ECEAE8;   /* warm off-white page canvas shown between floating cards */
-  --color-dark:    #111111;   /* near-black — all dark surfaces */
-  --color-grey:    #6B7280;   /* mid grey */
-  --color-crimson: #111111;   /* alias → near-black */
-  --color-red:     #DC2626;   /* primary red */
-  --color-red-hot: #EF4444;   /* hover red */
-  --color-cream:   #FFFFFF;   /* light surfaces → pure white */
+  /* ── Dreamscape palette: warm parchment / amber-gold / warm near-black ── */
+  --canvas:        #F0EBE0;   /* warm linen canvas shown between floating cards */
+  --color-dark:    #1A1714;   /* warm near-black (not cold) — all dark surfaces */
+  --color-grey:    #7A6E60;   /* warm brown-grey muted text */
+  --color-crimson: #1A1714;   /* alias → warm near-black */
+  --color-red:     #C8873A;   /* primary accent → amber-gold */
+  --color-red-hot: #DFA055;   /* hover → lighter amber */
+  --color-cream:   #FAF8F4;   /* light surfaces → warm parchment */
 
   /* legacy aliases — keeps all existing var() refs working */
-  --color-green:   #6B7280;
-  --color-forest:  #111111;   /* dark sections now true near-black */
-  --color-gold:    #DC2626;   /* stays red */
-  --color-orange:  #EF4444;
+  --color-green:   #7A6E60;
+  --color-forest:  #1A1714;   /* dark sections warm near-black */
+  --color-gold:    #C8873A;   /* amber-gold */
+  --color-orange:  #DFA055;   /* lighter amber hover */
 }
 
 @layer base {
@@ -38,13 +38,13 @@
     gap: 0.4rem;
     padding: 0.3rem 0.75rem;
     border-radius: 999px;
-    background: rgba(220, 38, 38, 0.08);
-    color: #DC2626;
+    background: rgba(200, 135, 58, 0.1);
+    color: #C8873A;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
-    border: 1px solid rgba(220, 38, 38, 0.16);
+    border: 1px solid rgba(200, 135, 58, 0.2);
   }
 
   /* Eyebrow on dark card backgrounds */
