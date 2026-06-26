@@ -1,4 +1,4 @@
-﻿import { SITE } from '../config/site'
+import { SITE } from '../config/site'
 
 export default function MapSection() {
   return (
@@ -123,4 +123,3 @@ export default function MapSection() {
     </section>
   )
 }
-

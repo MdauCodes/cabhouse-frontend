@@ -1,4 +1,4 @@
-﻿import { useMediaUrl } from '../hooks/useMedia'
+import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -40,7 +40,7 @@ function Card({ exp, idx, tall }: { exp: typeof EXPERIENCES[0]; idx: number; tal
           {exp.unit}
         </p>
         <h3 className="font-display font-black text-white leading-none mb-2"
-          style={{ fontSize: 'clamp(1.4rem, 2.2vw, 1.9rem)' }}>
+          style={{ fontSize: 'var(--type-h3)' }}>
           {exp.pillar}
         </h3>
         <p className="text-white/65 font-body text-xs leading-relaxed max-w-[14rem] opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-400 mb-3">
@@ -113,4 +113,3 @@ export default function ExperienceCards() {
     </section>
   )
 }
-

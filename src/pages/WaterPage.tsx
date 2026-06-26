@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
@@ -267,5 +267,3 @@ export default function WaterPage() {
     </Layout>
   )
 }
-
-

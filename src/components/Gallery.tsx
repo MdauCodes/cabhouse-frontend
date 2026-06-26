@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Play, ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
@@ -384,4 +384,3 @@ export default function Gallery() {
     </section>
   )
 }
-

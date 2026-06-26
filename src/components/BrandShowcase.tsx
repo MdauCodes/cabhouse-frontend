@@ -1,4 +1,4 @@
-﻿import { useInView } from '../hooks/useInView'
+import { useInView } from '../hooks/useInView'
 
 const BRANDS = [
   {
@@ -6,7 +6,7 @@ const BRANDS = [
     tagline: 'PLAY. STAY. CELEBRATE.',
     desc: 'Your ultimate playground for active fun, family bonding, and corporate milestones. Games, restaurant, pool, camping, weddings and more.',
     tags: ['Pool & Play', 'Restaurant', 'Camping', 'Events & Weddings'],
-    cta: 'EXPLORE PARK â†’',
+    cta: 'EXPLORE PARK →',
     href: '/park',
     img: '/assets/park-pool.jpeg',
     badge: 'FLAGSHIP',
@@ -16,7 +16,7 @@ const BRANDS = [
     tagline: 'HOME AWAY FROM HOME.',
     desc: 'The sophisticated comfort of home blended with world-class hospitality. Premium short and long-stay furnished apartments with exclusive amenities.',
     tags: ['Short Stays', 'Long Stays', 'Furnished Units'],
-    cta: 'EXPLORE APARTMENTS â†’',
+    cta: 'EXPLORE APARTMENTS →',
     href: '/apartments',
     img: '/assets/cabhouse-apartments.png',
     badge: null,
@@ -26,7 +26,7 @@ const BRANDS = [
     tagline: 'PREMIUM WATER DELIVERED.',
     desc: 'Pure, crisp hydration engineered to sustain your health and active lifestyle. Sourced and bottled right here in Kisii.',
     tags: ['Domestic Delivery', 'Bulk Orders', 'Pure & Local'],
-    cta: 'EXPLORE WATER â†’',
+    cta: 'EXPLORE WATER →',
     href: '/water',
     img: '/assets/cabhouse-water.png',
     badge: null,
@@ -55,7 +55,7 @@ export default function BrandShowcase() {
             One company. Three experiences.
           </h2>
           <p className="text-brand-dark/65 font-body text-base mt-4 max-w-xl mx-auto leading-relaxed">
-            CabHouse Agencies is the home of Park, Water and Apartments â€” all in one destination in Kisii.
+            CabHouse Agencies is the home of Park, Water and Apartments — all in one destination in Kisii.
           </p>
         </div>
 
@@ -113,4 +113,3 @@ export default function BrandShowcase() {
     </section>
   )
 }
-

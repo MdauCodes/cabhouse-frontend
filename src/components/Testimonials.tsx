@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 
 // Replace with the actual Google Maps Place URL for CabHouse Park once confirmed
@@ -194,4 +194,3 @@ export default function Testimonials() {
     </section>
   )
 }
-

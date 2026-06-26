@@ -1,4 +1,4 @@
-﻿import { useInView } from '../hooks/useInView'
+import { useInView } from '../hooks/useInView'
 
 const EXPERIENCES = [
   {
@@ -53,7 +53,7 @@ export default function ExperiencesStrip() {
         >
           <div>
             <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
-              CabHouse Park Â· Flagship
+              CabHouse Park · Flagship
             </p>
             <h2
               className="font-display font-black text-white leading-tight"
@@ -67,7 +67,7 @@ export default function ExperiencesStrip() {
             className="hidden lg:flex items-center gap-1.5 font-body text-sm font-semibold transition-colors"
             style={{ color: 'var(--color-gold)' }}
           >
-            View all Park experiences â†’
+            View all Park experiences →
           </a>
         </div>
 
@@ -122,11 +122,10 @@ export default function ExperiencesStrip() {
         </div>
 
         <a href="/park" className="mt-5 flex lg:hidden items-center gap-1.5 font-body text-sm font-semibold" style={{ color: 'var(--color-gold)' }}>
-          View all Park experiences â†’
+          View all Park experiences →
         </a>
       </div>
       </div>
     </section>
   )
 }
-

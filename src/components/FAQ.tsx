@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { SITE } from '../config/site'
 
 const FAQS = [
@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'How do I pay and confirm a booking?',
-    a: 'The easiest way is to WhatsApp us directly â€” we confirm availability, share pricing, and arrange payment from there. We accept M-Pesa, bank transfer, and cash on arrival for most bookings.',
+    a: 'The easiest way is to WhatsApp us directly — we confirm availability, share pricing, and arrange payment from there. We accept M-Pesa, bank transfer, and cash on arrival for most bookings.',
   },
 ]
 
@@ -71,4 +71,3 @@ export default function FAQ() {
     </section>
   )
 }
-

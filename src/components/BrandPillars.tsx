@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 
@@ -112,13 +112,13 @@ function ParkCard({ inView }: { inView: boolean }) {
 
         <h2
           className="font-display font-black text-white leading-[1.0] mb-1"
-          style={{ fontSize: 'clamp(1.7rem, 2.5vw, 2.8rem)', letterSpacing: '-0.03em' }}
+          style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}
         >
           Your Best Day Out
         </h2>
         <h2
           className="font-display font-black leading-[1.0] mb-5"
-          style={{ fontSize: 'clamp(1.7rem, 2.5vw, 2.8rem)', letterSpacing: '-0.03em', color: 'var(--color-gold)', minHeight: '1.1em' }}
+          style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em', color: 'var(--color-gold)', minHeight: '1.1em' }}
         >
           {typed}
           <span
@@ -288,4 +288,3 @@ export default function BrandPillars() {
     </section>
   )
 }
-

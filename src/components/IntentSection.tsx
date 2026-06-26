@@ -1,32 +1,32 @@
-﻿import { SITE } from '../config/site'
+import { SITE } from '../config/site'
 
 const INTENTS = [
   {
     num: '01',
     title: 'Somewhere to stay',
     sub: 'Rooms, cabins & overnight camping',
-    cta: 'Book a stay â†’',
+    cta: 'Book a stay →',
     waMsg: "Hi, I'd like to book a stay at CabHouse Park",
   },
   {
     num: '02',
     title: 'A day out',
     sub: 'Pool, play, camping & activities',
-    cta: 'Book a visit â†’',
+    cta: 'Book a visit →',
     waMsg: "Hi, I'd like to book a day visit at CabHouse Park",
   },
   {
     num: '03',
     title: 'Order water',
     sub: 'Bulk or domestic water delivery',
-    cta: 'Order now â†’',
+    cta: 'Order now →',
     waMsg: "Hi, I'd like to order CabHouse Water",
   },
   {
     num: '04',
     title: 'An event hosted',
     sub: 'Birthdays, schools & corporate',
-    cta: 'Plan an event â†’',
+    cta: 'Plan an event →',
     waMsg: "Hi, I'd like to enquire about hosting an event at CabHouse",
   },
 ]
@@ -76,4 +76,3 @@ export default function IntentSection() {
     </section>
   )
 }
-

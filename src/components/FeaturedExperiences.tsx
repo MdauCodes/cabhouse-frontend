@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -240,4 +240,3 @@ export default function FeaturedExperiences() {
     </section>
   )
 }
-

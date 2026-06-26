@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
 
 export interface GalleryPhoto {
@@ -155,4 +155,3 @@ export default function MasonryGallery({ photos, title, subtitle, columns = 'col
     </>
   )
 }
-

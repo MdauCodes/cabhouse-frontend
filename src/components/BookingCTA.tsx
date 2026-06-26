@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { SITE } from '../config/site'
 import { useInView } from '../hooks/useInView'
 
@@ -173,4 +173,3 @@ export default function BookingCTA() {
     </section>
   )
 }
-

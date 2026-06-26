@@ -1,4 +1,4 @@
-﻿import { useMediaUrl } from '../hooks/useMedia'
+import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -203,4 +203,3 @@ export default function ParkDeepDive() {
     </section>
   )
 }
-

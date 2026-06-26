@@ -1,4 +1,4 @@
-﻿import Layout from '../components/Layout'
+import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -145,5 +145,3 @@ export default function RelaxPage() {
     </Layout>
   )
 }
-
-

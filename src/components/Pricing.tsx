@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -259,4 +259,3 @@ export default function Pricing() {
     </section>
   )
 }
-
