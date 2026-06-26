@@ -193,9 +193,9 @@ export default function Pricing() {
                       className="block text-center font-body font-bold tracking-wide py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
                       style={{
                         fontSize: 'clamp(8px, 1.1vw, 11px)',
-                        background: pkg.solid ? '#fff' : `${pkg.accent}20`,
-                        color: pkg.solid ? 'var(--color-gold)' : pkg.accent,
-                        border: `1px solid ${pkg.solid ? 'transparent' : `${pkg.accent}50`}`,
+                        background: pkg.solid ? '#fff' : 'var(--color-gold)',
+                        color: pkg.solid ? 'var(--color-gold)' : '#fff',
+                        border: 'none',
                       }}>
                       {pkg.cta}
                     </a>
