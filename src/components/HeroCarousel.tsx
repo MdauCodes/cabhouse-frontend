@@ -78,7 +78,7 @@ export default function HeroCarousel() {
               style={{ backgroundImage: "url('/assets/apartments-7.jpeg')" }}
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(109,40,217,0.55) 0%, rgba(139,92,246,0.28) 55%, transparent 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(49,10,120,1) 0%, rgba(49,10,120,1) 30%, rgba(49,10,120,0.55) 60%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
               <p className="font-body text-[8px] font-bold uppercase tracking-[0.25em] mb-1.5" style={{ color: '#C4B5FD' }}>
                 CabHouse Apartments
@@ -106,7 +106,7 @@ export default function HeroCarousel() {
               style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }}
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(3,105,161,0.58) 0%, rgba(14,165,233,0.28) 55%, transparent 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(2,52,90,1) 0%, rgba(2,52,90,1) 30%, rgba(2,52,90,0.55) 60%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
               <p className="font-body text-[8px] font-bold uppercase tracking-[0.25em] mb-1.5" style={{ color: '#7DD3FC' }}>
                 CabHouse Water
