@@ -12,6 +12,8 @@ const PACKAGES = [
     dot: '#B87040',
     priceSize: 'clamp(1rem, 1.8vw, 1.5rem)',
     solid: false,
+    cta: 'Reserve My Spot',
+    waMsg: `Hi CabHouse 👋 I'd like to book the *Bronze Package* at KES 1,000 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides & Swings.\n\nPlease let me know your available dates and how many people I can bring. Thank you!`,
   },
   {
     name: 'Silver', price: 1300, tag: null, level: 2,
@@ -22,6 +24,8 @@ const PACKAGES = [
     dot: '#A8BACE',
     priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)',
     solid: false,
+    cta: 'Book Silver Package',
+    waMsg: `Hi CabHouse 👋 I'd like to book the *Silver Package* at KES 1,300 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides, Swings & Swimming.\n\nKindly confirm availability and any group rates if applicable. Looking forward to visiting!`,
   },
   {
     name: 'Platinum', price: 1400, tag: 'Popular', level: 3,
@@ -32,6 +36,8 @@ const PACKAGES = [
     dot: '#fff',
     priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)',
     solid: true,
+    cta: 'Secure Platinum Now',
+    waMsg: `Hi CabHouse 👋 I'd like to book the *Platinum Package* at KES 1,400 per person — your most popular pick!\n\nThis includes: Zipline, Sky Bike, Rainbow Slides & Bridge & Mountain.\n\nPlease share available dates and whether group bookings receive any discount. Excited to experience this!`,
   },
   {
     name: 'Gold', price: 2500, tag: 'All-In', level: 4,
@@ -42,6 +48,8 @@ const PACKAGES = [
     dot: '#FBBF24',
     priceSize: 'clamp(1.3rem, 2.3vw, 2rem)',
     solid: false,
+    cta: 'Claim Gold Experience',
+    waMsg: `Hi CabHouse 👋 I'm interested in the *Gold All-In Package* at KES 2,500 per person — the full experience!\n\nThis covers: Every Activity, Unlimited Access & a Full Day Pass.\n\nI'd like to plan an unforgettable day out. Please confirm available dates, group size options, and anything I should know before arrival. Can't wait!`,
   },
 ]
 
@@ -180,15 +188,16 @@ export default function Pricing() {
 
                   <div className="p-3 sm:p-4 pt-0 flex-shrink-0">
                     <a
-                      href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I'd like to book the ${pkg.name} Package`)}`}
+                      href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(pkg.waMsg)}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="block text-center text-[9px] font-body font-bold tracking-widest uppercase py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
+                      className="block text-center font-body font-bold tracking-wide py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
                       style={{
+                        fontSize: 'clamp(8px, 1.1vw, 11px)',
                         background: pkg.solid ? '#fff' : `${pkg.accent}20`,
                         color: pkg.solid ? 'var(--color-gold)' : pkg.accent,
                         border: `1px solid ${pkg.solid ? 'transparent' : `${pkg.accent}50`}`,
                       }}>
-                      Book
+                      {pkg.cta}
                     </a>
                   </div>
                 </div>
