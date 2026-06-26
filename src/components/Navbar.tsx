@@ -68,14 +68,14 @@ export default function Navbar() {
         boxShadow: scrolled ? '0 4px 24px rgba(26,23,20,0.10)' : 'none',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-[68px]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-[76px]">
 
         {/* Logo */}
         <a href="/" className="flex items-center flex-shrink-0">
           <img
             src={logo}
             alt="CabHouse Agencies"
-            className="h-12 w-auto object-contain"
+            className="h-16 w-auto object-contain"
           />
         </a>
 

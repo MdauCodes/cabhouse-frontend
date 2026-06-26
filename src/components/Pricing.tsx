@@ -205,93 +205,166 @@ export default function Pricing() {
             </div>
           )}
 
-          {/* â”€â”€ Activities â”€â”€ */}
+          {/* ── Activities ── */}
           {tab === 'activities' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:h-full">
-              <div className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col">
-                <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Individual Activities</h3>
-                <div className="flex flex-col gap-0">
-                  {SINGLES.map((s, i) => (
-                    <div key={i} className={`flex items-center justify-between py-2.5 ${i < SINGLES.length - 1 ? 'border-b border-white/5' : ''}`}>
-                      <div>
-                        <p className="text-white font-body text-xs font-medium">{s.name}</p>
-                        <p className="text-white/30 font-body text-[10px]">{s.note}</p>
+            <div className=”flex flex-col gap-3 lg:h-full”>
+              <div className=”grid grid-cols-1 md:grid-cols-2 gap-3 flex-1”>
+                {/* Individual Activities */}
+                <div className=”bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col”>
+                  <h3 className=”font-display font-bold text-white text-sm mb-3 flex-shrink-0”>Individual Activities</h3>
+                  <div className=”flex flex-col flex-1”>
+                    {SINGLES.map((s, i) => (
+                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < SINGLES.length - 1 ? 'border-b border-white/5' : ''}`}>
+                        <div className=”min-w-0”>
+                          <p className=”text-white font-body text-xs font-medium”>{s.name}</p>
+                          <p className=”text-white/30 font-body text-[10px]”>{s.note}</p>
+                        </div>
+                        <div className=”flex items-center gap-3 flex-shrink-0”>
+                          <span className=”text-brand-gold font-display font-bold text-sm”>KES {s.price.toLocaleString()}</span>
+                          <a
+                            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book the *${s.name}* activity (${s.note}) at KES ${s.price.toLocaleString()}.\n\nPlease confirm availability and let me know the best time to visit. Thank you!`)}`}
+                            target=”_blank” rel=”noopener noreferrer”
+                            className=”text-[9px] font-body font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap”
+                            style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
+                            Book
+                          </a>
+                        </div>
                       </div>
-                      <span className="text-brand-gold font-display font-bold text-sm">KES {s.price.toLocaleString()}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col">
-                <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Cars & Go-Karts</h3>
-                <div className="flex flex-col gap-0">
-                  {CARS.map((c, i) => (
-                    <div key={i} className={`flex items-center justify-between py-2.5 ${i < CARS.length - 1 ? 'border-b border-white/5' : ''}`}>
-                      <div>
-                        <p className="text-white font-body text-xs font-medium">{c.name}</p>
-                        <p className="text-white/30 font-body text-[10px]">{c.note}</p>
-                      </div>
-                      <span className="text-brand-gold font-display font-bold text-sm">KES {c.price.toLocaleString()}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* â”€â”€ Stays â”€â”€ */}
-          {tab === 'stays' && (
-            <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 lg:h-full flex flex-col">
-              <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Stay With Us</h3>
-              <div className="overflow-x-auto flex-1">
-                <table className="w-full text-xs font-body min-w-[320px]">
-                  <thead>
-                    <tr className="border-b border-white/8">
-                      <th className="text-left pb-2 text-white/25 text-[9px] uppercase tracking-widest font-semibold">Accommodation</th>
-                      <th className="text-right pb-2 text-white/25 text-[9px] uppercase tracking-widest font-semibold">Room Only</th>
-                      <th className="text-right pb-2 text-white/25 text-[9px] uppercase tracking-widest font-semibold hidden sm:table-cell">+B / 1 pax</th>
-                      <th className="text-right pb-2 text-white/25 text-[9px] uppercase tracking-widest font-semibold hidden sm:table-cell">+B / 2 pax</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {STAYS.map((s, i) => (
-                      <tr key={i} className={i < STAYS.length - 1 ? 'border-b border-white/5' : ''}>
-                        <td className="py-2.5 text-white font-medium">{s.name}</td>
-                        <td className="py-2.5 text-right text-brand-gold font-display font-bold">{s.base.toLocaleString()}</td>
-                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b1 ? s.b1.toLocaleString() : '"”'}</td>
-                        <td className="py-2.5 text-right text-white/45 hidden sm:table-cell">{s.b2 ? s.b2.toLocaleString() : '"”'}</td>
-                      </tr>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
+                {/* Cars & Go-Karts */}
+                <div className=”bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col”>
+                  <h3 className=”font-display font-bold text-white text-sm mb-3 flex-shrink-0”>Cars & Go-Karts</h3>
+                  <div className=”flex flex-col flex-1”>
+                    {CARS.map((c, i) => (
+                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < CARS.length - 1 ? 'border-b border-white/5' : ''}`}>
+                        <div className=”min-w-0”>
+                          <p className=”text-white font-body text-xs font-medium”>{c.name}</p>
+                          <p className=”text-white/30 font-body text-[10px]”>{c.note}</p>
+                        </div>
+                        <div className=”flex items-center gap-3 flex-shrink-0”>
+                          <span className=”text-brand-gold font-display font-bold text-sm”>KES {c.price.toLocaleString()}</span>
+                          <a
+                            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book a *${c.name}* session for *${c.note}* at KES ${c.price.toLocaleString()}.\n\nPlease let me know your available slots and how to confirm my reservation. Can't wait!`)}`}
+                            target=”_blank” rel=”noopener noreferrer”
+                            className=”text-[9px] font-body font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap”
+                            style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
+                            Book
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <p className="text-white/20 font-body text-[9px] mt-3 flex-shrink-0">+B = breakfast included · Prices per night in KES</p>
+              {/* Upsell banner */}
+              <div className=”flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5”>
+                <p className=”font-body text-xs text-white/55 text-center sm:text-left”>
+                  <span className=”text-white font-semibold”>Save more with a package.</span> Bundles like Platinum (KES 1,400) give you multiple activities at a better rate.
+                </p>
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I was browsing your individual activities and I'm interested in getting more value. Could you help me pick the best package for my group and visit date? Thank you!`)}`}
+                  target=”_blank” rel=”noopener noreferrer”
+                  className=”flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap”
+                  style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                  Help Me Pick a Package
+                </a>
+              </div>
             </div>
           )}
 
-          {/* â”€â”€ Venues â”€â”€ */}
-          {tab === 'venues' && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:h-full">
-              {VENUES.map((v, i) => (
-                <div key={i} className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col lg:h-full">
-                  <div className="flex-1">
-                    <h3 className="font-display font-bold text-white text-sm mb-1">{v.name}</h3>
-                    <p className="text-white/30 font-body text-[10px] mb-4">{v.note}</p>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-brand-gold font-display font-black" style={{ fontSize: 'var(--type-h2)' }}>
-                        {v.price.toLocaleString()}
-                      </span>
-                      <span className="text-white/20 font-body text-[9px] uppercase tracking-wide">KES / event</span>
+          {/* ── Stays ── */}
+          {tab === 'stays' && (
+            <div className=”flex flex-col gap-3 lg:h-full”>
+              <div className=”bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col flex-1”>
+                <h3 className=”font-display font-bold text-white text-sm mb-4 flex-shrink-0”>Stay With Us</h3>
+                <div className=”flex flex-col flex-1 overflow-y-auto”>
+                  {STAYS.map((s, i) => (
+                    <div key={i} className={`flex flex-wrap items-center gap-x-4 gap-y-1 py-3 ${i < STAYS.length - 1 ? 'border-b border-white/5' : ''}`}>
+                      <div className=”flex-1 min-w-[120px]”>
+                        <p className=”text-white font-body text-xs font-semibold”>{s.name}</p>
+                        <p className=”text-white/30 font-body text-[10px]”>from KES {s.base.toLocaleString()} / night</p>
+                      </div>
+                      <div className=”hidden sm:flex items-center gap-4 text-[10px] font-body text-white/40”>
+                        <span>+Breakfast 1 pax: <span className=”text-white/60”>{s.b1?.toLocaleString() ?? '—'}</span></span>
+                        {s.b2 && <span>2 pax: <span className=”text-white/60”>{s.b2.toLocaleString()}</span></span>}
+                      </div>
+                      <a
+                        href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to reserve a *${s.name}* at CabHouse Park.\n\nStarting from KES ${s.base.toLocaleString()} per night. Please let me know available dates, whether breakfast is available, and what I should bring or prepare for my stay. Looking forward to it!`)}`}
+                        target=”_blank” rel=”noopener noreferrer”
+                        className=”text-[9px] font-body font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap”
+                        style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
+                        Reserve
+                      </a>
                     </div>
-                  </div>
-                  <a
-                    href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I want to inquire about the ${v.name} venue`)}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="mt-4 block text-center text-[9px] font-body font-bold tracking-widest uppercase py-2 rounded-full bg-white/6 text-white/50 hover:bg-brand-gold hover:text-white border border-white/8 transition-all duration-200">
-                    Enquire
-                  </a>
+                  ))}
                 </div>
-              ))}
+                <p className=”text-white/20 font-body text-[9px] mt-3 flex-shrink-0”>+B = breakfast included · Prices per night in KES</p>
+              </div>
+              {/* Upsell banner */}
+              <div className=”flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5”>
+                <p className=”font-body text-xs text-white/55 text-center sm:text-left”>
+                  <span className=”text-white font-semibold”>Staying over?</span> Combine your accommodation with a day package and get the full CabHouse experience in one visit.
+                </p>
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to plan a stay at CabHouse Park and also enjoy the park activities while I'm there. Can you help me put together a combined stay + activities plan for my group? Please share available dates and any special offers. Thank you!`)}`}
+                  target=”_blank” rel=”noopener noreferrer”
+                  className=”flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap”
+                  style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                  Plan My Stay + Activities
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* ── Venues ── */}
+          {tab === 'venues' && (
+            <div className=”flex flex-col gap-3 lg:h-full”>
+              <div className=”grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1”>
+                {VENUES.map((v, i) => {
+                  const msgs = [
+                    `Hi CabHouse 👋 I'm interested in hosting an event at your *Gardens* venue (up to 200 pax) at KES ${v.price.toLocaleString()}.\n\nCould you share available dates, setup options, catering arrangements, and any décor restrictions? I'd love to plan something special here!`,
+                    `Hi CabHouse 👋 I'd like to enquire about your *Indoor Hall* for a corporate or social event at KES ${v.price.toLocaleString()}.\n\nPlease share available dates, capacity details, AV/projector availability, and catering options. Looking forward to discussing further!`,
+                    `Hi CabHouse 👋 I'm keen on booking your *Premium Tent* for an outdoor event at KES ${v.price.toLocaleString()}.\n\nCould you let me know the tent capacity, available dates, furniture/décor included, and whether you offer catering or bar services? Thank you!`,
+                  ]
+                  const ctas = ['Book the Gardens', 'Reserve the Hall', 'Book Premium Tent']
+                  return (
+                    <div key={i} className=”bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col lg:h-full”>
+                      <div className=”flex-1”>
+                        <h3 className=”font-display font-bold text-white text-sm mb-1”>{v.name}</h3>
+                        <p className=”text-white/30 font-body text-[10px] mb-4”>{v.note}</p>
+                        <div className=”flex items-baseline gap-1”>
+                          <span className=”text-brand-gold font-display font-black” style={{ fontSize: 'var(--type-h2)' }}>
+                            {v.price.toLocaleString()}
+                          </span>
+                          <span className=”text-white/20 font-body text-[9px] uppercase tracking-wide”>KES / event</span>
+                        </div>
+                      </div>
+                      <a
+                        href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(msgs[i])}`}
+                        target=”_blank” rel=”noopener noreferrer”
+                        className=”mt-4 block text-center font-body font-bold py-2.5 rounded-full transition-all duration-200 hover:brightness-110”
+                        style={{ fontSize: 'clamp(9px, 1.1vw, 11px)', backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                        {ctas[i]}
+                      </a>
+                    </div>
+                  )
+                })}
+              </div>
+              {/* Bottom nudge */}
+              <div className=”flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5”>
+                <p className=”font-body text-xs text-white/55 text-center sm:text-left”>
+                  <span className=”text-white font-semibold”>Not sure which venue fits your event?</span> Tell us your headcount, date, and budget — we'll suggest the best option.
+                </p>
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'm planning an event and would like help choosing the right venue.\n\nCould you help me based on my headcount, date, and budget? I'm open to Gardens, Indoor Hall, or the Premium Tent. Please get in touch so we can plan this together. Thank you!`)}`}
+                  target=”_blank” rel=”noopener noreferrer”
+                  className=”flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap”
+                  style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                  Help Me Choose a Venue
+                </a>
+              </div>
             </div>
           )}
 
