@@ -7,7 +7,7 @@ const PARK_LINKS = [
   { label: 'Park Overview',   href: '/park' },
   { label: 'Games & Rides',   href: '/park#games' },
   { label: 'Stay & Camp',     href: '/relax' },
-  { label: 'Dining',          href: '/park#games' },
+  { label: 'Dining',          href: '/park#dining' },
   { label: 'Events',          href: '/events' },
 ]
 
@@ -189,45 +189,58 @@ export default function Navbar() {
       {open && (
         <div
           className="lg:hidden border-t"
-          style={{ backgroundColor: 'rgba(250, 248, 244, 0.96)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderColor: NAV_BORDER }}
+          style={{ backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderColor: NAV_BORDER }}
         >
-          <nav className="flex flex-col px-6 py-5 gap-1">
+          <nav className="flex flex-col px-5 py-3 gap-0.5">
+            {/* Top-level links */}
             <a href="/" onClick={() => setOpen(false)}
-              className="text-brand-dark/80 font-body font-medium py-2.5 text-sm border-b"
-              style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+              className="text-brand-dark/70 font-body font-semibold py-2 text-sm border-b"
+              style={{ borderColor: 'rgba(200,135,58,0.10)' }}>
               Home
             </a>
-            <p className="text-[9px] uppercase tracking-widest font-bold pt-3 pb-1" style={{ color: 'var(--color-gold)' }}>CabHouse Park</p>
-            {PARK_LINKS.map(l => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="text-brand-dark/55 font-body text-sm py-2 pl-3 hover:text-brand-dark transition-colors">
-                {l.label}
+
+            {/* Park sub-group */}
+            <p className="text-[8px] uppercase tracking-widest font-bold pt-2.5 pb-1" style={{ color: 'var(--color-gold)' }}>CabHouse Park</p>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 pl-1">
+              {PARK_LINKS.map(l => (
+                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                  className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+
+            {/* Packages sub-group */}
+            <p className="text-[8px] uppercase tracking-widest font-bold pt-2.5 pb-1" style={{ color: 'var(--color-gold)' }}>Offers &amp; Packages</p>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 pl-1">
+              {PACKAGES_LINKS.map(l => (
+                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                  className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+
+            {/* Remaining top-level */}
+            <div className="border-t mt-2 pt-1.5" style={{ borderColor: 'rgba(200,135,58,0.10)' }}>
+              <a href="/water" onClick={() => setOpen(false)}
+                className="block text-brand-dark/65 font-body text-sm py-2 hover:text-brand-dark transition-colors">
+                CabHouse Water
               </a>
-            ))}
-            <p className="text-[9px] uppercase tracking-widest font-bold pt-3 pb-1" style={{ color: 'var(--color-gold)' }}>Offers & Packages</p>
-            {PACKAGES_LINKS.map(l => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="text-brand-dark/55 font-body text-sm py-2 pl-3 hover:text-brand-dark transition-colors">
-                {l.label}
+              <a href="/apartments" onClick={() => setOpen(false)}
+                className="block text-brand-dark/65 font-body text-sm py-2 hover:text-brand-dark transition-colors">
+                Apartments
               </a>
-            ))}
-            <a href="/water" onClick={() => setOpen(false)}
-              className="text-brand-dark/55 font-body text-sm py-2.5 hover:text-brand-dark transition-colors">
-              CabHouse Water
-            </a>
-            <a href="/apartments" onClick={() => setOpen(false)}
-              className="text-brand-dark/55 font-body text-sm py-2.5 hover:text-brand-dark transition-colors">
-              Apartments
-            </a>
-            <a href="/about" onClick={() => setOpen(false)}
-              className="text-brand-dark/80 font-body font-medium py-2.5 text-sm border-t mt-1"
-              style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
-              About Our Group
-            </a>
+              <a href="/about" onClick={() => setOpen(false)}
+                className="block text-brand-dark/65 font-body text-sm py-2 hover:text-brand-dark transition-colors">
+                About Our Group
+              </a>
+            </div>
+
             <a
               href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}`}
               target="_blank" rel="noopener noreferrer"
-              className="mt-3 text-white text-center font-semibold px-5 py-2.5 rounded-full text-sm"
+              className="mt-2 mb-1 text-white text-center font-semibold px-5 py-2.5 rounded-full text-sm"
               style={{ backgroundColor: 'var(--color-gold)' }}
             >
               Book Now

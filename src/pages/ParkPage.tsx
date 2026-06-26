@@ -7,7 +7,7 @@ import MasonryGallery from '../components/MasonryGallery'
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500', icon: 'â†—' },
   { title: 'Sky Bike',          desc: 'Pedal through the air for an exhilarating cardio workout with panoramic views.', price: 'KES 500', icon: 'âŸ³' },
-  { title: 'Rainbow Slide',     desc: 'Kenya\'s most colourful mega-slide "” unlimited rides all day.', price: 'KES 500', icon: 'â†“' },
+  { title: 'Rainbow Slide',     desc: 'Kenya\'s most colourful mega-slide "" unlimited rides all day.', price: 'KES 500', icon: 'â†"' },
   { title: 'Mountain & Bridge', desc: 'Build strength and confidence on rugged, professionally guided outdoor courses.', price: 'KES 500', icon: 'â–²' },
   { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families and groups.', price: 'KES 500', icon: '~' },
   { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500', icon: 'â–¶' },
@@ -72,14 +72,14 @@ function HeroSection() {
         </h1>
 
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Eight activity zones, three pool areas and a go-kart track "” all in one admission at Kisii's biggest recreation destination.
+          Eight activity zones, three pool areas and a go-kart track "" all in one admission at Kisii's biggest recreation destination.
         </p>
 
         <div className="flex items-center gap-5 mb-10">
           {[
             { v: '8', l: 'Activity Zones' },
             { v: 'KES 1K', l: 'Entry from' },
-            { v: 'Daily', l: '8 AM "“ 8 PM' },
+            { v: 'Daily', l: '8 AM "" 8 PM' },
           ].map((s, i) => (
             <div key={i} className="flex items-center gap-5">
               <div>
@@ -132,7 +132,7 @@ function ActivitiesSection() {
           <p className="text-brand-dark/45 font-body text-xs mt-1.5">All prices per person · some activities also included in packages</p>
         </div>
 
-        {/* Activity list "” elegant rows instead of cards */}
+        {/* Activity list "" elegant rows instead of cards */}
         <div className="divide-y divide-brand-dark/[0.06]">
           {ACTIVITIES.map((a, i) => (
             <ActivityRow key={i} a={a} idx={i} />
@@ -282,7 +282,7 @@ const PARK_PHOTOS = [
 
 const CAMPING_PHOTOS = [
   { src: '/assets/wooden-tent-31.jpeg', label: 'Wooden Cabin' },
-  { src: '/assets/inside-tent-29.jpeg', label: 'Inside "” Tent with Bed' },
+  { src: '/assets/inside-tent-29.jpeg', label: 'Inside "" Tent with Bed' },
   { src: '/assets/camping-outside-1.jpeg', label: 'Campsite' },
   { src: '/assets/outside-tent-28.jpeg', label: 'Tent Exterior' },
   { src: '/assets/camping-outside-2.jpeg', label: 'Outdoor Camp' },
@@ -293,6 +293,113 @@ const CAMPING_PHOTOS = [
   { src: '/assets/camping-4.jpeg', label: 'Camping Experience' },
   { src: '/assets/camping-5.jpeg', label: 'Camp Life' },
 ]
+
+const DINING_FEATURES = [
+  { label: 'Full-Service Restaurant', desc: 'Wholesome, locally sourced meals served all day.' },
+  { label: 'Bar & Craft Cocktails',   desc: 'Lively bar with craft cocktails, juices and local favourites.' },
+  { label: 'Landscaped Gardens',      desc: 'Outdoor seating in beautifully kept green spaces.' },
+  { label: 'Group & Event Catering',  desc: 'We cater for birthday parties, corporate lunches and large groups.' },
+]
+
+function DiningSection() {
+  const { ref, inView } = useInView(0.08)
+
+  return (
+    <section id="dining" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 lg:items-start">
+
+          <div
+            ref={ref as React.RefObject<HTMLDivElement>}
+            className="lg:w-1/2"
+            style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
+          >
+            <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Dine &amp; Drink</p>
+            <h2
+              className="font-display font-black text-brand-dark leading-[0.93] mb-4"
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
+            >
+              Restaurant<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>&amp; Bar</em>
+            </h2>
+            <p className="text-brand-dark/50 font-body text-sm leading-relaxed mb-8 max-w-sm">
+              Full-service restaurant and lively bar serving craft cocktails and local flavours "" all set within CabHouse Park&apos;s serene gardens.
+            </p>
+
+            <div className="divide-y divide-brand-dark/[0.06]">
+              {DINING_FEATURES.map((f, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-4 py-4"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? 'none' : 'translateX(-8px)',
+                    transition: `opacity 0.45s ease ${0.1 + i * 0.06}s, transform 0.45s ease ${0.1 + i * 0.06}s`,
+                  }}
+                >
+                  <span className="w-7 h-7 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold" />
+                  </span>
+                  <div>
+                    <p className="font-display font-bold text-brand-dark text-sm leading-tight">{f.label}</p>
+                    <p className="text-brand-dark/45 font-body text-xs mt-0.5 leading-relaxed">{f.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="lg:w-1/2 flex flex-col gap-5"
+            style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.6s ease 0.15s' }}
+          >
+            <div className="rounded-2xl bg-brand-dark px-6 py-8 flex flex-col gap-5">
+              <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-semibold">Open to All Guests</p>
+              <p className="text-white font-display font-black leading-tight" style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.02em' }}>
+                Recharge with food<br />
+                <em className="not-italic" style={{ color: 'var(--color-gold)' }}>that hits the spot.</em>
+              </p>
+              <p className="text-white/55 font-body text-xs leading-relaxed max-w-xs">
+                Whether you are finishing a day of activities or planning a standalone lunch "" our kitchen is open. Groups of 10+ should call ahead.
+              </p>
+              <div className="h-px bg-white/8" />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to make a dining reservation or enquire about group catering at CabHouse Park")}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 text-white font-body font-bold text-xs px-5 py-3 rounded-full uppercase tracking-wide"
+                  style={{ backgroundColor: 'var(--color-gold)' }}
+                >
+                  Reserve a Table
+                </a>
+                <a
+                  href={`tel:${SITE.contact.phone}`}
+                  className="inline-flex items-center justify-center border border-white/15 text-white/70 hover:text-white font-body text-xs px-5 py-3 rounded-full transition-colors duration-200"
+                >
+                  {SITE.contact.phone}
+                </a>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { v: '8 AM',  l: 'Kitchen opens' },
+                { v: '10 PM', l: 'Bar closes' },
+                { v: '200+',  l: 'Seating capacity' },
+                { v: 'Daily', l: 'Open all week' },
+              ].map((s, i) => (
+                <div key={i} className="rounded-xl border border-brand-dark/[0.07] px-4 py-4">
+                  <p className="font-display font-black text-brand-dark text-xl leading-none" style={{ letterSpacing: '-0.02em' }}>{s.v}</p>
+                  <p className="text-brand-dark/40 font-body text-[10px] mt-1 uppercase tracking-wide">{s.l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
 
 function StaySection() {
   const { ref, inView } = useInView(0.08)
@@ -364,6 +471,7 @@ export default function ParkPage() {
         gap={8}
       />
       <PackagesSection />
+      <DiningSection />
       <StaySection />
     </Layout>
   )
