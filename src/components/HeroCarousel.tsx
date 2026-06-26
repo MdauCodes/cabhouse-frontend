@@ -22,7 +22,7 @@ export default function HeroCarousel() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="flex gap-2" style={{ height: '65dvh', minHeight: 480, maxHeight: 760 }}>
+      <div className="flex gap-2" style={{ height: '60dvh', minHeight: 440, maxHeight: 720 }}>
 
         {/* ── LEFT: Park (dominant) ── */}
         <div className="relative overflow-hidden rounded-3xl flex-1" style={{ minWidth: 0 }}>
