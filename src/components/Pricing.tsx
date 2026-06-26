@@ -4,20 +4,44 @@ import { SITE } from '../config/site'
 
 const PACKAGES = [
   {
-    name: 'Bronze', price: 1000, highlight: false, tag: null,
+    name: 'Bronze', price: 1000, tag: null,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
+    bg: 'rgba(101,47,8,0.45)',
+    border: 'rgba(180,90,20,0.35)',
+    accent: '#CD8040',
+    tagStyle: 'background:rgba(180,90,20,0.25);color:#CD8040',
+    dot: '#CD8040',
+    solid: false,
   },
   {
-    name: 'Silver', price: 1300, highlight: false, tag: null,
+    name: 'Silver', price: 1300, tag: null,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
+    bg: 'rgba(51,65,85,0.50)',
+    border: 'rgba(148,163,184,0.28)',
+    accent: '#94A3B8',
+    tagStyle: 'background:rgba(148,163,184,0.2);color:#94A3B8',
+    dot: '#94A3B8',
+    solid: false,
   },
   {
-    name: 'Platinum', price: 1400, highlight: true, tag: 'Popular',
+    name: 'Platinum', price: 1400, tag: 'Popular',
     activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
+    bg: 'var(--color-gold)',
+    border: 'transparent',
+    accent: '#fff',
+    tagStyle: 'background:rgba(255,255,255,0.25);color:#fff',
+    dot: '#fff',
+    solid: true,
   },
   {
-    name: 'Gold', price: 2500, highlight: false, tag: 'All-In',
+    name: 'Gold', price: 2500, tag: 'All-In',
     activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
+    bg: 'rgba(113,63,18,0.60)',
+    border: 'rgba(234,179,8,0.45)',
+    accent: '#FDE68A',
+    tagStyle: 'background:rgba(234,179,8,0.2);color:#FDE68A',
+    dot: '#FDE68A',
+    solid: false,
   },
 ]
 
@@ -106,11 +130,8 @@ export default function Pricing() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:h-full">
               {PACKAGES.map(pkg => (
                 <div key={pkg.name}
-                  className={`rounded-xl flex flex-col border lg:h-full ${
-                    pkg.highlight
-                      ? 'bg-brand-gold border-transparent'
-                      : 'bg-white/[0.04] border-white/8'
-                  }`}
+                  className="rounded-xl flex flex-col lg:h-full"
+                  style={{ background: pkg.bg, border: `1px solid ${pkg.border}` }}
                 >
                   <div className="p-3 sm:p-4 pb-3 flex-shrink-0">
                     <div className="flex items-start justify-between mb-2">
@@ -119,28 +140,26 @@ export default function Pricing() {
                         {pkg.name}
                       </h3>
                       {pkg.tag && (
-                        <span className={`text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
-                          pkg.highlight ? 'bg-white/25 text-white' : 'bg-brand-gold/20 text-brand-gold'
-                        }`}>{pkg.tag}</span>
+                        <span
+                          className="text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
+                          style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}22`, color: pkg.accent }}
+                        >{pkg.tag}</span>
                       )}
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className={`font-display font-black ${pkg.highlight ? 'text-white' : 'text-brand-gold'}`}
-                        style={{ fontSize: 'clamp(1.1rem, 2vw, 1.7rem)' }}>
+                      <span className="font-display font-black" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.7rem)', color: pkg.accent }}>
                         {pkg.price.toLocaleString()}
                       </span>
-                      <span className={`font-body text-[9px] uppercase tracking-wide ${pkg.highlight ? 'text-white/60' : 'text-white/30'}`}>
-                        KES/pax
-                      </span>
+                      <span className="font-body text-[9px] uppercase tracking-wide text-white/35">KES/pax</span>
                     </div>
                   </div>
 
-                  <div className={`mx-3 sm:mx-4 h-px flex-shrink-0 ${pkg.highlight ? 'bg-white/20' : 'bg-white/6'}`} />
+                  <div className="mx-3 sm:mx-4 h-px flex-shrink-0 bg-white/10" />
 
                   <ul className="p-3 sm:p-4 space-y-1.5 flex-1">
                     {pkg.activities.map(a => (
-                      <li key={a} className={`flex items-center gap-2 font-body text-[10px] sm:text-[11px] ${pkg.highlight ? 'text-white/85' : 'text-white/50'}`}>
-                        <span className={`w-1 h-1 rounded-full flex-shrink-0 ${pkg.highlight ? 'bg-white' : 'bg-brand-gold'}`} />
+                      <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px] text-white/75">
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dot }} />
                         {a}
                       </li>
                     ))}
@@ -150,11 +169,12 @@ export default function Pricing() {
                     <a
                       href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I'd like to book the ${pkg.name} Package`)}`}
                       target="_blank" rel="noopener noreferrer"
-                      className={`block text-center text-[9px] font-body font-bold tracking-widest uppercase py-2 rounded-full transition-all duration-200 ${
-                        pkg.highlight
-                          ? 'bg-white text-brand-gold hover:bg-white/90'
-                          : 'bg-white/6 text-white/50 hover:bg-brand-gold hover:text-white border border-white/8'
-                      }`}>
+                      className="block text-center text-[9px] font-body font-bold tracking-widest uppercase py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
+                      style={{
+                        background: pkg.solid ? '#fff' : `${pkg.accent}22`,
+                        color: pkg.solid ? 'var(--color-gold)' : pkg.accent,
+                        border: `1px solid ${pkg.solid ? 'transparent' : `${pkg.accent}44`}`,
+                      }}>
                       Book
                     </a>
                   </div>
