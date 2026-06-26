@@ -17,7 +17,7 @@ const ITEMS: { id: string; type: 'image' | 'video' }[] = [
   { id: 'gallery-v8', type: 'video' },
 ]
 
-// â”€â”€ Featured video (first item, auto-plays on scroll) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€ Featured video (first item, auto-plays on scroll) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function FeaturedVideo({
   url, sectionInView, onOpen,
@@ -100,7 +100,7 @@ function FeaturedVideo({
   )
 }
 
-// â”€â”€ Strip tile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€ Strip tile â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function VideoTile({ url, idx, onOpen }: { url: string; idx: number; onOpen: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -199,7 +199,7 @@ function StripTile({ item, idx, onOpen }: { item: typeof ITEMS[0]; idx: number; 
     : <ImageTile url={url} idx={idx} onOpen={onOpen} />
 }
 
-// â”€â”€ Lightbox â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€ Lightbox â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function Lightbox({ items, startIdx, onClose }: { items: typeof ITEMS; startIdx: number; onClose: () => void }) {
   const [idx, setIdx] = useState(startIdx)
@@ -276,7 +276,7 @@ function Lightbox({ items, startIdx, onClose }: { items: typeof ITEMS; startIdx:
   )
 }
 
-// â”€â”€ Main component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€ Main component â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 const STRIP_ITEMS = ITEMS.slice(1) // everything after the featured first video
 const FEATURED = ITEMS[0]
@@ -292,7 +292,7 @@ export default function Gallery() {
     stripRef.current?.scrollBy({ left: dir === 'r' ? 260 : -260, behavior: 'smooth' })
   }
 
-  // Filmstrip height "” comfortable on all screens
+  // Filmstrip height "" comfortable on all screens
   // const stripH = 'clamp(160px, 28vw, 320px)'
 
   return (
@@ -334,13 +334,13 @@ export default function Gallery() {
       </div>
 
       {/* Mobile layout: featured full-width, then 2-col grid */}
-      <div className=”lg:hidden px-4 pb-6 flex flex-col gap-2”>
+      <div className="lg:hidden px-4 pb-6 flex flex-col gap-2">
         {featuredUrl && (
           <div style={{ height: 'clamp(220px, 56vw, 360px)' }}>
             <FeaturedVideo url={featuredUrl} sectionInView={sectionInView} onOpen={() => setLightboxIdx(0)} />
           </div>
         )}
-        <div className=”grid grid-cols-2 gap-2”>
+        <div className="grid grid-cols-2 gap-2">
           {STRIP_ITEMS.map((item, i) => (
             <div key={item.id} style={{ height: 'clamp(140px, 38vw, 240px)' }}>
               <StripTile item={item} idx={i} onOpen={() => setLightboxIdx(i + 1)} />
@@ -348,39 +348,39 @@ export default function Gallery() {
           ))}
         </div>
         <a
-          href=”https://www.instagram.com/cabhouse.park”
-          target=”_blank” rel=”noopener noreferrer”
-          className=”mt-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-white/10 text-white/50 hover:text-white hover:border-white/25 transition-all duration-200 font-body text-xs font-semibold tracking-wide”
+          href="https://www.instagram.com/cabhouse.park"
+          target="_blank" rel="noopener noreferrer"
+          className="mt-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-white/10 text-white/50 hover:text-white hover:border-white/25 transition-all duration-200 font-body text-xs font-semibold tracking-wide"
         >
-          <svg viewBox=”0 0 24 24” fill=”currentColor” className=”w-4 h-4”><path d=”M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z”/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           Follow us for more
         </a>
       </div>
 
       {/* Desktop layout: featured left + filmstrip right */}
-      <div className=”hidden lg:flex px-10 pb-10 gap-3”>
+      <div className="hidden lg:flex px-10 pb-10 gap-3">
         {featuredUrl && (
-          <div className=”flex-shrink-0 self-stretch” style={{ width: 'clamp(260px, 38vw, 480px)', height: 'clamp(320px, 44vw, 560px)' }}>
+          <div className="flex-shrink-0 self-stretch" style={{ width: 'clamp(260px, 38vw, 480px)', height: 'clamp(320px, 44vw, 560px)' }}>
             <FeaturedVideo url={featuredUrl} sectionInView={sectionInView} onOpen={() => setLightboxIdx(0)} />
           </div>
         )}
-        <div className=”flex-1 min-w-0 flex flex-col gap-3”>
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <div
             ref={stripRef}
-            className=”flex gap-2 overflow-x-auto flex-1”
+            className="flex gap-2 overflow-x-auto flex-1"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {STRIP_ITEMS.map((item, i) => (
               <StripTile key={item.id} item={item} idx={i} onOpen={() => setLightboxIdx(i + 1)} />
             ))}
-            <div className=”flex-shrink-0 w-1” />
+            <div className="flex-shrink-0 w-1" />
           </div>
           <a
-            href=”https://www.instagram.com/cabhouse.park”
-            target=”_blank” rel=”noopener noreferrer”
-            className=”flex-shrink-0 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 text-white/40 hover:text-white hover:border-white/25 transition-all duration-200 font-body text-xs font-semibold tracking-wide”
+            href="https://www.instagram.com/cabhouse.park"
+            target="_blank" rel="noopener noreferrer"
+            className="flex-shrink-0 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 text-white/40 hover:text-white hover:border-white/25 transition-all duration-200 font-body text-xs font-semibold tracking-wide"
           >
-            <svg viewBox=”0 0 24 24” fill=”currentColor” className=”w-3.5 h-3.5”><path d=”M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z”/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             Follow @cabhouse.park for more moments
           </a>
         </div>
