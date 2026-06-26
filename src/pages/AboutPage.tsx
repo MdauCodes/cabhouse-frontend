@@ -88,7 +88,7 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function AboutPage() {
   return (
-    <div className="overflow-x-hidden" style={{ background: 'var(--canvas)' }}>
+    <div style={{ overflowX: 'clip', background: 'var(--canvas)' }}>
       <Navbar />
 
       {/* Hero */}
