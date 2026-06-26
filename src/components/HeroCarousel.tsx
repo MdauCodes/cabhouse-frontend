@@ -1,18 +1,38 @@
+import { useState, useEffect } from 'react'
 import { SITE } from '../config/site'
 
 const wa = SITE.contact.whatsapp.replace('+', '')
 
+const PARK_SLIDES = [
+  '/assets/hero-5.webp',
+  '/assets/hero-4.webp',
+  '/assets/hero-7.png',
+  '/assets/hero-8.png',
+  '/assets/hero-6.png',
+  '/assets/hero-10.png',
+]
+
 export default function HeroCarousel() {
+  const [slideIdx, setSlideIdx] = useState(0)
+
+  useEffect(() => {
+    const t = setInterval(() => setSlideIdx(i => (i + 1) % PARK_SLIDES.length), 5500)
+    return () => clearInterval(t)
+  }, [])
+
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="flex gap-2" style={{ height: '70dvh', minHeight: 520, maxHeight: 800 }}>
+      <div className="flex gap-2" style={{ height: '65dvh', minHeight: 480, maxHeight: 760 }}>
 
         {/* ── LEFT: Park (dominant) ── */}
-        <div className="relative overflow-hidden rounded-3xl flex-1 group" style={{ minWidth: 0 }}>
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.03]"
-            style={{ backgroundImage: "url('/assets/hero-5.webp')" }}
-          />
+        <div className="relative overflow-hidden rounded-3xl flex-1" style={{ minWidth: 0 }}>
+          {PARK_SLIDES.map((src, i) => (
+            <div
+              key={src}
+              className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+              style={{ backgroundImage: `url(${src})`, opacity: i === slideIdx ? 1 : 0 }}
+            />
+          ))}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)' }} />
 
           <div className="absolute inset-0 flex flex-col justify-end p-8 lg:p-10">
