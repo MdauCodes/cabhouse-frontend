@@ -41,7 +41,7 @@ export default function IntentSection() {
         </p>
         <h2
           className="font-display font-black text-brand-dark leading-[1.05] mb-12"
-          style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.03em' }}
+          style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', letterSpacing: '-0.028em' }}
         >
           We'll handle{' '}
           <span className="text-brand-dark/40">the rest from here.</span>

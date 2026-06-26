@@ -50,7 +50,7 @@ export default function BrandShowcase() {
           </p>
           <h2
             className="font-display font-black text-brand-dark leading-tight"
-            style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.03em' }}
+            style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', letterSpacing: '-0.028em' }}
           >
             One company. Three experiences.
           </h2>

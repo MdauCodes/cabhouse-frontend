@@ -28,8 +28,19 @@
   body {
     @apply font-body antialiased;
     background-color: var(--canvas);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-dark);
   }
   * { box-sizing: border-box; }
+
+  /* Heading baseline — all display headings share these defaults */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+  h2 { line-height: 1.1; }
+  h3 { line-height: 1.2; }
 
   /* Eyebrow pill — red brand tint, matches Ushirika .eyebrow pattern */
   .eyebrow {

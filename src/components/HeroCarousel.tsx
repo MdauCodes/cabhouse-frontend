@@ -98,7 +98,7 @@ export default function HeroCarousel() {
         {/* Heading */}
         <h1
           className="font-display font-black text-white leading-[1.0] mb-1.5"
-          style={{ fontSize: 'clamp(1.7rem, 3vw, 3rem)', letterSpacing: '-0.03em' }}
+          style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', letterSpacing: '-0.03em' }}
         >
           Your Best Day Out
         </h1>
