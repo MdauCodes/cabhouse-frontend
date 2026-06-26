@@ -22,7 +22,59 @@ export default function HeroCarousel() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="flex gap-2" style={{ height: '60dvh', minHeight: 440, maxHeight: 720 }}>
+      {/* Mobile layout: Park top, Apartments+Water side-by-side below */}
+      <div className="flex flex-col gap-2 md:hidden">
+        {/* Park — mobile */}
+        <div className="relative overflow-hidden rounded-3xl" style={{ height: '52vw', minHeight: 220 }}>
+          {PARK_SLIDES.map((src, i) => (
+            <div key={src} className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+              style={{ backgroundImage: `url(${src})`, opacity: i === slideIdx ? 1 : 0 }} />
+          ))}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,28,8,1) 0%, rgba(8,28,8,1) 30%, rgba(8,28,8,0.55) 60%, transparent 100%)' }} />
+          <div className="absolute inset-0 flex flex-col justify-end p-5">
+            <p className="font-body text-[8px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#C8873A' }}>CabHouse Park · Recreation</p>
+            <h1 className="font-display font-black text-white leading-[0.93] mb-3" style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}>Your Best<br />Day Out.</h1>
+            <div className="flex items-center gap-3">
+              <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to book a visit to CabHouse Park")}`} target="_blank" rel="noopener noreferrer"
+                className="font-body font-bold text-xs uppercase tracking-wide px-5 py-2.5 rounded-full" style={{ backgroundColor: '#C8873A', color: '#fff' }}>
+                Book a Visit
+              </a>
+            </div>
+          </div>
+        </div>
+        {/* Apartments + Water row — mobile */}
+        <div className="flex gap-2" style={{ height: '38vw', minHeight: 160 }}>
+          <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block">
+            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/apartments-7.jpeg')" }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(49,10,120,1) 0%, rgba(49,10,120,1) 30%, rgba(49,10,120,0.55) 60%, transparent 100%)' }} />
+            <div className="absolute inset-0 flex flex-col justify-end p-4">
+              <p className="font-body text-[7px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: '#C4B5FD' }}>Apartments</p>
+              <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>Home Away<br />From Home.</h2>
+              <span className="inline-flex items-center gap-1 font-body font-semibold text-[10px] text-white/60 group-hover:text-white transition-colors">
+                View <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" className="w-2.5 h-2.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </span>
+            </div>
+          </a>
+          <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`} target="_blank" rel="noopener noreferrer"
+            className="relative overflow-hidden rounded-3xl flex-1 group block">
+            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(2,52,90,1) 0%, rgba(2,52,90,1) 30%, rgba(2,52,90,0.55) 60%, transparent 100%)' }} />
+            <div className="absolute inset-0 flex flex-col justify-end p-4">
+              <p className="font-body text-[7px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: '#7DD3FC' }}>Water</p>
+              <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>Pure. Local.<br />Delivered.</h2>
+              <span className="inline-flex items-center gap-1 font-body font-semibold text-[10px] text-white/60 group-hover:text-white transition-colors">
+                Order <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" className="w-2.5 h-2.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden md:flex gap-2" style={{ height: '60dvh', minHeight: 440, maxHeight: 720 }}>
 
         {/* ── LEFT: Park (dominant) ── */}
         <div className="relative overflow-hidden rounded-3xl flex-1" style={{ minWidth: 0 }}>
@@ -69,7 +121,7 @@ export default function HeroCarousel() {
         </div>
 
         {/* ── RIGHT: Apartments + Water stacked ── */}
-        <div className="flex flex-col gap-2 hidden md:flex" style={{ width: '34%', flexShrink: 0 }}>
+        <div className="flex flex-col gap-2" style={{ width: '34%', flexShrink: 0 }}>
 
           {/* Apartments */}
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
@@ -124,7 +176,7 @@ export default function HeroCarousel() {
           </a>
         </div>
 
-      </div>
+      </div>{/* end desktop flex */}
     </section>
   )
 }
