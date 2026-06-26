@@ -18,9 +18,23 @@
 
   /* legacy aliases — keeps all existing var() refs working */
   --color-green:   #7A6E60;
-  --color-forest:  #1A1714;   /* dark sections warm near-black */
-  --color-gold:    #C8873A;   /* amber-gold */
-  --color-orange:  #DFA055;   /* lighter amber hover */
+  --color-forest:  #1A1714;
+  --color-gold:    #C8873A;
+  --color-orange:  #DFA055;
+
+  /* ── Global type scale ────────────────────────────────────────────────────
+     Use these everywhere instead of ad-hoc clamp() values.
+     Tune one variable to change every heading at that level site-wide.
+     ───────────────────────────────────────────────────────────────────────── */
+  --type-hero:    clamp(2rem, 3.8vw, 3rem);      /* main home hero H1 */
+  --type-h1:      clamp(1.75rem, 3.2vw, 2.6rem); /* inner-page hero H1 */
+  --type-h2:      clamp(1.4rem, 2.4vw, 2rem);    /* section headings */
+  --type-h3:      clamp(1.05rem, 1.6vw, 1.4rem); /* sub-section / card headings */
+  --type-lead:    1.0625rem;                      /* intro / pull-quote body */
+  --type-body:    0.9375rem;                      /* standard body copy (= 15px) */
+  --type-sm:      0.8125rem;                      /* secondary / meta text */
+  --type-xs:      0.75rem;                        /* captions, stat labels */
+  --type-eyebrow: 0.68rem;                        /* ALL-CAPS pill labels */
 }
 
 @layer base {

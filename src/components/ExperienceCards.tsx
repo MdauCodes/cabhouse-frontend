@@ -76,7 +76,7 @@ export default function ExperienceCards() {
               <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">One Destination, Five Worlds</p>
             </div>
             <h2 className="font-display font-black text-brand-dark leading-[0.9]"
-              style={{ fontSize: 'clamp(1.7rem, 3.2vw, 2.8rem)', letterSpacing: '-0.03em' }}>
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}>
               How Do You Want To <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Feel</em> Today?
             </h2>
           </div>
@@ -113,3 +113,4 @@ export default function ExperienceCards() {
     </section>
   )
 }
+

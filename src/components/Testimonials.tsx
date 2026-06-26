@@ -107,7 +107,7 @@ export default function Testimonials() {
         >
           <div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93]"
-              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
               Rated <em className="not-italic" style={{ color: 'var(--color-gold)' }}>4.7 Stars</em> on Google
             </h2>
             <p className="text-brand-dark/40 font-body text-xs mt-1">Real reviews from real visitors</p>
@@ -194,3 +194,4 @@ export default function Testimonials() {
     </section>
   )
 }
+

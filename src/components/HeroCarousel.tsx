@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+﻿import { useState, useEffect, useCallback, useRef } from 'react'
 import { SITE } from '../config/site'
 
 const SLIDES = [
@@ -79,7 +79,7 @@ export default function HeroCarousel() {
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '70dvh', minHeight: 480, maxHeight: 760 }}>
 
-      {/* Slide backgrounds — crossfade */}
+      {/* Slide backgrounds â€” crossfade */}
       {SLIDES.map((s, i) => (
         <div
           key={i}
@@ -98,14 +98,14 @@ export default function HeroCarousel() {
         {/* Heading */}
         <h1
           className="font-display font-black text-white leading-[1.0] mb-1.5"
-          style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', letterSpacing: '-0.03em' }}
+          style={{ fontSize: 'var(--type-hero)', letterSpacing: '-0.03em' }}
         >
           Your Best Day Out
         </h1>
         <h1
           className="font-display font-black leading-[1.0] mb-3"
           style={{
-            fontSize: 'clamp(1.7rem, 3vw, 3rem)',
+            fontSize: 'var(--type-h1)',
             letterSpacing: '-0.03em',
             color: 'var(--color-gold)',
             minHeight: '1.05em',
@@ -135,13 +135,13 @@ export default function HeroCarousel() {
           </div>
           <div className="w-px h-6 bg-white/15" />
           <div>
-            <p className="font-display font-black text-white text-xl leading-none">4.7<span style={{ color: 'var(--color-gold)' }}>★</span></p>
+            <p className="font-display font-black text-white text-xl leading-none">4.7<span style={{ color: 'var(--color-gold)' }}>â˜…</span></p>
             <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">Google Rating</p>
           </div>
           <div className="w-px h-6 bg-white/15" />
           <div>
             <p className="font-display font-black text-white text-xl leading-none">Daily</p>
-            <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">8 AM – 8 PM</p>
+            <p className="text-white/40 font-body text-[9px] uppercase tracking-widest font-semibold mt-0.5">8 AM â€“ 8 PM</p>
           </div>
         </div>
 
@@ -168,7 +168,7 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Slide indicator — bottom left */}
+      {/* Slide indicator â€” bottom left */}
       <div className="absolute bottom-8 left-6 lg:left-16 z-10 flex items-center gap-4">
         {/* Progress line */}
         <div className="flex items-center gap-2">
@@ -207,3 +207,4 @@ export default function HeroCarousel() {
     </section>
   )
 }
+

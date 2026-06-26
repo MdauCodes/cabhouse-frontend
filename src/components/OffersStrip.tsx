@@ -1,4 +1,4 @@
-import { useInView } from '../hooks/useInView'
+﻿import { useInView } from '../hooks/useInView'
 
 const OFFERS = [
   {
@@ -41,7 +41,7 @@ export default function OffersStrip() {
             </p>
             <h2
               className="font-display font-black text-brand-dark leading-tight"
-              style={{ fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
             >
               Experiences worth booking
             </h2>
@@ -50,7 +50,7 @@ export default function OffersStrip() {
             href="/#packages"
             className="text-brand-dark/50 hover:text-brand-dark font-body text-xs font-semibold uppercase tracking-widest transition-colors flex-shrink-0"
           >
-            View all packages →
+            View all packages â†’
           </a>
         </div>
 
@@ -78,7 +78,7 @@ export default function OffersStrip() {
               </p>
               <p className="text-brand-dark/55 font-body text-sm leading-relaxed">{o.desc}</p>
               <div className="absolute bottom-4 right-4 text-brand-dark/25 group-hover:text-brand-dark/60 font-body text-xs font-bold uppercase tracking-widest transition-colors">
-                Book →
+                Book â†’
               </div>
             </a>
           ))}
@@ -87,3 +87,4 @@ export default function OffersStrip() {
     </section>
   )
 }
+

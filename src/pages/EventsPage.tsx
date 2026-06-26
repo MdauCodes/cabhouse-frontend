@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+﻿import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
@@ -22,8 +22,8 @@ const CORPORATE = [
     id: 'gala-dinners',
     title: 'Gala Dinners',
     tag: 'Tented or Gardens',
-    desc: 'Elegant dining under premium tents or in the gardens. Full lighting, décor coordination, live entertainment options and gourmet catering.',
-    features: ['Gardens or premium tent venue', 'Full décor coordination', 'Gourmet catering menu', 'Bar & beverage service', 'Live entertainment options'],
+    desc: 'Elegant dining under premium tents or in the gardens. Full lighting, dÃ©cor coordination, live entertainment options and gourmet catering.',
+    features: ['Gardens or premium tent venue', 'Full dÃ©cor coordination', 'Gourmet catering menu', 'Bar & beverage service', 'Live entertainment options'],
   },
   {
     id: 'executive-retreats',
@@ -39,13 +39,13 @@ const SOCIAL = [
     id: 'weddings',
     title: 'Weddings',
     tag: 'Garden & Hall',
-    desc: 'Lush garden ceremony and reception hall for up to 200 guests. Full décor and catering packages tailored to your vision.',
+    desc: 'Lush garden ceremony and reception hall for up to 200 guests. Full dÃ©cor and catering packages tailored to your vision.',
   },
   {
     id: 'birthday',
     title: 'Birthday Parties',
     tag: 'All Ages',
-    desc: 'Private activity zones with custom catering packages. Designed for both kids and adults — unforgettable every time.',
+    desc: 'Private activity zones with custom catering packages. Designed for both kids and adults â€” unforgettable every time.',
   },
   {
     id: 'school',
@@ -92,11 +92,11 @@ function Hero() {
           <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">CabHouse Events</p>
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
-          style={{ fontSize: 'clamp(2.4rem, 5vw, 4.5rem)', letterSpacing: '-0.02em' }}>
+          style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.02em' }}>
           Your Celebration.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Our Venue.</em>
         </h1>
         <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled — so you can be fully present.
+          Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled â€” so you can be fully present.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about hosting an event at CabHouse")}`}
           target="_blank" rel="noopener noreferrer"
@@ -119,7 +119,7 @@ export default function EventsPage() {
     <Layout>
       <Hero />
 
-      {/* ── Corporate Events ── */}
+      {/* â”€â”€ Corporate Events â”€â”€ */}
       <section id="corporate" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
         <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
           <div
@@ -130,7 +130,7 @@ export default function EventsPage() {
               Corporate Events
             </p>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
-              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
               Built for <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Business</em>
             </h2>
           </div>
@@ -169,7 +169,7 @@ export default function EventsPage() {
                   className="inline-flex items-center justify-center w-full py-3 rounded-xl font-body font-bold text-xs uppercase tracking-wide transition-all duration-200 hover:brightness-110 text-white"
                   style={{ backgroundColor: 'var(--color-gold)' }}
                 >
-                  Enquire about {e.title} →
+                  Enquire about {e.title} â†’
                 </a>
               </div>
             ))}
@@ -177,7 +177,7 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ── Venue Pricing ── */}
+      {/* â”€â”€ Venue Pricing â”€â”€ */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
         <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
           <div
@@ -188,7 +188,7 @@ export default function EventsPage() {
               Venue Hire
             </p>
             <h2 className="font-display font-black text-white leading-tight mb-10"
-              style={{ fontSize: 'clamp(1.6rem, 3vw, 2.6rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
               Choose your <em className="not-italic" style={{ color: 'var(--color-gold)' }}>space</em>
             </h2>
           </div>
@@ -219,12 +219,12 @@ export default function EventsPage() {
           </div>
 
           <p className="text-white/25 font-body text-xs mt-6">
-            Venue hire excludes catering, décor and equipment. Packages available on request.
+            Venue hire excludes catering, dÃ©cor and equipment. Packages available on request.
           </p>
         </div>
       </section>
 
-      {/* ── Social Events ── */}
+      {/* â”€â”€ Social Events â”€â”€ */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
         <div className="max-w-7xl mx-auto">
@@ -236,7 +236,7 @@ export default function EventsPage() {
               Social Events
             </p>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
-              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
               Every Kind of <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Celebration</em>
             </h2>
           </div>
@@ -265,7 +265,7 @@ export default function EventsPage() {
                   className="inline-flex items-center gap-1 font-body font-bold text-xs uppercase tracking-wide transition-colors"
                   style={{ color: 'var(--color-gold)' }}
                 >
-                  Plan this event →
+                  Plan this event â†’
                 </a>
               </div>
             ))}
@@ -274,7 +274,7 @@ export default function EventsPage() {
       </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* â”€â”€ CTA â”€â”€ */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
         <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -306,3 +306,5 @@ export default function EventsPage() {
     </Layout>
   )
 }
+
+

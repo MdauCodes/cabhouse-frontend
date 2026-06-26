@@ -17,7 +17,7 @@ export default function MapSection() {
         <div className="mb-5 flex-shrink-0">
           <h2
             className="font-display font-black text-white leading-tight"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             Get Here. Make <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Memories</em>.
           </h2>
@@ -123,3 +123,4 @@ export default function MapSection() {
     </section>
   )
 }
+

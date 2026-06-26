@@ -78,7 +78,7 @@ function DualCTA() {
           Quick Order
         </p>
         <h3 className="font-display font-black text-white leading-[0.95] mb-3"
-          style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)', letterSpacing: '-0.02em' }}>
+          style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
           Order on <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
         </h3>
         <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
@@ -116,7 +116,7 @@ function DualCTA() {
         style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}>
         <p className="text-brand-green font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3">Bulk & Trade</p>
         <h3 className="font-display font-black text-brand-dark leading-[0.95] mb-3"
-          style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)', letterSpacing: '-0.02em' }}>
+          style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
           Send a Supply <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
         </h3>
         <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
@@ -182,7 +182,7 @@ function HeroSection() {
         className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}>
 <h1 className="font-display font-black text-white leading-[0.93] mb-4"
-          style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)', letterSpacing: '-0.025em' }}>
+          style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em' }}>
           Pure Water,<br />
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Delivered to You</em>
         </h1>
@@ -219,7 +219,7 @@ export default function WaterPage() {
             className="mb-10"
             style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
-              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
               Water for Every <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Need</em>
             </h2>
             <p className="text-brand-dark/40 font-body text-xs">Domestic · Commercial · Events · Trade</p>
@@ -267,3 +267,5 @@ export default function WaterPage() {
     </Layout>
   )
 }
+
+

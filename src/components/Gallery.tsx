@@ -312,7 +312,7 @@ export default function Gallery() {
             </p>
             <h2
               className="font-display font-black text-white leading-[0.93]"
-              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
             >
               Live from <em className="not-italic" style={{ color: 'var(--color-gold)' }}>CabHouse Park</em>
             </h2>
@@ -384,3 +384,4 @@ export default function Gallery() {
     </section>
   )
 }
+

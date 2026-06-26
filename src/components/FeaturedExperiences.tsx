@@ -115,7 +115,7 @@ function FeatureBlock({ f, index: _index }: { f: FeatureConfig; index: number })
     <div className={`flex-1 flex flex-col justify-center px-8 lg:px-12 xl:px-16 py-10 lg:py-14 ${f.contentBg}`}>
       <Eyebrow label={f.eyebrow} dark={f.dark} />
       <h3 className={`font-display font-black leading-[0.93] mb-4 ${f.dark ? 'text-white' : 'text-brand-dark'}`}
-        style={{ fontSize: 'clamp(1.7rem, 3vw, 2.8rem)', letterSpacing: '-0.02em' }}>
+        style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
         {f.title}{' '}
         <em className="not-italic" style={{ color: 'var(--color-gold)' }}>{f.accent}</em>
       </h3>
@@ -226,7 +226,7 @@ export default function FeaturedExperiences() {
             <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">What Awaits You</p>
           </div>
           <h2 className="font-display font-black text-brand-dark leading-[0.93]"
-            style={{ fontSize: 'clamp(1.7rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
+            style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
             Experiences Worth the <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Journey</em>
           </h2>
         </div>
@@ -240,3 +240,4 @@ export default function FeaturedExperiences() {
     </section>
   )
 }
+

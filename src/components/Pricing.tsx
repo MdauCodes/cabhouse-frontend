@@ -80,7 +80,7 @@ export default function Pricing() {
           style={{ opacity: inView ? 1 : 0, transition: 'all 0.5s ease' }}
         >
           <h2 className="font-display font-black text-white leading-none"
-            style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2rem)', letterSpacing: '-0.02em' }}>
+            style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
             Packages & <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Pricing</em>
           </h2>
           <p className="text-white/45 font-body text-xs hidden lg:block">All prices in KES · WhatsApp booking</p>
@@ -236,7 +236,7 @@ export default function Pricing() {
                     <h3 className="font-display font-bold text-white text-sm mb-1">{v.name}</h3>
                     <p className="text-white/30 font-body text-[10px] mb-4">{v.note}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-brand-gold font-display font-black" style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2rem)' }}>
+                      <span className="text-brand-gold font-display font-black" style={{ fontSize: 'var(--type-h2)' }}>
                         {v.price.toLocaleString()}
                       </span>
                       <span className="text-white/20 font-body text-[9px] uppercase tracking-wide">KES / event</span>
@@ -259,3 +259,4 @@ export default function Pricing() {
     </section>
   )
 }
+

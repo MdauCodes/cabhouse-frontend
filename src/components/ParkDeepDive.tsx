@@ -119,7 +119,7 @@ function ParkBlock({ b, index: _index }: { b: Block; index: number }) {
       >
         <h3
           className={`font-display font-black leading-[0.92] mb-3 ${b.dark ? 'text-white' : 'text-brand-dark'}`}
-          style={{ fontSize: 'clamp(1.3rem, 2vw, 1.9rem)', letterSpacing: '-0.025em' }}
+          style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.025em' }}
         >
           {b.title}{' '}
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>{b.accent}</em>
@@ -177,7 +177,7 @@ export default function ParkDeepDive() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-3">
           <h2
             className="font-display font-black text-brand-dark leading-[0.93]"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             CabHouse Park "”{' '}
             <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Your Playground</em>
@@ -203,3 +203,4 @@ export default function ParkDeepDive() {
     </section>
   )
 }
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
 
 export interface GalleryPhoto {
@@ -57,7 +57,7 @@ export default function MasonryGallery({ photos, title, subtitle, columns = 'col
             <div className="mb-7">
               {title && (
                 <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-1"
-                  style={{ fontSize: 'clamp(1.2rem, 2vw, 1.7rem)', letterSpacing: '-0.02em' }}
+                  style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
               )}
@@ -155,3 +155,4 @@ export default function MasonryGallery({ photos, title, subtitle, columns = 'col
     </>
   )
 }
+

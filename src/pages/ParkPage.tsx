@@ -65,7 +65,7 @@ function HeroSection() {
       >
         <h1
           className="font-display font-black text-white leading-[0.93] mb-5"
-          style={{ fontSize: 'clamp(2.2rem, 4.5vw, 4.2rem)', letterSpacing: '-0.025em' }}
+          style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em' }}
         >
           Play Hard.<br />
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Play All Day.</em>
@@ -125,7 +125,7 @@ function ActivitiesSection() {
         >
           <h2
             className="font-display font-black text-brand-dark leading-[0.93]"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             Eight Ways to <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Have Fun</em>
           </h2>
@@ -194,7 +194,7 @@ function PackagesSection() {
         >
           <h2
             className="font-display font-black text-white leading-[0.93]"
-            style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             Day <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Packages</em>
           </h2>
@@ -310,7 +310,7 @@ function StaySection() {
         >
           <div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-2"
-              style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.55rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
               Stay the <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Night</em>
             </h2>
             <p className="text-brand-dark/50 font-body text-xs leading-relaxed max-w-sm">
@@ -368,3 +368,5 @@ export default function ParkPage() {
     </Layout>
   )
 }
+
+

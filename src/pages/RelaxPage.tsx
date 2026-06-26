@@ -46,7 +46,7 @@ function Hero() {
           <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">CabHouse Resorts</p>
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
-          style={{ fontSize: 'clamp(2.4rem, 5vw, 4.5rem)', letterSpacing: '-0.02em' }}>
+          style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.02em' }}>
           Stay the Night.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Wake Up to This.</em>
         </h1>
         <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
@@ -79,7 +79,7 @@ export default function RelaxPage() {
               <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">Accommodation</p>
             </div>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
-              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
               Five Ways to <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Sleep Here</em>
             </h2>
           </div>
@@ -145,3 +145,5 @@ export default function RelaxPage() {
     </Layout>
   )
 }
+
+

@@ -1,32 +1,32 @@
-import { SITE } from '../config/site'
+﻿import { SITE } from '../config/site'
 
 const INTENTS = [
   {
     num: '01',
     title: 'Somewhere to stay',
     sub: 'Rooms, cabins & overnight camping',
-    cta: 'Book a stay →',
+    cta: 'Book a stay â†’',
     waMsg: "Hi, I'd like to book a stay at CabHouse Park",
   },
   {
     num: '02',
     title: 'A day out',
     sub: 'Pool, play, camping & activities',
-    cta: 'Book a visit →',
+    cta: 'Book a visit â†’',
     waMsg: "Hi, I'd like to book a day visit at CabHouse Park",
   },
   {
     num: '03',
     title: 'Order water',
     sub: 'Bulk or domestic water delivery',
-    cta: 'Order now →',
+    cta: 'Order now â†’',
     waMsg: "Hi, I'd like to order CabHouse Water",
   },
   {
     num: '04',
     title: 'An event hosted',
     sub: 'Birthdays, schools & corporate',
-    cta: 'Plan an event →',
+    cta: 'Plan an event â†’',
     waMsg: "Hi, I'd like to enquire about hosting an event at CabHouse",
   },
 ]
@@ -41,7 +41,7 @@ export default function IntentSection() {
         </p>
         <h2
           className="font-display font-black text-brand-dark leading-[1.05] mb-12"
-          style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', letterSpacing: '-0.028em' }}
+          style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.028em' }}
         >
           We'll handle{' '}
           <span className="text-brand-dark/40">the rest from here.</span>
@@ -76,3 +76,4 @@ export default function IntentSection() {
     </section>
   )
 }
+

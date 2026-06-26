@@ -251,7 +251,7 @@ export default function BrandPillars() {
           <p className="text-brand-gold/45 font-body text-[9px] uppercase tracking-[0.35em] font-bold">CabHouse Agencies Ltd</p>
           <h1
             className="font-display font-black text-white mt-1 leading-tight"
-            style={{ fontSize: 'clamp(1rem, 1.6vw, 1.45rem)', letterSpacing: '-0.025em' }}
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.025em' }}
           >
             One Family.{' '}
             <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Every Need Covered.</em>
@@ -288,3 +288,4 @@ export default function BrandPillars() {
     </section>
   )
 }
+

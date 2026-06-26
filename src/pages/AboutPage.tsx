@@ -101,7 +101,7 @@ export default function AboutPage() {
             <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">About Us</p>
             <h1
               className="font-display font-black text-white leading-[0.93] mb-6"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', letterSpacing: '-0.03em' }}
+              style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.03em' }}
             >
               Where Hospitality,<br />
               <em className="not-italic text-brand-gold">Wellness & Adventure</em><br />
@@ -123,7 +123,7 @@ export default function AboutPage() {
             <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Our Ecosystem</p>
             <h2
               className="font-display font-black text-brand-dark mb-10 leading-tight"
-              style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
             >
               One Family.{' '}
               <em className="not-italic text-brand-gold">Three Experiences.</em>
@@ -160,7 +160,7 @@ export default function AboutPage() {
             <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">What Drives Us</p>
             <h2
               className="font-display font-black text-brand-dark mb-10 leading-tight"
-              style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
             >
               The Values Behind{' '}
               <em className="not-italic text-brand-gold">Everything We Do</em>
@@ -190,7 +190,7 @@ export default function AboutPage() {
           <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">Our Promise</p>
           <h2
             className="font-display font-black text-white leading-tight mb-4"
-            style={{ fontSize: 'clamp(1.5rem, 3vw, 2.8rem)', letterSpacing: '-0.03em' }}
+            style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}
           >
             Unleash Your Energy,{' '}
             <em className="not-italic text-brand-gold">Nourish Your Soul.</em>
@@ -259,3 +259,5 @@ export default function AboutPage() {
     </div>
   )
 }
+
+

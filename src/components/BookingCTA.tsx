@@ -24,7 +24,7 @@ function WhatsAppPanel() {
       </p>
       <h3
         className="font-display font-black text-white leading-[0.95] mb-3"
-        style={{ fontSize: 'clamp(1.15rem, 1.9vw, 1.65rem)', letterSpacing: '-0.02em' }}
+        style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
       >
         Chat with us on{' '}
         <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
@@ -110,7 +110,7 @@ function EmailPanel() {
       </p>
       <h3
         className="font-display font-black text-brand-dark leading-[0.95] mb-3"
-        style={{ fontSize: 'clamp(1.15rem, 1.9vw, 1.65rem)', letterSpacing: '-0.02em' }}
+        style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
       >
         Send a Formal{' '}
         <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
@@ -173,3 +173,4 @@ export default function BookingCTA() {
     </section>
   )
 }
+
