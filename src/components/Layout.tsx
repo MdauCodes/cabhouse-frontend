@@ -5,7 +5,7 @@ import FloatingWhatsApp from './FloatingWhatsApp'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden" style={{ background: 'var(--canvas)' }}>
       <Navbar />
       {children}
       <Footer />

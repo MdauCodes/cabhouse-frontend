@@ -46,7 +46,8 @@ function HeroSection() {
   const { ref, inView } = useInView(0.05)
 
   return (
-    <section className="relative overflow-hidden" style={{ height: '70dvh', minHeight: 420 }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="relative overflow-hidden rounded-3xl" style={{ height: '70dvh', minHeight: 420 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: 'var(--color-dark)' }}
@@ -106,6 +107,7 @@ function HeroSection() {
           </a>
         </div>
       </div>
+    </div>
     </section>
   )
 }
@@ -114,8 +116,8 @@ function ActivitiesSection() {
   const { ref, inView } = useInView()
 
   return (
-    <section className="bg-white px-6 lg:px-10 py-14 lg:py-16">
-      <div className="max-w-7xl mx-auto">
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
           className="mb-10"
@@ -182,8 +184,8 @@ function PackagesSection() {
   const { ref, inView } = useInView()
 
   return (
-    <section id="packages" className="bg-brand-dark px-6 lg:px-10 py-14 lg:py-16">
-      <div className="max-w-7xl mx-auto">
+    <section id="packages" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
 
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
@@ -297,8 +299,8 @@ function StaySection() {
 
   return (
     <>
-    <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-16">
-      <div className="max-w-7xl mx-auto">
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
 
         {/* Header */}
         <div

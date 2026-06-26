@@ -80,7 +80,8 @@ function Hero() {
   const img = useMediaUrl('feat-events')
   const { ref, inView } = useInView(0.05)
   return (
-    <section className="relative overflow-hidden" style={{ height: '60dvh', minHeight: 380 }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: 'var(--color-dark)' }} />
       <div className="absolute inset-0 bg-brand-dark/65" />
       <div ref={ref as React.RefObject<HTMLDivElement>}
@@ -103,6 +104,7 @@ function Hero() {
           Enquire Now
         </a>
       </div>
+    </div>
     </section>
   )
 }
@@ -118,8 +120,8 @@ export default function EventsPage() {
       <Hero />
 
       {/* ── Corporate Events ── */}
-      <section id="corporate" className="bg-white px-6 lg:px-10 py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto">
+      <section id="corporate" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
           <div
             ref={corpRef as React.RefObject<HTMLDivElement>}
             style={{ opacity: corpInView ? 1 : 0, transform: corpInView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}
@@ -176,8 +178,8 @@ export default function EventsPage() {
       </section>
 
       {/* ── Venue Pricing ── */}
-      <section className="px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: 'var(--color-forest)' }}>
-        <div className="max-w-7xl mx-auto">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
           <div
             ref={venueRef as React.RefObject<HTMLDivElement>}
             style={{ opacity: venueInView ? 1 : 0, transform: venueInView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
@@ -223,7 +225,8 @@ export default function EventsPage() {
       </section>
 
       {/* ── Social Events ── */}
-      <section className="bg-white px-6 lg:px-10 py-16 lg:py-20">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
         <div className="max-w-7xl mx-auto">
           <div
             ref={socialRef as React.RefObject<HTMLDivElement>}
@@ -268,11 +271,12 @@ export default function EventsPage() {
             ))}
           </div>
         </div>
+      </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-brand-dark px-6 lg:px-10 py-14">
-        <div className="max-w-7xl mx-auto">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+        <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             {[
               { v: '200+', l: 'Guest capacity' },

@@ -88,11 +88,12 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function AboutPage() {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden" style={{ background: 'var(--canvas)' }}>
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-brand-dark relative overflow-hidden" style={{ minHeight: 380 }}>
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="bg-brand-dark relative overflow-hidden rounded-3xl" style={{ minHeight: 380 }}>
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, var(--color-gold) 0%, transparent 60%), radial-gradient(circle at 80% 20%, var(--color-green) 0%, transparent 50%)' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-28">
@@ -112,17 +113,12 @@ export default function AboutPage() {
           </FadeIn>
         </div>
 
-        {/* Wave */}
-        <div className="absolute bottom-0 left-0 right-0" style={{ lineHeight: 0 }}>
-          <svg viewBox="0 0 1440 40" preserveAspectRatio="none" style={{ width: '100%', height: 40, display: 'block' }}>
-            <path d="M0,20 C360,40 1080,0 1440,20 L1440,40 L0,40 Z" fill="white" />
-          </svg>
-        </div>
+      </div>
       </section>
 
       {/* Our Ecosystem */}
-      <section className="bg-white px-6 lg:px-10 py-14 lg:py-20">
-        <div className="max-w-7xl mx-auto">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20">
           <FadeIn>
             <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Our Ecosystem</p>
             <h2
@@ -158,8 +154,8 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values */}
-      <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-20">
-        <div className="max-w-7xl mx-auto">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20">
           <FadeIn>
             <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">What Drives Us</p>
             <h2
@@ -188,7 +184,8 @@ export default function AboutPage() {
       </section>
 
       {/* Tagline banner */}
-      <section className="bg-brand-dark px-6 lg:px-10 py-14 lg:py-16 text-center">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16 text-center">
         <FadeIn>
           <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">Our Promise</p>
           <h2
@@ -209,11 +206,12 @@ export default function AboutPage() {
             Get in Touch
           </a>
         </FadeIn>
+      </div>
       </section>
 
       {/* Location */}
-      <section className="bg-white px-6 lg:px-10 py-14 lg:py-16">
-        <div className="max-w-7xl mx-auto">
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
           <FadeIn>
             <div className="flex flex-col lg:flex-row lg:items-center gap-10">
               <div className="lg:w-1/2">
