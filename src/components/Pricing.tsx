@@ -102,8 +102,8 @@ export default function Pricing() {
       style={{ background: 'var(--canvas)' }}
       className="px-3 md:px-5 pt-3"
     >
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col lg:h-[80dvh]" style={{ minHeight: 480 }}>
-      <div className="max-w-7xl mx-auto w-full flex flex-col lg:h-full py-8 lg:py-10">
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col" style={{ minHeight: 480 }}>
+      <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10">
 
         {/* Header row */}
         <div
@@ -131,14 +131,14 @@ export default function Pricing() {
         </div>
 
         {/* Content */}
-        <div className="lg:flex-1 lg:min-h-0">
+        <div>
 
           {/* â"€â"€ Packages â"€â"€ */}
           {tab === 'packages' && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:h-full">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {PACKAGES.map(pkg => (
                 <div key={pkg.name}
-                  className="rounded-xl flex flex-col lg:h-full relative overflow-hidden"
+                  className="rounded-xl flex flex-col relative overflow-hidden"
                   style={{ background: pkg.bg, border: pkg.border }}
                 >
                   <div className="p-3 sm:p-4 pb-2 flex-shrink-0">
@@ -207,7 +207,7 @@ export default function Pricing() {
 
           {/* ── Activities ── */}
           {tab === 'activities' && (
-            <div className="flex flex-col gap-3 lg:h-full">
+            <div className="flex flex-col gap-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
                 {/* Individual Activities */}
                 <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col">
@@ -276,7 +276,7 @@ export default function Pricing() {
 
           {/* ── Stays ── */}
           {tab === 'stays' && (
-            <div className="flex flex-col gap-3 lg:h-full">
+            <div className="flex flex-col gap-3">
               <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col flex-1">
                 <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Stay With Us</h3>
                 <div className="flex flex-col flex-1 overflow-y-auto">
@@ -320,7 +320,7 @@ export default function Pricing() {
 
           {/* ── Venues ── */}
           {tab === 'venues' && (
-            <div className="flex flex-col gap-3 lg:h-full">
+            <div className="flex flex-col gap-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                 {VENUES.map((v, i) => {
                   const msgs = [
@@ -330,7 +330,7 @@ export default function Pricing() {
                   ]
                   const ctas = ['Book the Gardens', 'Reserve the Hall', 'Book Premium Tent']
                   return (
-                    <div key={i} className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col lg:h-full">
+                    <div key={i} className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col">
                       <div className="flex-1">
                         <h3 className="font-display font-bold text-white text-sm mb-1">{v.name}</h3>
                         <p className="text-white/30 font-body text-[10px] mb-4">{v.note}</p>
