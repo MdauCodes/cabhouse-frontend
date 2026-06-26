@@ -25,7 +25,7 @@ const RELAX_PHOTOS = [
 
 const STAYS = [
   { name: 'Wooden Cabin', desc: 'En-suite cabin with private veranda and garden views. Sleeps 2.', base: 3000, b1: 3500, b2: 4000 },
-  { name: 'Tented Cabin (Big)', desc: 'Spacious glamping tent with real beds and power. Sleeps 2"“3.', base: 2500, b1: 3000, b2: 3500 },
+  { name: 'Tented Cabin (Big)', desc: 'Spacious glamping tent with real beds and power. Sleeps 2-3.', base: 2500, b1: 3000, b2: 3500 },
   { name: 'Tented Cabin (Small)', desc: 'Cosy tented accommodation for solo or couple travellers.', base: 2000, b1: 2500, b2: 3000 },
   { name: 'Camping Tent (Small)', desc: 'Standard camping tent under the open sky. BYO sleeping bag.', base: 1500, b1: 2000, b2: null },
   { name: 'Camping Tent (Big)', desc: 'Group camping tent "” perfect for youth outings and large families.', base: 5000, b1: 7500, b2: null },
@@ -37,20 +37,24 @@ function Hero() {
   return (
     <section className="relative overflow-hidden" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#1a2e1f' }} />
-      <div className="absolute inset-0 bg-brand-dark/60" />
+      {/* Dark base overlay */}
+      <div className="absolute inset-0 bg-brand-dark/75" />
+      {/* Extra gradient concentrated where the text sits */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,20,8,0.75) 0%, rgba(8,20,8,0.45) 55%, transparent 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,20,8,0.80) 0%, transparent 60%)' }} />
       <div ref={ref as React.RefObject<HTMLDivElement>}
         className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-10 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-6 h-px bg-brand-gold" />
-          <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">CabHouse Resorts</p>
+          <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">CabHouse Park · Stay &amp; Camp</p>
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.02em' }}>
           Stay the Night.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Wake Up to This.</em>
         </h1>
-        <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Wooden cabins, glamping tents and camping "” all set within the CabHouse grounds. Breakfast available. Activities right outside your door.
+        <p className="text-white/85 font-body text-sm leading-relaxed max-w-sm mb-6">
+          Wooden cabins, glamping tents and camping - all set within the CabHouse grounds. Breakfast available. Activities right outside your door.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20a%20stay%20at%20CabHouse`}
           target="_blank" rel="noopener noreferrer"
