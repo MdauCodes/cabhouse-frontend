@@ -7,7 +7,7 @@ const PARK_LINKS = [
   { label: 'Park Overview',   href: '/park' },
   { label: 'Games & Rides',   href: '/park#games' },
   { label: 'Stay & Camp',     href: '/relax' },
-  { label: 'Dining',          href: '/park#dining' },
+  { label: 'Dining',          href: '/park#games' },
   { label: 'Events',          href: '/events' },
 ]
 

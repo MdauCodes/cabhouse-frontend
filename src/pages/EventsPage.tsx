@@ -83,7 +83,9 @@ function Hero() {
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: 'var(--color-dark)' }} />
-      <div className="absolute inset-0 bg-brand-dark/65" />
+      <div className="absolute inset-0 bg-brand-dark/75" />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,20,8,0.70) 0%, rgba(8,20,8,0.40) 55%, transparent 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,20,8,0.75) 0%, transparent 60%)' }} />
       <div ref={ref as React.RefObject<HTMLDivElement>}
         className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-10 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease' }}>
@@ -95,7 +97,7 @@ function Hero() {
           style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.02em' }}>
           Your Celebration.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Our Venue.</em>
         </h1>
-        <p className="text-white/60 font-body text-sm leading-relaxed max-w-sm mb-6">
+        <p className="text-white/85 font-body text-sm leading-relaxed max-w-sm mb-6">
           Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled — so you can be fully present.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about hosting an event at CabHouse")}`}
