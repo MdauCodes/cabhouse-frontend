@@ -19,7 +19,7 @@ const PACKAGES_LINKS = [
   { label: 'Birthday Packages',   href: '/events#birthday' },
 ]
 
-const NAV_BG     = 'rgba(250, 248, 244, 0.82)'
+const NAV_BG     = 'rgba(255, 255, 255, 0.92)'
 const NAV_BORDER = 'rgba(200, 135, 58, 0.20)'
 
 export default function Navbar() {
