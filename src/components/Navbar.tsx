@@ -19,8 +19,8 @@ const PACKAGES_LINKS = [
   { label: 'Birthday Packages',   href: '/events#birthday' },
 ]
 
-const NAV_BG   = '#1A1714'
-const NAV_BORDER = 'rgba(200, 135, 58, 0.14)'
+const NAV_BG     = 'rgba(250, 248, 244, 0.82)'
+const NAV_BORDER = 'rgba(200, 135, 58, 0.20)'
 
 export default function Navbar() {
   const { pathname } = useLocation()
@@ -55,15 +55,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const linkCls = 'text-sm font-body font-medium text-white/65 hover:text-white tracking-wide transition-colors duration-150 flex items-center gap-1'
+  const linkCls = 'text-sm font-body font-medium text-brand-dark/60 hover:text-brand-dark tracking-wide transition-colors duration-150 flex items-center gap-1'
 
   return (
     <header
       className="sticky top-0 z-50 transition-shadow duration-300"
       style={{
         backgroundColor: NAV_BG,
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
         borderBottom: `1px solid ${NAV_BORDER}`,
-        boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.28)' : 'none',
+        boxShadow: scrolled ? '0 4px 24px rgba(26,23,20,0.10)' : 'none',
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-[68px]">
@@ -100,16 +102,18 @@ export default function Navbar() {
               <div
                 className="absolute top-full left-0 mt-2 w-52 rounded-xl py-2 z-50"
                 style={{
-                  backgroundColor: '#231F1B',
+                  backgroundColor: 'rgba(250, 248, 244, 0.96)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
                   border: `1px solid ${NAV_BORDER}`,
-                  boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+                  boxShadow: '0 16px 40px rgba(26,23,20,0.12)',
                 }}
                 onMouseEnter={() => setParkOpen(true)}
                 onMouseLeave={() => setParkOpen(false)}
               >
                 {PARK_LINKS.map(l => (
                   <a key={l.href} href={l.href}
-                    className="block px-4 py-2.5 text-sm font-body text-white/60 hover:text-white transition-colors"
+                    className="block px-4 py-2.5 text-sm font-body text-brand-dark/60 hover:text-brand-dark transition-colors"
                     style={{ ':hover': { backgroundColor: 'rgba(200,135,58,0.06)' } } as React.CSSProperties}
                     onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(200,135,58,0.06)')}
                     onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
@@ -136,16 +140,18 @@ export default function Navbar() {
               <div
                 className="absolute top-full left-0 mt-2 w-52 rounded-xl py-2 z-50"
                 style={{
-                  backgroundColor: '#231F1B',
+                  backgroundColor: 'rgba(250, 248, 244, 0.96)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
                   border: `1px solid ${NAV_BORDER}`,
-                  boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+                  boxShadow: '0 16px 40px rgba(26,23,20,0.12)',
                 }}
                 onMouseEnter={() => setPkgOpen(true)}
                 onMouseLeave={() => setPkgOpen(false)}
               >
                 {PACKAGES_LINKS.map(l => (
                   <a key={l.href} href={l.href}
-                    className="block px-4 py-2.5 text-sm font-body text-white/60 hover:text-white transition-colors"
+                    className="block px-4 py-2.5 text-sm font-body text-brand-dark/60 hover:text-brand-dark transition-colors"
                     onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(200,135,58,0.06)')}
                     onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
@@ -185,7 +191,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-white/80 hover:text-white transition-colors" aria-label="Toggle menu">
+        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-brand-dark/70 hover:text-brand-dark transition-colors" aria-label="Toggle menu">
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
@@ -194,38 +200,38 @@ export default function Navbar() {
       {open && (
         <div
           className="lg:hidden border-t"
-          style={{ backgroundColor: '#231F1B', borderColor: NAV_BORDER }}
+          style={{ backgroundColor: 'rgba(250, 248, 244, 0.96)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderColor: NAV_BORDER }}
         >
           <nav className="flex flex-col px-6 py-5 gap-1">
             <a href="/" onClick={() => setOpen(false)}
-              className="text-white/80 font-body font-medium py-2.5 text-sm border-b"
+              className="text-brand-dark/80 font-body font-medium py-2.5 text-sm border-b"
               style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
               Home
             </a>
             <p className="text-[9px] uppercase tracking-widest font-bold pt-3 pb-1" style={{ color: 'var(--color-gold)' }}>CabHouse Park</p>
             {PARK_LINKS.map(l => (
               <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="text-white/55 font-body text-sm py-2 pl-3 hover:text-white transition-colors">
+                className="text-brand-dark/55 font-body text-sm py-2 pl-3 hover:text-brand-dark transition-colors">
                 {l.label}
               </a>
             ))}
             <p className="text-[9px] uppercase tracking-widest font-bold pt-3 pb-1" style={{ color: 'var(--color-gold)' }}>Offers & Packages</p>
             {PACKAGES_LINKS.map(l => (
               <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="text-white/55 font-body text-sm py-2 pl-3 hover:text-white transition-colors">
+                className="text-brand-dark/55 font-body text-sm py-2 pl-3 hover:text-brand-dark transition-colors">
                 {l.label}
               </a>
             ))}
             <a href="/water" onClick={() => setOpen(false)}
-              className="text-white/55 font-body text-sm py-2.5 hover:text-white transition-colors">
+              className="text-brand-dark/55 font-body text-sm py-2.5 hover:text-brand-dark transition-colors">
               CabHouse Water
             </a>
             <a href="/apartments" onClick={() => setOpen(false)}
-              className="text-white/55 font-body text-sm py-2.5 hover:text-white transition-colors">
+              className="text-brand-dark/55 font-body text-sm py-2.5 hover:text-brand-dark transition-colors">
               Apartments
             </a>
             <a href="/about" onClick={() => setOpen(false)}
-              className="text-white/80 font-body font-medium py-2.5 text-sm border-t mt-1"
+              className="text-brand-dark/80 font-body font-medium py-2.5 text-sm border-t mt-1"
               style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
               About Our Group
             </a>
