@@ -17,20 +17,52 @@ const ACTIVITIES = [
 
 const PACKAGES = [
   {
-    name: 'Bronze', price: 1000, highlight: false, tag: null,
+    name: 'Bronze', price: 1000, tag: null, level: 1,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
+    bg: 'rgba(68,30,4,0.55)',
+    border: '1px solid rgba(160,80,20,0.30)',
+    accent: '#B87040',
+    dot: '#B87040',
+    priceSize: 'clamp(1rem, 1.8vw, 1.5rem)',
+    solid: false,
+    cta: 'Reserve My Spot',
+    waMsg: "Hi CabHouse I'd like to book the Bronze Package at KES 1,000 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides & Swings.\n\nPlease let me know your available dates and how many people I can bring. Thank you!",
   },
   {
-    name: 'Silver', price: 1300, highlight: false, tag: null,
+    name: 'Silver', price: 1300, tag: null, level: 2,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
+    bg: 'linear-gradient(160deg, rgba(60,75,100,0.70) 0%, rgba(40,55,75,0.60) 100%)',
+    border: '1px solid rgba(148,163,184,0.35)',
+    accent: '#A8BACE',
+    dot: '#A8BACE',
+    priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)',
+    solid: false,
+    cta: 'Book Silver Package',
+    waMsg: "Hi CabHouse I'd like to book the Silver Package at KES 1,300 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides, Swings & Swimming.\n\nKindly confirm availability and any group rates if applicable. Looking forward to visiting!",
   },
   {
-    name: 'Platinum', price: 1400, highlight: true, tag: 'Popular',
+    name: 'Platinum', price: 1400, tag: 'Popular', level: 3,
     activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
+    bg: 'var(--color-gold)',
+    border: '2px solid rgba(255,255,255,0.20)',
+    accent: '#fff',
+    dot: '#fff',
+    priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)',
+    solid: true,
+    cta: 'Secure Platinum Now',
+    waMsg: "Hi CabHouse I'd like to book the Platinum Package at KES 1,400 per person - your most popular pick!\n\nThis includes: Zipline, Sky Bike, Rainbow Slides & Bridge & Mountain.\n\nPlease share available dates and whether group bookings receive any discount. Excited to experience this!",
   },
   {
-    name: 'Gold', price: 2500, highlight: false, tag: 'All-In',
+    name: 'Gold', price: 2500, tag: 'All-In', level: 4,
     activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
+    bg: 'linear-gradient(160deg, rgba(120,70,10,0.85) 0%, rgba(80,40,5,0.90) 100%)',
+    border: '2px solid rgba(250,190,60,0.55)',
+    accent: '#FBBF24',
+    dot: '#FBBF24',
+    priceSize: 'clamp(1.3rem, 2.3vw, 2rem)',
+    solid: false,
+    cta: 'Claim Gold Experience',
+    waMsg: "Hi CabHouse I'm interested in the Gold All-In Package at KES 2,500 per person - the full experience!\n\nThis covers: Every Activity, Unlimited Access & a Full Day Pass.\n\nI'd like to plan an unforgettable day out. Please confirm available dates, group size options, and anything I should know before arrival. Can't wait!",
   },
 ]
 
@@ -180,7 +212,6 @@ function ActivityRow({ a, idx }: { a: typeof ACTIVITIES[0]; idx: number }) {
 }
 
 function PackagesSection() {
-  useMediaUrl('hero-2')
   const { ref, inView } = useInView()
 
   return (
@@ -203,57 +234,67 @@ function PackagesSection() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {PACKAGES.map(pkg => (
-            <a
-              key={pkg.name}
-              href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I'd like to book the ${pkg.name} Package at CabHouse Park`)}`}
-              target="_blank" rel="noopener noreferrer"
-              className={`rounded-xl flex flex-col p-4 border transition-all duration-200 group ${
-                pkg.highlight
-                  ? 'bg-brand-gold border-transparent'
-                  : 'bg-white/[0.04] border-white/8 hover:border-brand-gold/40'
-              }`}
+            <div key={pkg.name}
+              className="rounded-xl flex flex-col relative overflow-hidden"
+              style={{ background: pkg.bg, border: pkg.border }}
             >
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="font-display font-black text-white leading-none"
-                  style={{ fontSize: 'clamp(1rem, 1.6vw, 1.2rem)' }}>
-                  {pkg.name}
-                </h3>
-                {pkg.tag && (
-                  <span className={`text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
-                    pkg.highlight ? 'bg-white/25 text-white' : 'bg-brand-gold/20 text-brand-gold'
-                  }`}>{pkg.tag}</span>
-                )}
+              <div className="p-3 sm:p-4 pb-2 flex-shrink-0">
+                <div className="flex items-center gap-1 mb-2.5">
+                  {[1,2,3,4].map(n => (
+                    <span key={n} className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: n <= pkg.level ? pkg.accent : 'rgba(255,255,255,0.12)' }} />
+                  ))}
+                  <span className="ml-1 font-body text-[8px] uppercase tracking-widest"
+                    style={{ color: `${pkg.accent}99` }}>
+                    {pkg.level === 1 ? 'Entry' : pkg.level === 2 ? 'Standard' : pkg.level === 3 ? 'Premium' : 'Elite'}
+                  </span>
+                </div>
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-display font-black text-white leading-none"
+                    style={{ fontSize: 'clamp(0.9rem, 1.6vw, 1.25rem)' }}>
+                    {pkg.name}
+                  </h3>
+                  {pkg.tag && (
+                    <span className="text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
+                      style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}28`, color: pkg.accent }}>
+                      {pkg.tag}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display font-black" style={{ fontSize: pkg.priceSize, color: pkg.accent }}>
+                    {pkg.price.toLocaleString()}
+                  </span>
+                  <span className="font-body text-[9px] uppercase tracking-wide text-white/35">KES/pax</span>
+                </div>
               </div>
 
-              <div className="flex items-baseline gap-1 mb-3">
-                <span className={`font-display font-black ${pkg.highlight ? 'text-white' : 'text-brand-gold'}`}
-                  style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)' }}>
-                  {pkg.price.toLocaleString()}
-                </span>
-                <span className={`font-body text-[9px] uppercase tracking-wide ${pkg.highlight ? 'text-white/60' : 'text-white/30'}`}>
-                  KES/pax
-                </span>
-              </div>
+              <div className="mx-3 sm:mx-4 h-px flex-shrink-0" style={{ backgroundColor: `${pkg.accent}28` }} />
 
-              <div className={`h-px mb-3 ${pkg.highlight ? 'bg-white/20' : 'bg-white/6'}`} />
-
-              <ul className="space-y-1.5 flex-1 mb-4">
-                {pkg.activities.map(act => (
-                  <li key={act} className={`flex items-center gap-2 font-body text-[11px] ${pkg.highlight ? 'text-white/85' : 'text-white/50'}`}>
-                    <span className={`w-1 h-1 rounded-full flex-shrink-0 ${pkg.highlight ? 'bg-white' : 'bg-brand-gold'}`} />
-                    {act}
+              <ul className="p-3 sm:p-4 space-y-2 flex-1">
+                {pkg.activities.map(a => (
+                  <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px]"
+                    style={{ color: pkg.solid ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.70)' }}>
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dot }} />
+                    {a}
                   </li>
                 ))}
               </ul>
 
-              <span className={`text-center text-[9px] font-body font-bold tracking-widest uppercase py-2 rounded-full transition-all duration-200 ${
-                pkg.highlight
-                  ? 'bg-white text-brand-gold'
-                  : 'bg-white/6 text-white/50 group-hover:bg-brand-gold group-hover:text-white border border-white/8'
-              }`}>
-                Book Now
-              </span>
-            </a>
+              <div className="p-3 sm:p-4 pt-0 flex-shrink-0">
+                <a
+                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(pkg.waMsg)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="block text-center font-body font-bold tracking-wide py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
+                  style={{
+                    fontSize: 'clamp(8px, 1.1vw, 11px)',
+                    background: pkg.solid ? '#fff' : 'var(--color-gold)',
+                    color: pkg.solid ? 'var(--color-gold)' : '#fff',
+                  }}>
+                  {pkg.cta}
+                </a>
+              </div>
+            </div>
           ))}
         </div>
       </div>
