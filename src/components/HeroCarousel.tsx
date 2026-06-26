@@ -148,7 +148,7 @@ export default function HeroCarousel() {
         </div>
 
         {/* CTAs */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-8">
           <a
             href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to book a visit to CabHouse Park")}`}
             target="_blank" rel="noopener noreferrer"
@@ -166,6 +166,31 @@ export default function HeroCarousel() {
               <path d="M3 8h10M9 4l4 4-4 4"/>
             </svg>
           </a>
+        </div>
+
+        {/* Brand family strip */}
+        <div className="border-t border-white/10 pt-5">
+          <p className="text-white/30 font-body text-[9px] uppercase tracking-[0.2em] font-semibold mb-3">
+            Also from CabHouse Agencies
+          </p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {[
+              { label: 'CabHouse Park',       sub: 'Recreation',  href: '/park',       dot: 'var(--color-gold)' },
+              { label: 'CabHouse Water',      sub: 'Hydration',   href: '/water',      dot: '#38BDF8' },
+              { label: 'CabHouse Apartments', sub: 'Stays',       href: '/apartments', dot: 'var(--color-gold)' },
+            ].map(b => (
+              <a
+                key={b.label}
+                href={b.href}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-white/25 hover:bg-white/8 transition-all duration-200 group"
+                style={{ backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.05)' }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: b.dot }} />
+                <span className="font-body text-xs text-white/65 group-hover:text-white transition-colors leading-none">{b.label}</span>
+                <span className="text-white/25 font-body text-[10px] hidden sm:inline">· {b.sub}</span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
