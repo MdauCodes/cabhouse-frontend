@@ -4,43 +4,43 @@ import { SITE } from '../config/site'
 
 const PACKAGES = [
   {
-    name: 'Bronze', price: 1000, tag: null,
+    name: 'Bronze', price: 1000, tag: null, level: 1,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
-    bg: 'rgba(101,47,8,0.45)',
-    border: 'rgba(180,90,20,0.35)',
-    accent: '#CD8040',
-    tagStyle: 'background:rgba(180,90,20,0.25);color:#CD8040',
-    dot: '#CD8040',
+    bg: 'rgba(68,30,4,0.55)',
+    border: '1px solid rgba(160,80,20,0.30)',
+    accent: '#B87040',
+    dot: '#B87040',
+    priceSize: 'clamp(1rem, 1.8vw, 1.5rem)',
     solid: false,
   },
   {
-    name: 'Silver', price: 1300, tag: null,
+    name: 'Silver', price: 1300, tag: null, level: 2,
     activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
-    bg: 'rgba(51,65,85,0.50)',
-    border: 'rgba(148,163,184,0.28)',
-    accent: '#94A3B8',
-    tagStyle: 'background:rgba(148,163,184,0.2);color:#94A3B8',
-    dot: '#94A3B8',
+    bg: 'linear-gradient(160deg, rgba(60,75,100,0.70) 0%, rgba(40,55,75,0.60) 100%)',
+    border: '1px solid rgba(148,163,184,0.35)',
+    accent: '#A8BACE',
+    dot: '#A8BACE',
+    priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)',
     solid: false,
   },
   {
-    name: 'Platinum', price: 1400, tag: 'Popular',
+    name: 'Platinum', price: 1400, tag: 'Popular', level: 3,
     activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
     bg: 'var(--color-gold)',
-    border: 'transparent',
+    border: '2px solid rgba(255,255,255,0.20)',
     accent: '#fff',
-    tagStyle: 'background:rgba(255,255,255,0.25);color:#fff',
     dot: '#fff',
+    priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)',
     solid: true,
   },
   {
-    name: 'Gold', price: 2500, tag: 'All-In',
+    name: 'Gold', price: 2500, tag: 'All-In', level: 4,
     activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
-    bg: 'rgba(113,63,18,0.60)',
-    border: 'rgba(234,179,8,0.45)',
-    accent: '#FDE68A',
-    tagStyle: 'background:rgba(234,179,8,0.2);color:#FDE68A',
-    dot: '#FDE68A',
+    bg: 'linear-gradient(160deg, rgba(120,70,10,0.85) 0%, rgba(80,40,5,0.90) 100%)',
+    border: '2px solid rgba(250,190,60,0.55)',
+    accent: '#FBBF24',
+    dot: '#FBBF24',
+    priceSize: 'clamp(1.3rem, 2.3vw, 2rem)',
     solid: false,
   },
 ]
@@ -130,10 +130,22 @@ export default function Pricing() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:h-full">
               {PACKAGES.map(pkg => (
                 <div key={pkg.name}
-                  className="rounded-xl flex flex-col lg:h-full"
-                  style={{ background: pkg.bg, border: `1px solid ${pkg.border}` }}
+                  className="rounded-xl flex flex-col lg:h-full relative overflow-hidden"
+                  style={{ background: pkg.bg, border: pkg.border }}
                 >
-                  <div className="p-3 sm:p-4 pb-3 flex-shrink-0">
+                  <div className="p-3 sm:p-4 pb-2 flex-shrink-0">
+                    {/* Tier level dots */}
+                    <div className="flex items-center gap-1 mb-2.5">
+                      {[1,2,3,4].map(n => (
+                        <span key={n} className="w-1.5 h-1.5 rounded-full transition-all"
+                          style={{ backgroundColor: n <= pkg.level ? pkg.accent : 'rgba(255,255,255,0.12)' }} />
+                      ))}
+                      <span className="ml-1 font-body text-[8px] uppercase tracking-widest"
+                        style={{ color: `${pkg.accent}99` }}>
+                        {pkg.level === 1 ? 'Entry' : pkg.level === 2 ? 'Standard' : pkg.level === 3 ? 'Premium' : 'Elite'}
+                      </span>
+                    </div>
+
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-display font-black text-white leading-none"
                         style={{ fontSize: 'clamp(0.9rem, 1.6vw, 1.25rem)' }}>
@@ -142,23 +154,24 @@ export default function Pricing() {
                       {pkg.tag && (
                         <span
                           className="text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
-                          style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}22`, color: pkg.accent }}
+                          style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}28`, color: pkg.accent }}
                         >{pkg.tag}</span>
                       )}
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="font-display font-black" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.7rem)', color: pkg.accent }}>
+                      <span className="font-display font-black" style={{ fontSize: pkg.priceSize, color: pkg.accent }}>
                         {pkg.price.toLocaleString()}
                       </span>
                       <span className="font-body text-[9px] uppercase tracking-wide text-white/35">KES/pax</span>
                     </div>
                   </div>
 
-                  <div className="mx-3 sm:mx-4 h-px flex-shrink-0 bg-white/10" />
+                  <div className="mx-3 sm:mx-4 h-px flex-shrink-0" style={{ backgroundColor: `${pkg.accent}28` }} />
 
-                  <ul className="p-3 sm:p-4 space-y-1.5 flex-1">
+                  <ul className="p-3 sm:p-4 space-y-2 flex-1">
                     {pkg.activities.map(a => (
-                      <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px] text-white/75">
+                      <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px]"
+                        style={{ color: pkg.solid ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.70)' }}>
                         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dot }} />
                         {a}
                       </li>
@@ -171,9 +184,9 @@ export default function Pricing() {
                       target="_blank" rel="noopener noreferrer"
                       className="block text-center text-[9px] font-body font-bold tracking-widest uppercase py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
                       style={{
-                        background: pkg.solid ? '#fff' : `${pkg.accent}22`,
+                        background: pkg.solid ? '#fff' : `${pkg.accent}20`,
                         color: pkg.solid ? 'var(--color-gold)' : pkg.accent,
-                        border: `1px solid ${pkg.solid ? 'transparent' : `${pkg.accent}44`}`,
+                        border: `1px solid ${pkg.solid ? 'transparent' : `${pkg.accent}50`}`,
                       }}>
                       Book
                     </a>
