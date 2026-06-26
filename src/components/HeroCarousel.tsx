@@ -25,7 +25,7 @@ export default function HeroCarousel() {
       {/* Mobile layout: Park top, Apartments+Water side-by-side below */}
       <div className="flex flex-col gap-2 md:hidden">
         {/* Park — mobile */}
-        <div className="relative overflow-hidden rounded-3xl" style={{ height: '52vw', minHeight: 220 }}>
+        <div className="relative overflow-hidden rounded-3xl" style={{ height: '62vw', minHeight: 260 }}>
           {PARK_SLIDES.map((src, i) => (
             <div key={src} className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
               style={{ backgroundImage: `url(${src})`, opacity: i === slideIdx ? 1 : 0 }} />
@@ -44,7 +44,7 @@ export default function HeroCarousel() {
           </div>
         </div>
         {/* Apartments + Water row — mobile */}
-        <div className="flex gap-2" style={{ height: '38vw', minHeight: 160 }}>
+        <div className="flex gap-2" style={{ height: '48vw', minHeight: 200 }}>
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block">
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/apartments-10.jpeg')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
