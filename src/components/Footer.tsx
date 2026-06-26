@@ -35,7 +35,8 @@ const COL_LEGAL = [
 export default function Footer() {
   const wa = SITE.contact.whatsapp.replace('+', '')
   return (
-    <footer style={{ backgroundColor: 'var(--color-dark)' }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pb-3 md:pb-5">
+    <footer style={{ backgroundColor: 'var(--color-dark)' }} className="rounded-3xl overflow-hidden">
 
       {/* Main grid */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-14 pb-10">
@@ -44,7 +45,7 @@ export default function Footer() {
           {/* Brand col — spans 2 on mobile, 1 on lg */}
           <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/assets/logo-agencies.png" alt="CabHouse" className="h-10 w-auto" style={{ mixBlendMode: 'screen' }} />
+              <img src="/assets/logo-agencies.png" alt="CabHouse" className="h-10 w-auto" />
               <div>
                 <p className="font-display font-black text-white text-sm leading-none">CabHouse</p>
                 <p className="font-body text-white/40 text-[9px] uppercase tracking-widest">Agencies Ltd</p>
@@ -175,5 +176,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </section>
   )
 }
