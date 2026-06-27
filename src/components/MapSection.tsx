@@ -9,9 +9,9 @@ export default function MapSection() {
     >
     <div
       className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col"
-      style={{ height: '80dvh', minHeight: 420 }}
+      style={{ minHeight: 420 }}
     >
-      <div className="max-w-7xl mx-auto w-full flex flex-col h-full py-8 lg:py-10">
+      <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10 lg:h-[76dvh]">
 
         {/* Header */}
         <div className="mb-5 flex-shrink-0">
@@ -26,7 +26,7 @@ export default function MapSection() {
         {/* Body grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 flex-1 min-h-0">
 
-          {/* Info panel "” single compact block */}
+          {/* Info panel "" single compact block */}
           <div className="lg:col-span-2 flex flex-col gap-3 min-h-0">
 
             {/* Compact info rows in one card */}
@@ -41,7 +41,7 @@ export default function MapSection() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-white font-body text-xs font-semibold">Kisii, Kenya</p>
-                  <p className="text-white/40 font-body text-[10px] mt-0.5">Near Nyankororo Forest · Kisii"“Riana Road</p>
+                  <p className="text-white/40 font-body text-[10px] mt-0.5">Near Nyankororo Forest, Kisii-Riana Road</p>
                 </div>
               </div>
 
@@ -53,7 +53,7 @@ export default function MapSection() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white font-body text-xs font-semibold">Open Daily · 8 AM "“ 8 PM</p>
+                  <p className="text-white font-body text-xs font-semibold">Open Daily, 8 AM - 8 PM</p>
                   <p className="text-white/40 font-body text-[10px] mt-0.5">Monday through Sunday, year-round</p>
                 </div>
               </div>
@@ -76,7 +76,7 @@ export default function MapSection() {
               </div>
             </div>
 
-            {/* Action buttons "” side by side */}
+            {/* Action buttons "" side by side */}
             <div className="grid grid-cols-2 gap-2 flex-shrink-0">
               <a
                 href={SITE.location.mapsLink}
@@ -104,18 +104,40 @@ export default function MapSection() {
             </div>
           </div>
 
-          {/* Map */}
-          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-white/8 min-h-0 flex-1">
+          {/* Map — desktop iframe, mobile tap-to-open card */}
+          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-white/8 min-h-0 lg:flex-1">
+
+            {/* Desktop: embedded OSM map */}
             <iframe
               title="CabHouse Park Location"
-              src="https://maps.google.com/maps?q=Kisii+Kenya&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              width="100%"
-              height="100%"
-              style={{ border: 0, display: 'block', minHeight: 240 }}
+              src="https://www.openstreetmap.org/export/embed.html?bbox=34.72%2C-0.72%2C34.83%2C-0.62&amp;layer=mapnik&amp;marker=-0.6817%2C34.7667"
+              className="hidden lg:block w-full h-full"
+              style={{ border: 0, minHeight: 300 }}
               allowFullScreen
               loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
             />
+
+            {/* Mobile: tap-to-open card (iframes are awkward on touch) */}
+            <a
+              href={SITE.location.mapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden flex flex-col items-center justify-center gap-3 py-8 w-full text-center"
+              style={{ background: 'rgba(255,255,255,0.03)' }}
+            >
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-gold)' }}>
+                <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-body font-semibold text-sm">Open in Maps</p>
+                <p className="text-white/40 font-body text-xs mt-0.5">Near Nyankororo Forest, Kisii</p>
+              </div>
+              <span className="font-body text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full" style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                Get Directions
+              </span>
+            </a>
           </div>
         </div>
       </div>
