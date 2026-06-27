@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import FloatingWhatsApp from '../components/FloatingWhatsApp'
+import CookieBanner from '../components/CookieBanner'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -256,6 +257,7 @@ export default function AboutPage() {
 
       <Footer />
       <FloatingWhatsApp />
+      <CookieBanner />
     </div>
   )
 }
