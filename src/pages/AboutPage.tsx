@@ -13,7 +13,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Holistic Well-Being',
-    desc: 'We promote healthy, active living across all our entertainment and hospitality services — mind, body and spirit.',
+    desc: 'We believe good living goes beyond a single moment. Every service we offer — from the rope course to the water bottle — is designed to move you, nourish you and leave you better than we found you.',
   },
   {
     icon: (
@@ -22,7 +22,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Uncompromising Quality',
-    desc: 'From meticulously maintained facilities to pristine water filtration — your safety and comfort always come first.',
+    desc: 'Maintained facilities, rigorous water filtration, clean apartments — quality isn\'t a talking point here, it\'s what you walk into every time. Your safety and comfort are non-negotiable.',
   },
   {
     icon: (
@@ -31,7 +31,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Unified Convenience',
-    desc: 'Your single, trusted partner for recreation, accommodation and hydration — everything under one roof in Kisii.',
+    desc: 'Play, sleep, drink well, celebrate — all under one name in Kisii. We\'re your one call for recreation, accommodation and pure hydration, because life is too short to coordinate too many people.',
   },
 ]
 
@@ -109,7 +109,7 @@ export default function AboutPage() {
               Converge.
             </h1>
             <p className="text-white/60 font-body text-sm leading-relaxed max-w-xl">
-              At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations — all under one roof in Kisii.
+              Born and built in Kisii — CabHouse Agencies brings together adventure, pure hydration and comfortable living under one name. We don't just host people; we give them something to talk about.
             </p>
           </FadeIn>
         </div>
@@ -162,8 +162,8 @@ export default function AboutPage() {
               className="font-display font-black text-white mb-10 leading-tight"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
             >
-              The Values Behind{' '}
-              <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Everything We Do</em>
+              What We Stand For —{' '}
+              <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Every Single Day</em>
             </h2>
           </FadeIn>
 
@@ -196,7 +196,7 @@ export default function AboutPage() {
             <em className="not-italic" style={{ color: '#7a5a2a' }}>Nourish Your Soul.</em>
           </h2>
           <p className="text-brand-dark/55 font-body text-sm leading-relaxed max-w-xl mx-auto mb-8">
-            From high-flying thrills to serene gardens — a vibrant sanctuary of fun and wellness crafted for every generation. Make Kisii your next destination.
+            From high-flying thrills to serene gardens and quiet cabin mornings — CabHouse is where Kisii comes alive. Plan your visit, bring the whole group, and make memories that need no filter.
           </p>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to know more about CabHouse Agencies")}`}

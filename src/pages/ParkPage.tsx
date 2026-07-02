@@ -104,7 +104,7 @@ function HeroSection() {
         </h1>
 
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Eight activity zones, three pool areas and a go-kart track — all in one admission at Kisii's biggest recreation destination.
+          Zip lines, sky bikes, go-karts, three pool areas and eight activity zones — Kisii's wildest day out, all under one roof and one admission.
         </p>
 
         <div className="flex flex-wrap items-center gap-4 mb-8">

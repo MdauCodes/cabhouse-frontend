@@ -53,7 +53,7 @@ function Hero() {
           Stay the Night.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Wake Up to This.</em>
         </h1>
         <p className="text-white/85 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Wooden cabins, glamping tents and camping - all set within the CabHouse grounds. Breakfast available. Activities right outside your door.
+          Fall asleep to crickets and wake up to open skies. Wooden cabins, glamping tents and camping — set right inside CabHouse Park, with breakfast and every activity just outside your door.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20a%20stay%20at%20CabHouse`}
           target="_blank" rel="noopener noreferrer"

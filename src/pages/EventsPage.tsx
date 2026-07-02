@@ -98,7 +98,7 @@ function Hero() {
           Your Celebration.<br /><em className="not-italic" style={{ color: 'var(--color-gold)' }}>Our Venue.</em>
         </h1>
         <p className="text-white/85 font-body text-sm leading-relaxed max-w-sm mb-6">
-          Gardens for 200, indoor halls, premium tents, restaurant and bar. Every detail handled — so you can be fully present.
+          Lush gardens for 200, an air-conditioned indoor hall, premium tents, restaurant and bar — every detail handled so you can show up, breathe and actually enjoy the moment.
         </p>
         <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about hosting an event at CabHouse")}`}
           target="_blank" rel="noopener noreferrer"

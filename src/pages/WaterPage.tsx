@@ -7,22 +7,22 @@ import { SITE } from '../config/site'
 const USES = [
   {
     title: 'Home Delivery',
-    desc: 'Fresh, purified water delivered to your door in Kisii. 5L, 10L and 20L options for families and households.',
+    desc: 'Clean water at your door — no queues, no heavy lifting. 5L, 10L and 20L options for families and households across Kisii.',
     wa: "Hi, I'd like to order CabHouse Water for home delivery",
   },
   {
     title: 'Office & Workplace',
-    desc: 'Keep your team refreshed with regular dispenser refill schedules. Bulk pricing available.',
+    desc: 'Keep your team sharp and hydrated with scheduled dispenser refills. Bulk pricing built for business.',
     wa: "Hi, I'd like to order CabHouse Water for our office",
   },
   {
     title: 'Events & Functions',
-    desc: 'Bottled water supply for weddings, conferences, school events and corporate functions across Kisii County.',
+    desc: 'Make your event memorable — not thirsty. Bottled supply for weddings, conferences, school events and corporate functions.',
     wa: "Hi, I'd like to order CabHouse Water for an event",
   },
   {
     title: 'Retail & Resale',
-    desc: 'Trade accounts for supermarkets, hotels, restaurants and kiosks. Competitive wholesale rates and branded stock.',
+    desc: 'Stock your shelves with a brand people trust. Trade accounts for supermarkets, hotels, restaurants and kiosks — great margins, reliable supply.',
     wa: "Hi, I'd like to enquire about CabHouse Water wholesale/retail supply",
   },
 ]
@@ -191,7 +191,7 @@ function HeroSection() {
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Delivered to You</em>
         </h1>
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          CabHouse Water is purified and bottled right here in Kisii — clean, safe and ready for your home, office or event.
+          Purified and bottled right here in Kisii. No compromise on taste, no question on safety — just clean, crisp water wherever you need it.
         </p>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}

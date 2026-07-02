@@ -9,21 +9,21 @@ const UNITS = [
     name: 'Studio Apartment',
     tag: 'Short Stay',
     beds: 1,
-    desc: 'Self-contained studio with kitchenette. Ideal for business travellers and solo visitors in Kisii.',
+    desc: 'Your own space in the heart of Kisii — kitchenette, en-suite and everything you need for a smooth, comfortable solo stay.',
     wa: "Hi, I'd like to enquire about the Studio Apartment at CabHouse Apartments",
   },
   {
     name: '1-Bedroom Apartment',
     tag: 'Short or Long Stay',
     beds: 2,
-    desc: 'Fully furnished one-bedroom with separate lounge and equipped kitchen. Wi-Fi included.',
+    desc: 'A proper home base — separate lounge, full kitchen and fast Wi-Fi. Ideal for a longer stay or a comfortable business trip.',
     wa: "Hi, I'd like to enquire about the 1-Bedroom Apartment at CabHouse Apartments",
   },
   {
     name: '2-Bedroom Apartment',
     tag: 'Families & Groups',
     beds: 4,
-    desc: 'Spacious two-bedroom for families or colleagues. Full living area, kitchen and housekeeping.',
+    desc: 'Spread out and settle in. Two bedrooms, a full living area, kitchen and housekeeping — perfect for families or the whole work team.',
     wa: "Hi, I'd like to enquire about the 2-Bedroom Apartment at CabHouse Apartments",
   },
 ]
@@ -246,6 +246,8 @@ function HeroSection() {
 
 const APT_PHOTOS = [
   { src: '/assets/apartments-top.png', label: 'CabHouse Apartments' },
+  { src: '/assets/apartment-top2.png', label: 'CabHouse Apartments Exterior' },
+  { src: '/assets/apartment-top3.png', label: 'CabHouse Apartments Building' },
   { src: '/assets/apartments-6.jpeg', label: 'Apartment' },
   { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
   { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
