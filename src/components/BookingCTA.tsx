@@ -17,8 +17,7 @@ function WhatsAppPanel() {
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
       className="flex-1 flex flex-col p-8 lg:p-12"
-      style={{ backgroundColor: '#1a2e1f' }}
-      style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
+      style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
     >
       <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: '#25D366' }}>
         Individuals &amp; Families
@@ -104,8 +103,7 @@ function EmailPanel() {
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
       className="flex-1 flex flex-col p-8 lg:p-12"
-      style={{ backgroundColor: '#1a2e1f' }}
-      style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}
+      style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}
     >
       <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
         Corporates &amp; Enterprises

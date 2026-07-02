@@ -171,9 +171,8 @@ export default function ParkDeepDive() {
       {/* Section header */}
       <div
         className="px-6 lg:px-10 py-8 lg:py-12 border-b border-white/10"
-        style={{ backgroundColor: '#1a2e1f' }}
         ref={ref as React.RefObject<HTMLDivElement>}
-        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.5s ease' }}
+        style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transition: 'opacity 0.5s ease' }}
       >
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-3">
           <h2
