@@ -16,7 +16,8 @@ function WhatsAppPanel() {
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="flex-1 bg-brand-dark flex flex-col p-8 lg:p-12"
+      className="flex-1 flex flex-col p-8 lg:p-12"
+      style={{ backgroundColor: '#1a2e1f' }}
       style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
     >
       <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: '#25D366' }}>
@@ -97,37 +98,38 @@ function EmailPanel() {
   }
 
   const inputCls =
-    'w-full bg-white border border-brand-dark/[0.12] rounded-lg px-3.5 py-2.5 font-body text-sm text-brand-dark placeholder-brand-dark/30 focus:outline-none focus:border-brand-dark/35 transition-colors'
+    'w-full bg-white/10 border border-white/15 rounded-lg px-3.5 py-2.5 font-body text-sm text-white placeholder-white/35 focus:outline-none focus:border-white/40 transition-colors'
 
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="flex-1 bg-brand-cream flex flex-col p-8 lg:p-12"
+      className="flex-1 flex flex-col p-8 lg:p-12"
+      style={{ backgroundColor: '#1a2e1f' }}
       style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}
     >
-      <p className="text-brand-green font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3">
+      <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
         Corporates &amp; Enterprises
       </p>
       <h3
-        className="font-display font-black text-brand-dark leading-[0.95] mb-3"
+        className="font-display font-black text-white leading-[0.95] mb-3"
         style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
       >
         Send a Formal{' '}
         <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
       </h3>
-      <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
+      <p className="text-white/50 font-body text-xs leading-relaxed mb-7 max-w-xs">
         For team events, school trips, weddings and bulk bookings "” we'll come back with a tailored proposal.
       </p>
 
       {sent ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
-          <div className="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center mb-4">
-            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-brand-green" stroke="currentColor" strokeWidth="2">
+          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth="2">
               <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <p className="font-display font-bold text-brand-dark text-base mb-1">Your email app is opening</p>
-          <p className="text-brand-dark/40 font-body text-xs">Your enquiry is pre-filled and ready to send to us.</p>
+          <p className="font-display font-bold text-white text-base mb-1">Your email app is opening</p>
+          <p className="text-white/50 font-body text-xs">Your enquiry is pre-filled and ready to send to us.</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
@@ -147,14 +149,15 @@ function EmailPanel() {
           />
           <button
             type="submit"
-            className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide"
+            className="inline-flex items-center gap-2 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide"
+            style={{ backgroundColor: 'var(--color-gold)' }}
           >
             Send Enquiry
             <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
               <path d="M3 8h10M9 4l4 4-4 4" />
             </svg>
           </button>
-          <p className="text-brand-dark/25 font-body text-[10px] mt-1">
+          <p className="text-white/30 font-body text-[10px] mt-1">
             Opens your email app with the message pre-filled · no account needed
           </p>
         </form>

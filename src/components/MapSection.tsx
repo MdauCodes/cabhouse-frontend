@@ -8,15 +8,15 @@ export default function MapSection() {
       className="px-3 md:px-5 pt-3"
     >
     <div
-      className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col"
-      style={{ minHeight: 420 }}
+      className="rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col"
+      style={{ minHeight: 420, backgroundColor: '#D4B882' }}
     >
       <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10 lg:h-[76dvh]">
 
         {/* Header */}
         <div className="mb-5 flex-shrink-0">
           <h2
-            className="font-display font-black text-white leading-tight"
+            className="font-display font-black text-brand-dark leading-tight"
             style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             Get Here. Make <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Memories</em>.
@@ -30,31 +30,31 @@ export default function MapSection() {
           <div className="lg:col-span-2 flex flex-col gap-3 min-h-0">
 
             {/* Compact info rows in one card */}
-            <div className="bg-white/[0.04] border border-white/8 rounded-xl flex-shrink-0">
+            <div className="bg-white/30 border border-brand-dark/10 rounded-xl flex-shrink-0">
 
               {/* Address */}
-              <div className="flex items-start gap-4 px-4 py-3 border-b border-white/6">
+              <div className="flex items-start gap-4 px-4 py-3 border-b border-brand-dark/6">
                 <div className="w-6 h-6 rounded-full bg-brand-gold/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-brand-gold">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-white font-body text-xs font-semibold">Kisii, Kenya</p>
-                  <p className="text-white/40 font-body text-[10px] mt-0.5">Near Nyankororo Forest, Kisii-Riana Road</p>
+                  <p className="text-brand-dark font-body text-xs font-semibold">Kisii, Kenya</p>
+                  <p className="text-brand-dark/50 font-body text-[10px] mt-0.5">Near Nyankororo Forest, Kisii-Riana Road</p>
                 </div>
               </div>
 
               {/* Hours */}
-              <div className="flex items-start gap-4 px-4 py-3 border-b border-white/6">
+              <div className="flex items-start gap-4 px-4 py-3 border-b border-brand-dark/6">
                 <div className="w-6 h-6 rounded-full bg-brand-gold/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-brand-gold" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white font-body text-xs font-semibold">Open Daily, 8 AM - 8 PM</p>
-                  <p className="text-white/40 font-body text-[10px] mt-0.5">Monday through Sunday, year-round</p>
+                  <p className="text-brand-dark font-body text-xs font-semibold">Open Daily, 8 AM - 8 PM</p>
+                  <p className="text-brand-dark/50 font-body text-[10px] mt-0.5">Monday through Sunday, year-round</p>
                 </div>
               </div>
 
@@ -66,10 +66,10 @@ export default function MapSection() {
                   </svg>
                 </div>
                 <div>
-                  <a href={`tel:${SITE.contact.phone}`} className="text-white font-body text-xs font-semibold hover:text-brand-gold transition-colors block">
+                  <a href={`tel:${SITE.contact.phone}`} className="text-brand-dark font-body text-xs font-semibold hover:text-brand-gold transition-colors block">
                     {SITE.contact.phone}
                   </a>
-                  <a href={`mailto:${SITE.contact.email}`} className="text-white/40 font-body text-[10px] mt-0.5 hover:text-brand-gold transition-colors block">
+                  <a href={`mailto:${SITE.contact.email}`} className="text-brand-dark/50 font-body text-[10px] mt-0.5 hover:text-brand-gold transition-colors block">
                     {SITE.contact.email}
                   </a>
                 </div>
@@ -105,7 +105,7 @@ export default function MapSection() {
           </div>
 
           {/* Map — desktop iframe, mobile tap-to-open card */}
-          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-white/8 min-h-0 lg:flex-1">
+          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-brand-dark/10 min-h-0 lg:flex-1">
 
             {/* Desktop: embedded OSM map */}
             <iframe
@@ -123,7 +123,7 @@ export default function MapSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="lg:hidden flex flex-col items-center justify-center gap-3 py-8 w-full text-center"
-              style={{ background: 'rgba(255,255,255,0.03)' }}
+              style={{ background: 'rgba(0,0,0,0.06)' }}
             >
               <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-gold)' }}>
                 <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
@@ -131,8 +131,8 @@ export default function MapSection() {
                 </svg>
               </div>
               <div>
-                <p className="text-white font-body font-semibold text-sm">Open in Maps</p>
-                <p className="text-white/40 font-body text-xs mt-0.5">Near Nyankororo Forest, Kisii</p>
+                <p className="text-brand-dark font-body font-semibold text-sm">Open in Maps</p>
+                <p className="text-brand-dark/50 font-body text-xs mt-0.5">Near Nyankororo Forest, Kisii</p>
               </div>
               <span className="font-body text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full" style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                 Get Directions

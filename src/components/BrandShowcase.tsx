@@ -38,7 +38,7 @@ export default function BrandShowcase() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20" style={{ backgroundColor: '#1a2e1f' }}>
 
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
@@ -49,12 +49,12 @@ export default function BrandShowcase() {
             CabHouse Agencies Ltd
           </p>
           <h2
-            className="font-display font-black text-brand-dark leading-tight"
+            className="font-display font-black text-white leading-tight"
             style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.028em' }}
           >
             One company. Three experiences.
           </h2>
-          <p className="text-brand-dark/65 font-body text-base mt-4 max-w-xl mx-auto leading-relaxed">
+          <p className="text-white/60 font-body text-base mt-4 max-w-xl mx-auto leading-relaxed">
             CabHouse Agencies is the home of Park, Water and Apartments — all in one destination in Kisii.
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function BrandShowcase() {
             <a
               key={b.name}
               href={b.href}
-              className="group bg-white rounded-2xl overflow-hidden border border-brand-dark/[0.07] hover:shadow-xl transition-all duration-300"
+              className="group bg-white/10 hover:bg-white/15 rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 hover:shadow-xl transition-all duration-300"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'translateY(0)' : 'translateY(20px)',
@@ -93,10 +93,10 @@ export default function BrandShowcase() {
                 <p className="font-body text-xs uppercase tracking-[0.2em] font-bold mb-2" style={{ color: 'var(--color-gold)' }}>
                   {b.tagline}
                 </p>
-                <p className="text-brand-dark/70 font-body text-sm leading-relaxed mb-4">{b.desc}</p>
+                <p className="text-white/65 font-body text-sm leading-relaxed mb-4">{b.desc}</p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
                   {b.tags.map(t => (
-                    <span key={t} className="text-[10px] font-body text-brand-dark/50 border border-brand-dark/12 px-2.5 py-1 rounded-full">{t}</span>
+                    <span key={t} className="text-[10px] font-body text-white/60 border border-white/15 px-2.5 py-1 rounded-full">{t}</span>
                   ))}
                 </div>
                 <span

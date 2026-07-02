@@ -102,7 +102,7 @@ export default function Pricing() {
       style={{ background: 'var(--canvas)' }}
       className="px-3 md:px-5 pt-3"
     >
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-4 lg:px-10 flex flex-col" style={{ minHeight: 480 }}>
+      <div className="rounded-3xl overflow-hidden px-4 lg:px-10 flex flex-col" style={{ minHeight: 480, backgroundColor: '#D4B882' }}>
       <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10">
 
         {/* Header row */}
@@ -111,19 +111,19 @@ export default function Pricing() {
           className="flex items-center justify-between mb-5 flex-shrink-0"
           style={{ opacity: inView ? 1 : 0, transition: 'all 0.5s ease' }}
         >
-          <h2 className="font-display font-black text-white leading-none"
+          <h2 className="font-display font-black text-brand-dark leading-none"
             style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
             Packages & <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Pricing</em>
           </h2>
-          <p className="text-white/45 font-body text-xs hidden lg:block">All prices in KES · WhatsApp booking</p>
+          <p className="text-brand-dark/50 font-body text-xs hidden lg:block">All prices in KES · WhatsApp booking</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-5 bg-white/5 rounded-full p-1 self-start flex-shrink-0">
+        <div className="flex gap-1 mb-5 bg-brand-dark/8 rounded-full p-1 self-start flex-shrink-0">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className={`px-3 sm:px-4 py-1.5 rounded-full font-body text-xs font-semibold transition-all duration-200 ${
-                tab === t.id ? 'bg-brand-gold text-white' : 'text-white/40 hover:text-white'
+                tab === t.id ? 'bg-brand-gold text-white' : 'text-brand-dark/50 hover:text-brand-dark'
               }`}>
               {t.label}
             </button>
@@ -210,14 +210,14 @@ export default function Pricing() {
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
                 {/* Individual Activities */}
-                <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col">
-                  <h3 className="font-display font-bold text-white text-sm mb-3 flex-shrink-0">Individual Activities</h3>
+                <div className="bg-white/30 border border-brand-dark/10 rounded-xl p-4 sm:p-5 flex flex-col">
+                  <h3 className="font-display font-bold text-brand-dark text-sm mb-3 flex-shrink-0">Individual Activities</h3>
                   <div className="flex flex-col flex-1">
                     {SINGLES.map((s, i) => (
-                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < SINGLES.length - 1 ? 'border-b border-white/5' : ''}`}>
+                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < SINGLES.length - 1 ? 'border-b border-brand-dark/8' : ''}`}>
                         <div className="min-w-0">
-                          <p className="text-white font-body text-xs font-medium">{s.name}</p>
-                          <p className="text-white/30 font-body text-[10px]">{s.note}</p>
+                          <p className="text-brand-dark font-body text-xs font-medium">{s.name}</p>
+                          <p className="text-brand-dark/40 font-body text-[10px]">{s.note}</p>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className="text-brand-gold font-display font-bold text-sm">KES {s.price.toLocaleString()}</span>
@@ -234,14 +234,14 @@ export default function Pricing() {
                   </div>
                 </div>
                 {/* Cars & Go-Karts */}
-                <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col">
-                  <h3 className="font-display font-bold text-white text-sm mb-3 flex-shrink-0">Cars & Go-Karts</h3>
+                <div className="bg-white/30 border border-brand-dark/10 rounded-xl p-4 sm:p-5 flex flex-col">
+                  <h3 className="font-display font-bold text-brand-dark text-sm mb-3 flex-shrink-0">Cars & Go-Karts</h3>
                   <div className="flex flex-col flex-1">
                     {CARS.map((c, i) => (
-                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < CARS.length - 1 ? 'border-b border-white/5' : ''}`}>
+                      <div key={i} className={`flex items-center justify-between py-2.5 gap-3 ${i < CARS.length - 1 ? 'border-b border-brand-dark/8' : ''}`}>
                         <div className="min-w-0">
-                          <p className="text-white font-body text-xs font-medium">{c.name}</p>
-                          <p className="text-white/30 font-body text-[10px]">{c.note}</p>
+                          <p className="text-brand-dark font-body text-xs font-medium">{c.name}</p>
+                          <p className="text-brand-dark/40 font-body text-[10px]">{c.note}</p>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className="text-brand-gold font-display font-bold text-sm">KES {c.price.toLocaleString()}</span>
@@ -259,9 +259,9 @@ export default function Pricing() {
                 </div>
               </div>
               {/* Upsell banner */}
-              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5">
-                <p className="font-body text-xs text-white/55 text-center sm:text-left">
-                  <span className="text-white font-semibold">Save more with a package.</span> Bundles like Platinum (KES 1,400) give you multiple activities at a better rate.
+              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
+                <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
+                  <span className="text-brand-dark font-semibold">Save more with a package.</span> Bundles like Platinum (KES 1,400) give you multiple activities at a better rate.
                 </p>
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I was browsing your individual activities and I'm interested in getting more value. Could you help me pick the best package for my group and visit date? Thank you!`)}`}
@@ -277,18 +277,18 @@ export default function Pricing() {
           {/* ── Stays ── */}
           {tab === 'stays' && (
             <div className="flex flex-col gap-3">
-              <div className="bg-white/[0.04] border border-white/8 rounded-xl p-4 sm:p-5 flex flex-col flex-1">
-                <h3 className="font-display font-bold text-white text-sm mb-4 flex-shrink-0">Stay With Us</h3>
+              <div className="bg-white/30 border border-brand-dark/10 rounded-xl p-4 sm:p-5 flex flex-col flex-1">
+                <h3 className="font-display font-bold text-brand-dark text-sm mb-4 flex-shrink-0">Stay With Us</h3>
                 <div className="flex flex-col flex-1 overflow-y-auto">
                   {STAYS.map((s, i) => (
-                    <div key={i} className={`flex flex-wrap items-center gap-x-4 gap-y-1 py-3 ${i < STAYS.length - 1 ? 'border-b border-white/5' : ''}`}>
+                    <div key={i} className={`flex flex-wrap items-center gap-x-4 gap-y-1 py-3 ${i < STAYS.length - 1 ? 'border-b border-brand-dark/8' : ''}`}>
                       <div className="flex-1 min-w-[120px]">
-                        <p className="text-white font-body text-xs font-semibold">{s.name}</p>
-                        <p className="text-white/30 font-body text-[10px]">from KES {s.base.toLocaleString()} / night</p>
+                        <p className="text-brand-dark font-body text-xs font-semibold">{s.name}</p>
+                        <p className="text-brand-dark/40 font-body text-[10px]">from KES {s.base.toLocaleString()} / night</p>
                       </div>
-                      <div className="hidden sm:flex items-center gap-4 text-[10px] font-body text-white/40">
-                        <span>+Breakfast 1 pax: <span className="text-white/60">{s.b1?.toLocaleString() ?? '—'}</span></span>
-                        {s.b2 && <span>2 pax: <span className="text-white/60">{s.b2.toLocaleString()}</span></span>}
+                      <div className="hidden sm:flex items-center gap-4 text-[10px] font-body text-brand-dark/40">
+                        <span>+Breakfast 1 pax: <span className="text-brand-dark/60">{s.b1?.toLocaleString() ?? '—'}</span></span>
+                        {s.b2 && <span>2 pax: <span className="text-brand-dark/60">{s.b2.toLocaleString()}</span></span>}
                       </div>
                       <a
                         href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to reserve a *${s.name}* at CabHouse Park.\n\nStarting from KES ${s.base.toLocaleString()} per night. Please let me know available dates, whether breakfast is available, and what I should bring or prepare for my stay. Looking forward to it!`)}`}
@@ -300,12 +300,12 @@ export default function Pricing() {
                     </div>
                   ))}
                 </div>
-                <p className="text-white/20 font-body text-[9px] mt-3 flex-shrink-0">+B = breakfast included · Prices per night in KES</p>
+                <p className="text-brand-dark/30 font-body text-[9px] mt-3 flex-shrink-0">+B = breakfast included · Prices per night in KES</p>
               </div>
               {/* Upsell banner */}
-              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5">
-                <p className="font-body text-xs text-white/55 text-center sm:text-left">
-                  <span className="text-white font-semibold">Staying over?</span> Combine your accommodation with a day package and get the full CabHouse experience in one visit.
+              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
+                <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
+                  <span className="text-brand-dark font-semibold">Staying over?</span> Combine your accommodation with a day package and get the full CabHouse experience in one visit.
                 </p>
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to plan a stay at CabHouse Park and also enjoy the park activities while I'm there. Can you help me put together a combined stay + activities plan for my group? Please share available dates and any special offers. Thank you!`)}`}
@@ -330,15 +330,15 @@ export default function Pricing() {
                   ]
                   const ctas = ['Book the Gardens', 'Reserve the Hall', 'Book Premium Tent']
                   return (
-                    <div key={i} className="bg-white/[0.04] border border-white/8 rounded-xl p-5 flex flex-col">
+                    <div key={i} className="bg-white/30 border border-brand-dark/10 rounded-xl p-5 flex flex-col">
                       <div className="flex-1">
-                        <h3 className="font-display font-bold text-white text-sm mb-1">{v.name}</h3>
-                        <p className="text-white/30 font-body text-[10px] mb-4">{v.note}</p>
+                        <h3 className="font-display font-bold text-brand-dark text-sm mb-1">{v.name}</h3>
+                        <p className="text-brand-dark/40 font-body text-[10px] mb-4">{v.note}</p>
                         <div className="flex items-baseline gap-1">
                           <span className="text-brand-gold font-display font-black" style={{ fontSize: 'var(--type-h2)' }}>
                             {v.price.toLocaleString()}
                           </span>
-                          <span className="text-white/20 font-body text-[9px] uppercase tracking-wide">KES / event</span>
+                          <span className="text-brand-dark/30 font-body text-[9px] uppercase tracking-wide">KES / event</span>
                         </div>
                       </div>
                       <a
@@ -353,9 +353,9 @@ export default function Pricing() {
                 })}
               </div>
               {/* Bottom nudge */}
-              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-3.5">
-                <p className="font-body text-xs text-white/55 text-center sm:text-left">
-                  <span className="text-white font-semibold">Not sure which venue fits your event?</span> Tell us your headcount, date, and budget — we'll suggest the best option.
+              <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
+                <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
+                  <span className="text-brand-dark font-semibold">Not sure which venue fits your event?</span> Tell us your headcount, date, and budget — we'll suggest the best option.
                 </p>
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'm planning an event and would like help choosing the right venue.\n\nCould you help me based on my headcount, date, and budget? I'm open to Gardens, Indoor Hall, or the Premium Tent. Please get in touch so we can plan this together. Thank you!`)}`}

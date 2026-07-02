@@ -22,29 +22,29 @@ const BLOCKS: Block[] = [
     eyebrow: 'Adventures',
     title: 'Push Your',
     accent: 'Limits',
-    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide "” all set against the open Kisii sky.',
-    bullets: ['100m Rainbow Slide', 'Sky Bike "” aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
+    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide “” all set against the open Kisii sky.',
+    bullets: ['100m Rainbow Slide', 'Sky Bike “” aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
     cta: 'Book Adventures',
     waMsg: 'Hi, I want to book adventure activities at CabHouse Park',
     href: '/park',
     imageId: 'hero-1',
     reverse: false,
     dark: true,
-    bg: 'var(--color-dark)',
+    bg: '#1a2e1f',
   },
   {
     eyebrow: 'Games & Rides',
     title: 'Play All',
     accent: 'Day',
-    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park "” non-stop action for every age.',
-    bullets: ['Bumper Cars "” 10 / 30 min / 1 hr', 'Go-Karts "” 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
+    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park “” non-stop action for every age.',
+    bullets: ['Bumper Cars “” 10 / 30 min / 1 hr', 'Go-Karts “” 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
     cta: 'See All Games',
     waMsg: 'Hi, I want to book games at CabHouse Park',
     href: '/park',
     imageId: 'hero-3',
     reverse: true,
-    dark: false,
-    bg: '#ffffff',
+    dark: true,
+    bg: '#1a2e1f',
   },
   {
     eyebrow: 'Dine & Unwind',
@@ -58,21 +58,21 @@ const BLOCKS: Block[] = [
     imageId: 'feat-resort',
     reverse: false,
     dark: true,
-    bg: 'var(--color-dark)',
+    bg: '#1a2e1f',
   },
   {
     eyebrow: 'Events & Stays',
     title: 'Celebrate &',
     accent: 'Stay',
     body: 'Elegant halls, garden spaces and premium tents for events. Stay the night in cozy cabins or under the stars in a tented camp.',
-    bullets: ['Gardens "” up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
+    bullets: ['Gardens “” up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
     cta: 'Plan Your Event',
     waMsg: 'Hi, I want to inquire about events or stays at CabHouse',
     href: '/events',
     imageId: 'feat-events',
     reverse: true,
-    dark: false,
-    bg: 'var(--color-cream)',
+    dark: true,
+    bg: '#1a2e1f',
   },
 ]
 
@@ -170,13 +170,14 @@ export default function ParkDeepDive() {
 
       {/* Section header */}
       <div
-        className="bg-white px-6 lg:px-10 py-8 lg:py-12 border-b border-brand-dark/8"
+        className="px-6 lg:px-10 py-8 lg:py-12 border-b border-white/10"
+        style={{ backgroundColor: '#1a2e1f' }}
         ref={ref as React.RefObject<HTMLDivElement>}
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.5s ease' }}
       >
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-3">
           <h2
-            className="font-display font-black text-brand-dark leading-[0.93]"
+            className="font-display font-black text-white leading-[0.93]"
             style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
             CabHouse Park "”{' '}

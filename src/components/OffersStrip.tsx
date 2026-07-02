@@ -29,7 +29,7 @@ export default function OffersStrip() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-8 lg:py-12">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-4 lg:px-10 py-8 lg:py-12" style={{ backgroundColor: '#1a2e1f' }}>
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7"
@@ -40,7 +40,7 @@ export default function OffersStrip() {
               Featured Offers
             </p>
             <h2
-              className="font-display font-black text-brand-dark leading-tight"
+              className="font-display font-black text-white leading-tight"
               style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
             >
               Experiences worth booking
@@ -48,7 +48,7 @@ export default function OffersStrip() {
           </div>
           <a
             href="/#packages"
-            className="text-brand-dark/50 hover:text-brand-dark font-body text-xs font-semibold uppercase tracking-widest transition-colors flex-shrink-0"
+            className="text-white/50 hover:text-white font-body text-xs font-semibold uppercase tracking-widest transition-colors flex-shrink-0"
           >
             View all packages →
           </a>
@@ -59,7 +59,7 @@ export default function OffersStrip() {
             <a
               key={o.title}
               href={o.href}
-              className="group relative bg-brand-cream rounded-2xl p-5 hover:shadow-md transition-all duration-200 overflow-hidden"
+              className="group relative bg-white/10 hover:bg-white/15 rounded-2xl p-5 hover:shadow-md transition-all duration-200 overflow-hidden border border-white/10"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'none' : 'translateY(12px)',
@@ -72,12 +72,12 @@ export default function OffersStrip() {
               >
                 {o.tag}
               </span>
-              <h3 className="font-display font-bold text-brand-dark text-lg leading-tight mb-1">{o.title}</h3>
+              <h3 className="font-display font-bold text-white text-lg leading-tight mb-1">{o.title}</h3>
               <p className="font-display font-black mb-3" style={{ color: 'var(--color-gold)', fontSize: '1.05rem' }}>
                 {o.price}
               </p>
-              <p className="text-brand-dark/55 font-body text-sm leading-relaxed">{o.desc}</p>
-              <div className="absolute bottom-4 right-4 text-brand-dark/25 group-hover:text-brand-dark/60 font-body text-xs font-bold uppercase tracking-widest transition-colors">
+              <p className="text-white/60 font-body text-sm leading-relaxed">{o.desc}</p>
+              <div className="absolute bottom-4 right-4 text-white/25 group-hover:text-white/60 font-body text-xs font-bold uppercase tracking-widest transition-colors">
                 Book →
               </div>
             </a>

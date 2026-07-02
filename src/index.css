@@ -15,6 +15,7 @@
   --color-red:     #C8873A;   /* primary accent → amber-gold */
   --color-red-hot: #DFA055;   /* hover → lighter amber */
   --color-cream:   #FAF8F4;   /* light surfaces → warm parchment */
+  --color-gold-wash: #FBF0D9; /* soft gold wash — alternating section bg */
 
   /* legacy aliases — keeps all existing var() refs working */
   --color-green:   #7A6E60;

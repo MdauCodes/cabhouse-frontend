@@ -43,7 +43,7 @@ export default function ExperiencesStrip() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-16">
+      <div className="rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-16" style={{ backgroundColor: '#D4B882' }}>
       <div className="max-w-7xl mx-auto">
 
         <div
@@ -56,7 +56,7 @@ export default function ExperiencesStrip() {
               CabHouse Park · Flagship
             </p>
             <h2
-              className="font-display font-black text-white leading-tight"
+              className="font-display font-black text-brand-dark leading-tight"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}
             >
               Five experiences, one destination.

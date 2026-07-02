@@ -20,7 +20,7 @@ function Stars({ n }: { n: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} className={`w-3 h-3 fill-current ${i < n ? 'text-brand-gold' : 'text-brand-dark/15'}`} viewBox="0 0 20 20">
+        <svg key={i} className={`w-3 h-3 fill-current ${i < n ? 'text-brand-gold' : 'text-brand-dark/20'}`} viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
@@ -36,7 +36,7 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="bg-brand-cream rounded-2xl p-5 flex flex-col gap-3 border border-brand-dark/[0.05]"
+      className="bg-white/30 rounded-2xl p-5 flex flex-col gap-3 border border-brand-dark/10"
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? 'none' : 'translateY(14px)',
@@ -68,10 +68,10 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
         )}
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-brand-dark/[0.08] mt-auto">
+      <div className="flex items-center justify-between pt-3 border-t border-brand-dark/10 mt-auto">
         <p className="font-display font-bold text-brand-dark text-sm">{r.name}</p>
         <div className="flex items-center gap-2">
-          <p className="text-brand-dark/35 font-body text-xs">{r.month}</p>
+          <p className="text-brand-dark/40 font-body text-xs">{r.month}</p>
           {/* Google "G" mark */}
           <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer"
             title="View on Google" className="opacity-40 hover:opacity-80 transition-opacity">
@@ -97,7 +97,7 @@ export default function Testimonials() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-10 lg:py-14">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-4 lg:px-10 py-10 lg:py-14" style={{ backgroundColor: '#D4B882' }}>
 
         {/* Header */}
         <div
@@ -110,21 +110,21 @@ export default function Testimonials() {
               style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
               Rated <em className="not-italic" style={{ color: 'var(--color-gold)' }}>4.7 Stars</em> on Google
             </h2>
-            <p className="text-brand-dark/40 font-body text-xs mt-1">Real reviews from real visitors</p>
+            <p className="text-brand-dark/50 font-body text-xs mt-1">Real reviews from real visitors</p>
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
             {/* Rating badge */}
-            <div className="flex items-center gap-4 border border-brand-dark/8 rounded-2xl px-5 py-3.5">
+            <div className="flex items-center gap-4 border border-brand-dark/10 rounded-2xl px-5 py-3.5">
               <div>
                 <p className="font-display font-black text-2xl text-brand-dark leading-none">4.7</p>
                 <Stars n={5} />
-                <p className="text-brand-dark/35 font-body text-[10px] mt-1">56 reviews</p>
+                <p className="text-brand-dark/40 font-body text-[10px] mt-1">56 reviews</p>
               </div>
-              <div className="w-px h-10 bg-brand-dark/[0.06]" />
+              <div className="w-px h-10 bg-brand-dark/10" />
               <div>
                 <p className="font-display font-bold text-xl text-brand-dark leading-none">#1</p>
-                <p className="text-brand-dark/35 font-body text-[10px] mt-1 leading-snug max-w-[80px]">Recreation centre in Kisii</p>
+                <p className="text-brand-dark/40 font-body text-[10px] mt-1 leading-snug max-w-[80px]">Recreation centre in Kisii</p>
               </div>
             </div>
 
@@ -141,8 +141,8 @@ export default function Testimonials() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               <div>
-                <p className="font-body font-semibold text-brand-dark text-xs group-hover:text-brand-dark leading-none">All Reviews</p>
-                <p className="font-body text-brand-dark/35 text-[10px] mt-0.5">Open Google Maps</p>
+                <p className="font-body font-semibold text-brand-dark text-xs leading-none">All Reviews</p>
+                <p className="font-body text-brand-dark/40 text-[10px] mt-0.5">Open Google Maps</p>
               </div>
             </a>
           </div>

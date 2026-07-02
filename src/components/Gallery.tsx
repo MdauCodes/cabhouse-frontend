@@ -266,7 +266,8 @@ export default function Gallery() {
     <section id="gallery" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div
         ref={sectionRef as React.RefObject<HTMLDivElement>}
-        className="bg-brand-dark rounded-3xl overflow-hidden"
+        className="rounded-3xl overflow-hidden"
+        style={{ backgroundColor: '#1a2e1f' }}
       >
         {/* Compact header */}
         <div
