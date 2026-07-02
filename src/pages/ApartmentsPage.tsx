@@ -47,7 +47,7 @@ function DualCTA() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Apartment Enquiry "” ${form.company || form.name}`)
+    const subject = encodeURIComponent(`Apartment Enquiry — ${form.company || form.name}`)
     const body = encodeURIComponent(
       [
         `Name: ${form.name}`,
@@ -65,124 +65,127 @@ function DualCTA() {
     setTimeout(() => setSent(false), 5000)
   }
 
-  const inputCls = 'w-full bg-white border border-brand-dark/[0.12] rounded-lg px-3.5 py-2.5 font-body text-sm text-brand-dark placeholder-brand-dark/30 focus:outline-none focus:border-brand-dark/35 transition-colors'
+  const inputCls = 'w-full bg-white/10 border border-white/15 rounded-lg px-3.5 py-2.5 font-body text-sm text-white placeholder-white/35 focus:outline-none focus:border-white/40 transition-colors'
 
   return (
-    <section id="enquire" className="flex flex-col lg:flex-row">
-      {/* WhatsApp */}
-      <div
-        ref={ref as React.RefObject<HTMLDivElement>}
-        className="flex-1 bg-brand-dark flex flex-col p-8 lg:p-12"
-        style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
-      >
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: '#25D366' }}>
-          Quick Enquiry
-        </p>
-        <h3 className="font-display font-black text-white leading-[0.95] mb-3"
-          style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
-          Chat on <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
-        </h3>
-        <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
-          Ask about availability, pricing or take a virtual tour. We'll reply within minutes.
-        </p>
-        <div className="space-y-2 mb-8 flex-1">
-          {UNITS.map(u => (
-            <a key={u.name}
-              href={`https://wa.me/${wa}?text=${encodeURIComponent(u.wa)}`}
+    <section id="enquire" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden flex flex-col lg:flex-row">
+        {/* WhatsApp */}
+        <div
+          ref={ref as React.RefObject<HTMLDivElement>}
+          className="flex-1 flex flex-col p-8 lg:p-12"
+          style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
+        >
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: '#25D366' }}>
+            Quick Enquiry
+          </p>
+          <h3 className="font-display font-black text-white leading-[0.95] mb-3"
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
+            Chat on <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
+          </h3>
+          <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
+            Ask about availability, pricing or take a virtual tour. We'll reply within minutes.
+          </p>
+          <div className="space-y-2 mb-8 flex-1">
+            {UNITS.map(u => (
+              <a key={u.name}
+                href={`https://wa.me/${wa}?text=${encodeURIComponent(u.wa)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
+                <div>
+                  <p className="text-white/65 font-body text-sm group-hover:text-white transition-colors leading-none">{u.name}</p>
+                  <p className="text-white/25 font-body text-[10px] mt-0.5">Sleeps {u.beds} · {u.tag}</p>
+                </div>
+                <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </a>
+            ))}
+            <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about short-term accommodation at CabHouse Apartments")}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
-              <div>
-                <p className="text-white/65 font-body text-sm group-hover:text-white transition-colors leading-none">{u.name}</p>
-                <p className="text-white/25 font-body text-[10px] mt-0.5">Sleeps {u.beds} · {u.tag}</p>
-              </div>
+              <span className="text-white/65 font-body text-sm group-hover:text-white transition-colors">Short-term / Daily Rate</span>
               <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
                 <path d="M3 8h10M9 4l4 4-4 4" />
               </svg>
             </a>
-          ))}
-          <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about short-term accommodation at CabHouse Apartments")}`}
-            target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
-            <span className="text-white/65 font-body text-sm group-hover:text-white transition-colors">Short-term / Daily Rate</span>
-            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </a>
-          <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about long-term monthly accommodation at CabHouse Apartments")}`}
-            target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
-            <span className="text-white/65 font-body text-sm group-hover:text-white transition-colors">Long-term / Monthly Lease</span>
-            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </a>
-        </div>
-        <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
-          target="_blank" rel="noopener noreferrer"
-          className="inline-flex items-center gap-2.5 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full self-start"
-          style={{ backgroundColor: '#25D366' }}>
-          <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.862L0 24l6.338-1.506A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.001-1.375l-.359-.214-3.724.976.993-3.626-.235-.372A9.818 9.818 0 012.182 12c0-5.42 4.398-9.818 9.818-9.818 5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/>
-          </svg>
-          Open WhatsApp
-        </a>
-        <p className="text-white/20 font-body text-[10px] mt-4">{SITE.contact.phone} · {SITE.contact.phone2}</p>
-      </div>
-
-      {/* Email "” corporate / long-term */}
-      <div className="flex-1 bg-brand-cream flex flex-col p-8 lg:p-12"
-        style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}>
-        <p className="text-brand-green font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3">Corporate & Long-Term</p>
-        <h3 className="font-display font-black text-brand-dark leading-[0.95] mb-3"
-          style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
-          Send a Formal <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
-        </h3>
-        <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-7 max-w-xs">
-          For company relocations, long-term lettings and staff accommodation "” we'll respond with availability and rates.
-        </p>
-
-        {sent ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center mb-4">
-              <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-brand-green" stroke="currentColor" strokeWidth="2">
-                <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <p className="font-display font-bold text-brand-dark text-base mb-1">Email app opening…</p>
-            <p className="text-brand-dark/40 font-body text-xs">Your enquiry is pre-filled and ready to send.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input required value={form.name} onChange={set('name')} placeholder="Your name *" className={inputCls} />
-              <input value={form.company} onChange={set('company')} placeholder="Organisation" className={inputCls} />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input required type="email" value={form.email} onChange={set('email')} placeholder="Email address *" className={inputCls} />
-              <input type="tel" value={form.phone} onChange={set('phone')} placeholder="Phone" className={inputCls} />
-            </div>
-            <select value={form.unit} onChange={set('unit')} className={inputCls}>
-              <option value="">Apartment type</option>
-              <option>Studio Apartment</option>
-              <option>1-Bedroom Apartment</option>
-              <option>2-Bedroom Apartment</option>
-              <option>Multiple units</option>
-            </select>
-            <input value={form.dates} onChange={set('dates')} placeholder="Preferred move-in date / duration" className={inputCls} />
-            <textarea required value={form.message} onChange={set('message')}
-              placeholder="Tell us about your requirements…"
-              rows={3} className={`${inputCls} resize-none`} />
-            <button type="submit"
-              className="inline-flex items-center gap-2 bg-brand-dark hover:bg-brand-green text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide">
-              Send Enquiry
-              <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
+            <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about long-term monthly accommodation at CabHouse Apartments")}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
+              <span className="text-white/65 font-body text-sm group-hover:text-white transition-colors">Long-term / Monthly Lease</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
                 <path d="M3 8h10M9 4l4 4-4 4" />
               </svg>
-            </button>
-            <p className="text-brand-dark/25 font-body text-[10px] mt-1">Opens your email app · no account needed</p>
-          </form>
-        )}
+            </a>
+          </div>
+          <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
+            target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full self-start"
+            style={{ backgroundColor: '#25D366' }}>
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.862L0 24l6.338-1.506A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.001-1.375l-.359-.214-3.724.976.993-3.626-.235-.372A9.818 9.818 0 012.182 12c0-5.42 4.398-9.818 9.818-9.818 5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/>
+            </svg>
+            Open WhatsApp
+          </a>
+          <p className="text-white/20 font-body text-[10px] mt-4">{SITE.contact.phone} · {SITE.contact.phone2}</p>
+        </div>
+
+        {/* Email — corporate / long-term */}
+        <div className="flex-1 flex flex-col p-8 lg:p-12"
+          style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(16px)', transition: 'all 0.6s ease 0.1s' }}>
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>Corporate &amp; Long-Term</p>
+          <h3 className="font-display font-black text-white leading-[0.95] mb-3"
+            style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
+            Send a Formal <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
+          </h3>
+          <p className="text-white/50 font-body text-xs leading-relaxed mb-7 max-w-xs">
+            For company relocations, long-term lettings and staff accommodation — we'll respond with availability and rates.
+          </p>
+
+          {sent ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <p className="font-display font-bold text-white text-base mb-1">Email app opening…</p>
+              <p className="text-white/40 font-body text-xs">Your enquiry is pre-filled and ready to send.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input required value={form.name} onChange={set('name')} placeholder="Your name *" className={inputCls} />
+                <input value={form.company} onChange={set('company')} placeholder="Organisation" className={inputCls} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input required type="email" value={form.email} onChange={set('email')} placeholder="Email address *" className={inputCls} />
+                <input type="tel" value={form.phone} onChange={set('phone')} placeholder="Phone" className={inputCls} />
+              </div>
+              <select value={form.unit} onChange={set('unit')} className={inputCls}>
+                <option value="">Apartment type</option>
+                <option>Studio Apartment</option>
+                <option>1-Bedroom Apartment</option>
+                <option>2-Bedroom Apartment</option>
+                <option>Multiple units</option>
+              </select>
+              <input value={form.dates} onChange={set('dates')} placeholder="Preferred move-in date / duration" className={inputCls} />
+              <textarea required value={form.message} onChange={set('message')}
+                placeholder="Tell us about your requirements…"
+                rows={3} className={`${inputCls} resize-none`} />
+              <button type="submit"
+                className="inline-flex items-center gap-2 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide"
+                style={{ backgroundColor: 'var(--color-gold)' }}>
+                Send Enquiry
+                <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </button>
+              <p className="text-white/30 font-body text-[10px] mt-1">Opens your email app · no account needed</p>
+            </form>
+          )}
+        </div>
       </div>
     </section>
   )
@@ -191,14 +194,13 @@ function DualCTA() {
 function HeroSection() {
   const { ref, inView } = useInView(0.05)
   return (
-    <section className="relative overflow-hidden" style={{ height: '65dvh', minHeight: 380 }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="relative overflow-hidden rounded-3xl" style={{ height: '65dvh', minHeight: 380 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url('/assets/cabhouse-apartments.png')`, backgroundColor: 'var(--color-dark)' }}
       />
-      {/* Mobile: full dark cover */}
       <div className="absolute inset-0 bg-brand-dark/60 lg:hidden" />
-      {/* Desktop: directional gradient */}
       <div
         className="absolute inset-0 hidden lg:block"
         style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 28%, rgba(17,17,17,0.75) 50%, rgba(17,17,17,0.2) 80%, transparent 100%)' }}
@@ -210,7 +212,7 @@ function HeroSection() {
         className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}
       >
-<p className="text-brand-gold/70 font-body text-[9px] uppercase tracking-[0.3em] font-bold mb-3">CabHouse Apartments · Kisii Town</p>
+        <p className="text-brand-gold/70 font-body text-[9px] uppercase tracking-[0.3em] font-bold mb-3">CabHouse Apartments · Kisii Town</p>
         <h1
           className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em' }}
@@ -237,6 +239,7 @@ function HeroSection() {
           </a>
         </div>
       </div>
+    </div>
     </section>
   )
 }
@@ -267,54 +270,57 @@ export default function ApartmentsPage() {
     <Layout>
       <HeroSection />
 
-      {/* Units */}
-      <section className="bg-brand-cream px-6 lg:px-10 py-14 lg:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div
-            ref={ref as React.RefObject<HTMLDivElement>}
-            className="mb-10"
-            style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
-          >
-            <h2
-              className="font-display font-black text-brand-dark leading-[0.93] mb-2"
-              style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
+      {/* Units — gold */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: '#D4B882' }}>
+          <div className="max-w-7xl mx-auto">
+            <div
+              ref={ref as React.RefObject<HTMLDivElement>}
+              className="mb-10"
+              style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
             >
-              Short Stay. Long Stay. <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Your Choice.</em>
-            </h2>
-            <p className="text-brand-dark/40 font-body text-xs">Daily · Weekly · Monthly · Annual leasing available</p>
-          </div>
+              <h2
+                className="font-display font-black text-brand-dark leading-[0.93] mb-2"
+                style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
+              >
+                Short Stay. Long Stay. <em className="not-italic" style={{ color: '#7a5a2a' }}>Your Choice.</em>
+              </h2>
+              <p className="text-brand-dark/50 font-body text-xs">Daily · Weekly · Monthly · Annual leasing available</p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
-            {UNITS.map((u, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 border border-brand-dark/[0.06] hover:border-brand-gold/30 hover:shadow-md transition-all duration-200">
-                <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-brand-gold bg-brand-gold/10 px-2.5 py-1 rounded-full">
-                  {u.tag}
-                </span>
-                <h3 className="font-display font-bold text-brand-dark mt-4 mb-2" style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}>
-                  {u.name}
-                </h3>
-                <p className="text-brand-dark/45 font-body text-xs leading-relaxed mb-2">{u.desc}</p>
-                <p className="text-brand-dark/30 font-body text-[10px] mb-5">Sleeps up to {u.beds} · Wi-Fi · Fully furnished</p>
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="block text-center bg-brand-dark hover:bg-brand-green text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200"
-                >
-                  Enquire
-                </a>
-              </div>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+              {UNITS.map((u, i) => (
+                <div key={i} className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6 hover:bg-white/50 transition-all duration-200">
+                  <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-brand-dark/70 bg-brand-dark/10 px-2.5 py-1 rounded-full">
+                    {u.tag}
+                  </span>
+                  <h3 className="font-display font-bold text-brand-dark mt-4 mb-2" style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}>
+                    {u.name}
+                  </h3>
+                  <p className="text-brand-dark/50 font-body text-xs leading-relaxed mb-2">{u.desc}</p>
+                  <p className="text-brand-dark/35 font-body text-[10px] mb-5">Sleeps up to {u.beds} · Wi-Fi · Fully furnished</p>
+                  <a
+                    href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="block text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200"
+                    style={{ backgroundColor: '#1a2e1f' }}
+                  >
+                    Enquire
+                  </a>
+                </div>
+              ))}
+            </div>
 
-          {/* Perks strip */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {PERKS.map((item, i) => (
-              <div key={i} className="border border-brand-dark/[0.07] rounded-xl p-4 bg-white">
-                <p className="text-brand-gold font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{item.label}</p>
-                <p className="font-display font-bold text-brand-dark text-base mb-0.5">{item.value}</p>
-                <p className="text-brand-dark/35 font-body text-[10px]">{item.sub}</p>
-              </div>
-            ))}
+            {/* Perks strip */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {PERKS.map((item, i) => (
+                <div key={i} className="border border-brand-dark/10 rounded-xl p-4 bg-white/30">
+                  <p className="text-brand-dark/60 font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{item.label}</p>
+                  <p className="font-display font-bold text-brand-dark text-base mb-0.5">{item.value}</p>
+                  <p className="text-brand-dark/40 font-body text-[10px]">{item.sub}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

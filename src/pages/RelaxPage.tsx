@@ -28,18 +28,17 @@ const STAYS = [
   { name: 'Tented Cabin (Big)', desc: 'Spacious glamping tent with real beds and power. Sleeps 2-3.', base: 2500, b1: 3000, b2: 3500 },
   { name: 'Tented Cabin (Small)', desc: 'Cosy tented accommodation for solo or couple travellers.', base: 2000, b1: 2500, b2: 3000 },
   { name: 'Camping Tent (Small)', desc: 'Standard camping tent under the open sky. BYO sleeping bag.', base: 1500, b1: 2000, b2: null },
-  { name: 'Camping Tent (Big)', desc: 'Group camping tent "” perfect for youth outings and large families.', base: 5000, b1: 7500, b2: null },
+  { name: 'Camping Tent (Big)', desc: 'Group camping tent — perfect for youth outings and large families.', base: 5000, b1: 7500, b2: null },
 ]
 
 function Hero() {
   const img = useMediaUrl('feat-resort')
   const { ref, inView } = useInView(0.05)
   return (
-    <section className="relative overflow-hidden" style={{ height: '60dvh', minHeight: 380 }}>
+    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#1a2e1f' }} />
-      {/* Dark base overlay */}
       <div className="absolute inset-0 bg-brand-dark/75" />
-      {/* Extra gradient concentrated where the text sits */}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,20,8,0.75) 0%, rgba(8,20,8,0.45) 55%, transparent 100%)' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,20,8,0.80) 0%, transparent 60%)' }} />
       <div ref={ref as React.RefObject<HTMLDivElement>}
@@ -62,6 +61,7 @@ function Hero() {
           Book Your Stay
         </a>
       </div>
+    </div>
     </section>
   )
 }
@@ -73,50 +73,53 @@ export default function RelaxPage() {
     <Layout>
       <Hero />
 
-      {/* Stay options */}
-      <section className="bg-brand-cream px-6 lg:px-10 py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto">
-          <div ref={ref as React.RefObject<HTMLDivElement>}
-            style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-6 h-px bg-brand-gold" />
-              <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">Accommodation</p>
-            </div>
-            <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
-              style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
-              Five Ways to <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Sleep Here</em>
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {STAYS.map((s, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 hover:shadow-md transition-shadow">
-                <h3 className="font-display font-bold text-brand-dark text-xl mb-2">{s.name}</h3>
-                <p className="text-gray-500 font-body text-sm leading-relaxed mb-5">{s.desc}</p>
-                <div className="space-y-2 mb-5">
-                  <div className="flex justify-between text-sm font-body border-b border-gray-100 pb-2">
-                    <span className="text-gray-400">Room only</span>
-                    <span className="font-display font-bold text-brand-gold">KES {s.base.toLocaleString()}</span>
-                  </div>
-                  {s.b1 && (
-                    <div className="flex justify-between text-sm font-body border-b border-gray-100 pb-2">
-                      <span className="text-gray-400">+Breakfast / 1 pax</span>
-                      <span className="text-brand-dark font-semibold">KES {s.b1.toLocaleString()}</span>
-                    </div>
-                  )}
-                  {s.b2 && (
-                    <div className="flex justify-between text-sm font-body">
-                      <span className="text-gray-400">+Breakfast / 2 pax</span>
-                      <span className="text-brand-dark font-semibold">KES {s.b2.toLocaleString()}</span>
-                    </div>
-                  )}
-                </div>
-                <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20the%20${encodeURIComponent(s.name)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="block text-center bg-brand-dark text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full hover:bg-brand-gold transition-colors">
-                  Book This
-                </a>
+      {/* Stay options — gold */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: '#D4B882' }}>
+          <div className="max-w-7xl mx-auto">
+            <div ref={ref as React.RefObject<HTMLDivElement>}
+              style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-6 h-px bg-brand-dark/40" />
+                <p className="text-brand-dark/60 font-body text-[10px] tracking-[0.3em] uppercase font-semibold">Accommodation</p>
               </div>
-            ))}
+              <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
+                style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
+                Five Ways to <em className="not-italic" style={{ color: '#7a5a2a' }}>Sleep Here</em>
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {STAYS.map((s, i) => (
+                <div key={i} className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6">
+                  <h3 className="font-display font-bold text-brand-dark text-xl mb-2">{s.name}</h3>
+                  <p className="text-brand-dark/55 font-body text-sm leading-relaxed mb-5">{s.desc}</p>
+                  <div className="space-y-2 mb-5">
+                    <div className="flex justify-between text-sm font-body border-b border-brand-dark/10 pb-2">
+                      <span className="text-brand-dark/50">Room only</span>
+                      <span className="font-display font-bold text-brand-dark">KES {s.base.toLocaleString()}</span>
+                    </div>
+                    {s.b1 && (
+                      <div className="flex justify-between text-sm font-body border-b border-brand-dark/10 pb-2">
+                        <span className="text-brand-dark/50">+Breakfast / 1 pax</span>
+                        <span className="text-brand-dark font-semibold">KES {s.b1.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {s.b2 && (
+                      <div className="flex justify-between text-sm font-body">
+                        <span className="text-brand-dark/50">+Breakfast / 2 pax</span>
+                        <span className="text-brand-dark font-semibold">KES {s.b2.toLocaleString()}</span>
+                      </div>
+                    )}
+                  </div>
+                  <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20the%20${encodeURIComponent(s.name)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="block text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors"
+                    style={{ backgroundColor: '#1a2e1f' }}>
+                    Book This
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -129,21 +132,23 @@ export default function RelaxPage() {
         gap={8}
       />
 
-      {/* Info strip */}
-      <section className="bg-brand-dark px-6 lg:px-10 py-12">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 justify-between">
-          {[
-            { label: 'Check-in', value: '2:00 PM', sub: 'Check-out 11:00 AM' },
-            { label: 'Breakfast', value: 'Available', sub: 'Served 7:00"“10:00 AM' },
-            { label: 'Park Access', value: 'Included', sub: 'Guests have full park access' },
-            { label: 'Contact', value: SITE.contact.phone, sub: 'WhatsApp or call' },
-          ].map((item, i) => (
-            <div key={i} className="flex-1">
-              <p className="text-brand-gold font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{item.label}</p>
-              <p className="text-white font-display font-bold text-xl mb-0.5">{item.value}</p>
-              <p className="text-white/40 font-body text-xs">{item.sub}</p>
-            </div>
-          ))}
+      {/* Info strip — green */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
+        <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-12" style={{ backgroundColor: '#1a2e1f' }}>
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 justify-between">
+            {[
+              { label: 'Check-in', value: '2:00 PM', sub: 'Check-out 11:00 AM' },
+              { label: 'Breakfast', value: 'Available', sub: 'Served 7:00–10:00 AM' },
+              { label: 'Park Access', value: 'Included', sub: 'Guests have full park access' },
+              { label: 'Contact', value: SITE.contact.phone, sub: 'WhatsApp or call' },
+            ].map((item, i) => (
+              <div key={i} className="flex-1">
+                <p className="text-brand-gold font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{item.label}</p>
+                <p className="text-white font-display font-bold text-xl mb-0.5">{item.value}</p>
+                <p className="text-white/40 font-body text-xs">{item.sub}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </Layout>

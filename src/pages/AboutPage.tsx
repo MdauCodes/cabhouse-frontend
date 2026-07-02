@@ -13,7 +13,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Holistic Well-Being',
-    desc: 'We promote healthy, active living across all our entertainment and hospitality services "” mind, body and spirit.',
+    desc: 'We promote healthy, active living across all our entertainment and hospitality services — mind, body and spirit.',
   },
   {
     icon: (
@@ -22,7 +22,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Uncompromising Quality',
-    desc: 'From meticulously maintained facilities to pristine water filtration "” your safety and comfort always come first.',
+    desc: 'From meticulously maintained facilities to pristine water filtration — your safety and comfort always come first.',
   },
   {
     icon: (
@@ -31,7 +31,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Unified Convenience',
-    desc: 'Your single, trusted partner for recreation, accommodation and hydration "” everything under one roof in Kisii.',
+    desc: 'Your single, trusted partner for recreation, accommodation and hydration — everything under one roof in Kisii.',
   },
 ]
 
@@ -66,7 +66,7 @@ const BRANDS = [
     name: 'CabHouse Apartments',
     href: '/apartments',
     color: 'bg-brand-gold',
-    desc: 'The sophisticated comfort of home blended with world-class hospitality. Furnished apartments in the heart of Kisii town "” short or long stay.',
+    desc: 'The sophisticated comfort of home blended with world-class hospitality. Furnished apartments in the heart of Kisii town — short or long stay.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
         <path d="M3 22V12M21 22V12M1 12h22M12 2L2 7h20L12 2z"/><rect x="9" y="17" width="6" height="5"/>
@@ -92,9 +92,9 @@ export default function AboutPage() {
     <div style={{ overflowX: 'clip', background: 'var(--canvas)' }}>
       <Navbar />
 
-      {/* Hero */}
+      {/* Hero — green */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="bg-brand-dark relative overflow-hidden rounded-3xl" style={{ minHeight: 380 }}>
+      <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: 380, backgroundColor: '#1a2e1f' }}>
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, var(--color-gold) 0%, transparent 60%), radial-gradient(circle at 80% 20%, var(--color-green) 0%, transparent 50%)' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-28">
@@ -109,39 +109,38 @@ export default function AboutPage() {
               Converge.
             </h1>
             <p className="text-white/60 font-body text-sm leading-relaxed max-w-xl">
-              At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations "” all under one roof in Kisii.
+              At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations — all under one roof in Kisii.
             </p>
           </FadeIn>
         </div>
-
       </div>
       </section>
 
-      {/* Our Ecosystem */}
+      {/* Our Ecosystem — gold */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20" style={{ backgroundColor: '#D4B882' }}>
           <FadeIn>
-            <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Our Ecosystem</p>
+            <p className="text-brand-dark/40 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Our Ecosystem</p>
             <h2
               className="font-display font-black text-brand-dark mb-10 leading-tight"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
             >
               One Family.{' '}
-              <em className="not-italic text-brand-gold">Three Experiences.</em>
+              <em className="not-italic" style={{ color: '#7a5a2a' }}>Three Experiences.</em>
             </h2>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {BRANDS.map((b, i) => (
               <FadeIn key={b.name} delay={i * 0.1}>
-                <a href={b.href} className="group block border border-brand-dark/8 rounded-2xl p-6 hover:border-brand-gold/40 hover:shadow-md transition-all duration-300">
+                <a href={b.href} className="group block border border-brand-dark/10 bg-white/30 rounded-2xl p-6 hover:border-brand-dark/30 hover:bg-white/50 transition-all duration-300">
                   <div className={`w-10 h-10 ${b.color} text-white rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
                     {b.icon}
                   </div>
-                  <p className="text-brand-dark/35 font-body text-[9px] uppercase tracking-widest mb-1">{b.label}</p>
+                  <p className="text-brand-dark/40 font-body text-[9px] uppercase tracking-widest mb-1">{b.label}</p>
                   <h3 className="font-display font-black text-brand-dark text-base mb-2" style={{ letterSpacing: '-0.02em' }}>{b.name}</h3>
                   <p className="text-brand-dark/55 font-body text-xs leading-relaxed mb-4">{b.desc}</p>
-                  <span className="inline-flex items-center gap-1 text-brand-gold font-body font-semibold text-[10px] uppercase tracking-wider group-hover:gap-2 transition-all duration-200">
+                  <span className="inline-flex items-center gap-1 font-body font-semibold text-[10px] uppercase tracking-wider group-hover:gap-2 transition-all duration-200" style={{ color: '#5a3e1a' }}>
                     Explore
                     <svg viewBox="0 0 16 16" fill="none" className="w-2.5 h-2.5" stroke="currentColor" strokeWidth="2.5">
                       <path d="M3 8h10M9 4l4 4-4 4" />
@@ -154,17 +153,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Core Values */}
+      {/* Core Values — green */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-20" style={{ backgroundColor: '#1a2e1f' }}>
           <FadeIn>
-            <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">What Drives Us</p>
+            <p className="text-white/40 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">What Drives Us</p>
             <h2
-              className="font-display font-black text-brand-dark mb-10 leading-tight"
+              className="font-display font-black text-white mb-10 leading-tight"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}
             >
               The Values Behind{' '}
-              <em className="not-italic text-brand-gold">Everything We Do</em>
+              <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Everything We Do</em>
             </h2>
           </FadeIn>
 
@@ -172,11 +171,11 @@ export default function AboutPage() {
             {VALUES.map((v, i) => (
               <FadeIn key={v.title} delay={i * 0.1}>
                 <div className="flex flex-col gap-3">
-                  <div className="w-10 h-10 bg-brand-gold/12 text-brand-gold rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-white/10 text-brand-gold rounded-xl flex items-center justify-center">
                     {v.icon}
                   </div>
-                  <h3 className="font-display font-black text-brand-dark text-sm" style={{ letterSpacing: '-0.01em' }}>{v.title}</h3>
-                  <p className="text-brand-dark/55 font-body text-xs leading-relaxed">{v.desc}</p>
+                  <h3 className="font-display font-black text-white text-sm" style={{ letterSpacing: '-0.01em' }}>{v.title}</h3>
+                  <p className="text-white/55 font-body text-xs leading-relaxed">{v.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -184,25 +183,26 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Tagline banner */}
+      {/* Tagline banner — gold */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16 text-center">
+      <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16 text-center" style={{ backgroundColor: '#D4B882' }}>
         <FadeIn>
-          <p className="text-brand-gold font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">Our Promise</p>
+          <p className="text-brand-dark/50 font-body text-[10px] uppercase tracking-[0.3em] font-bold mb-4">Our Promise</p>
           <h2
-            className="font-display font-black text-white leading-tight mb-4"
+            className="font-display font-black text-brand-dark leading-tight mb-4"
             style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.03em' }}
           >
             Unleash Your Energy,{' '}
-            <em className="not-italic text-brand-gold">Nourish Your Soul.</em>
+            <em className="not-italic" style={{ color: '#7a5a2a' }}>Nourish Your Soul.</em>
           </h2>
-          <p className="text-white/50 font-body text-sm leading-relaxed max-w-xl mx-auto mb-8">
-            From high-flying thrills to serene gardens "” a vibrant sanctuary of fun and wellness crafted for every generation. Make Kisii your next destination.
+          <p className="text-brand-dark/55 font-body text-sm leading-relaxed max-w-xl mx-auto mb-8">
+            From high-flying thrills to serene gardens — a vibrant sanctuary of fun and wellness crafted for every generation. Make Kisii your next destination.
           </p>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to know more about CabHouse Agencies")}`}
             target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-8 py-3.5 rounded-full transition-all duration-200 uppercase tracking-wide"
+            className="inline-flex items-center gap-2 text-white font-body font-bold text-sm px-8 py-3.5 rounded-full transition-all duration-200 uppercase tracking-wide"
+            style={{ backgroundColor: '#1a2e1f' }}
           >
             Get in Touch
           </a>
@@ -210,17 +210,17 @@ export default function AboutPage() {
       </div>
       </section>
 
-      {/* Location */}
+      {/* Location — green */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
-        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: '#1a2e1f' }}>
           <FadeIn>
             <div className="flex flex-col lg:flex-row lg:items-center gap-10">
               <div className="lg:w-1/2">
-                <p className="text-brand-dark/35 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Find Us</p>
-                <h2 className="font-display font-black text-brand-dark text-xl mb-4" style={{ letterSpacing: '-0.02em' }}>
-                  Based in <em className="not-italic text-brand-gold">Kisii, Kenya</em>
+                <p className="text-white/40 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-2">Find Us</p>
+                <h2 className="font-display font-black text-white text-xl mb-4" style={{ letterSpacing: '-0.02em' }}>
+                  Based in <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Kisii, Kenya</em>
                 </h2>
-                <div className="flex flex-col gap-3 text-brand-dark/60 font-body text-sm">
+                <div className="flex flex-col gap-3 text-white/60 font-body text-sm">
                   <p>{SITE.location.address}</p>
                   <p>{SITE.location.poBox}</p>
                   <p>
@@ -236,15 +236,15 @@ export default function AboutPage() {
               <div className="lg:w-1/2 flex flex-col gap-3">
                 {BRANDS.map((b) => (
                   <a key={b.name} href={b.href}
-                    className="flex items-center gap-4 border border-brand-dark/8 rounded-xl px-5 py-3.5 hover:border-brand-gold/40 hover:bg-brand-cream transition-all duration-200 group">
+                    className="flex items-center gap-4 border border-white/10 rounded-xl px-5 py-3.5 hover:border-brand-gold/40 hover:bg-white/10 transition-all duration-200 group">
                     <div className={`w-8 h-8 ${b.color} text-white rounded-lg flex items-center justify-center flex-shrink-0`}>
                       {b.icon}
                     </div>
                     <div className="flex-1">
-                      <p className="font-display font-bold text-brand-dark text-sm" style={{ letterSpacing: '-0.01em' }}>{b.name}</p>
-                      <p className="text-brand-dark/40 font-body text-[10px]">{b.label === 'Park' ? 'Open daily 8AM "“ 8PM' : b.label === 'Water' ? 'Delivery available' : 'Short & long stays'}</p>
+                      <p className="font-display font-bold text-white text-sm" style={{ letterSpacing: '-0.01em' }}>{b.name}</p>
+                      <p className="text-white/40 font-body text-[10px]">{b.label === 'Park' ? 'Open daily 8AM — 8PM' : b.label === 'Water' ? 'Delivery available' : 'Short & long stays'}</p>
                     </div>
-                    <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-brand-dark/25 group-hover:text-brand-gold transition-colors" stroke="currentColor" strokeWidth="2.5">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/25 group-hover:text-brand-gold transition-colors" stroke="currentColor" strokeWidth="2.5">
                       <path d="M3 8h10M9 4l4 4-4 4" />
                     </svg>
                   </a>

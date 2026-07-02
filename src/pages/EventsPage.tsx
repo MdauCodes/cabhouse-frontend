@@ -121,19 +121,19 @@ export default function EventsPage() {
     <Layout>
       <Hero />
 
-      {/* ── Corporate Events ── */}
+      {/* ── Corporate Events ── gold */}
       <section id="corporate" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-        <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: '#D4B882' }}>
           <div
             ref={corpRef as React.RefObject<HTMLDivElement>}
             style={{ opacity: corpInView ? 1 : 0, transform: corpInView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}
           >
-            <p className="font-body text-[10px] uppercase tracking-[0.28em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
+            <p className="font-body text-[10px] uppercase tracking-[0.28em] font-bold mb-3 text-brand-dark/50">
               Corporate Events
             </p>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
-              Built for <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Business</em>
+              Built for <em className="not-italic" style={{ color: '#7a5a2a' }}>Business</em>
             </h2>
           </div>
 
@@ -142,7 +142,7 @@ export default function EventsPage() {
               <div
                 key={e.id}
                 id={e.id}
-                className="bg-brand-cream rounded-2xl p-6 lg:p-7"
+                className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6 lg:p-7"
                 style={{
                   opacity: corpInView ? 1 : 0,
                   transform: corpInView ? 'none' : 'translateY(16px)',
@@ -150,7 +150,7 @@ export default function EventsPage() {
                 }}
               >
                 <span className="inline-block text-[9px] font-body font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-full mb-4"
-                  style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                  style={{ backgroundColor: '#1a2e1f', color: '#D4B882' }}>
                   {e.tag}
                 </span>
                 <h3 className="font-display font-bold text-brand-dark text-xl mb-2">{e.title}</h3>
@@ -158,7 +158,7 @@ export default function EventsPage() {
                 <ul className="space-y-1.5 mb-6">
                   {e.features.map(f => (
                     <li key={f} className="flex items-start gap-2 text-brand-dark/70 font-body text-sm">
-                      <span className="mt-1 w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: 'var(--color-gold)' }}>
+                      <span className="mt-1 w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: '#1a2e1f' }}>
                         <svg viewBox="0 0 10 10" className="w-2 h-2 fill-white"><path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
                       </span>
                       {f}
@@ -169,7 +169,7 @@ export default function EventsPage() {
                   href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I'd like to enquire about ${e.title} at CabHouse`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-full py-3 rounded-xl font-body font-bold text-xs uppercase tracking-wide transition-all duration-200 hover:brightness-110 text-white"
-                  style={{ backgroundColor: 'var(--color-gold)' }}
+                  style={{ backgroundColor: '#1a2e1f' }}
                 >
                   Enquire about {e.title} →
                 </a>
@@ -179,9 +179,9 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ── Venue Pricing ── */}
+      {/* ── Venue Pricing ── green */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-        <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: '#1a2e1f' }}>
           <div
             ref={venueRef as React.RefObject<HTMLDivElement>}
             style={{ opacity: venueInView ? 1 : 0, transform: venueInView ? 'none' : 'translateY(14px)', transition: 'all 0.5s ease' }}
@@ -199,7 +199,7 @@ export default function EventsPage() {
             {VENUES.map((v, i) => (
               <div
                 key={v.name}
-                className="bg-white/[0.06] border border-white/10 rounded-2xl p-6"
+                className="bg-white/10 border border-white/10 rounded-2xl p-6"
                 style={{
                   opacity: venueInView ? 1 : 0,
                   transform: venueInView ? 'none' : 'translateY(14px)',
@@ -226,20 +226,20 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ── Social Events ── */}
+      {/* ── Social Events ── gold */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20">
+      <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-16 lg:py-20" style={{ backgroundColor: '#D4B882' }}>
         <div className="max-w-7xl mx-auto">
           <div
             ref={socialRef as React.RefObject<HTMLDivElement>}
             style={{ opacity: socialInView ? 1 : 0, transform: socialInView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}
           >
-            <p className="font-body text-[10px] uppercase tracking-[0.28em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
+            <p className="font-body text-[10px] uppercase tracking-[0.28em] font-bold mb-3 text-brand-dark/50">
               Social Events
             </p>
             <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
               style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
-              Every Kind of <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Celebration</em>
+              Every Kind of <em className="not-italic" style={{ color: '#7a5a2a' }}>Celebration</em>
             </h2>
           </div>
 
@@ -248,7 +248,7 @@ export default function EventsPage() {
               <div
                 key={e.id}
                 id={e.id}
-                className="bg-brand-cream rounded-2xl p-6"
+                className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6"
                 style={{
                   opacity: socialInView ? 1 : 0,
                   transform: socialInView ? 'none' : 'translateY(16px)',
@@ -256,7 +256,7 @@ export default function EventsPage() {
                 }}
               >
                 <span className="inline-block text-[9px] font-body font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-full mb-4"
-                  style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                  style={{ backgroundColor: '#1a2e1f', color: '#D4B882' }}>
                   {e.tag}
                 </span>
                 <h3 className="font-display font-bold text-brand-dark text-xl mb-2">{e.title}</h3>
@@ -265,7 +265,7 @@ export default function EventsPage() {
                   href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I'd like to enquire about ${e.title} at CabHouse`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 font-body font-bold text-xs uppercase tracking-wide transition-colors"
-                  style={{ color: 'var(--color-gold)' }}
+                  style={{ color: '#5a3e1a' }}
                 >
                   Plan this event →
                 </a>
@@ -276,9 +276,9 @@ export default function EventsPage() {
       </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* ── CTA ── green */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3 pb-3 md:pb-5">
-        <div className="max-w-7xl mx-auto bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 py-14">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14" style={{ backgroundColor: '#1a2e1f' }}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             {[
               { v: '200+', l: 'Guest capacity' },
@@ -286,7 +286,7 @@ export default function EventsPage() {
               { v: 'Garden & Hall', l: 'Indoor + outdoor' },
               { v: 'Licensed Bar', l: 'Fully stocked' },
             ].map((s, i) => (
-              <div key={i} className="bg-white/5 border border-white/8 rounded-xl p-5">
+              <div key={i} className="bg-white/10 border border-white/10 rounded-xl p-5">
                 <p className="font-display font-black text-white text-xl leading-none mb-1">{s.v}</p>
                 <p className="font-body text-[10px] uppercase tracking-wide text-white/40">{s.l}</p>
               </div>
