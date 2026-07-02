@@ -122,7 +122,7 @@ export default function Pricing() {
         <div className="flex gap-1 mb-5 bg-brand-dark/8 rounded-full p-1 self-start flex-shrink-0">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
-              className={`px-3 sm:px-4 py-1.5 rounded-full font-body text-xs font-semibold transition-all duration-200 ${
+              className={`px-4 sm:px-5 py-2.5 rounded-full font-body text-sm font-semibold transition-all duration-200 ${
                 tab === t.id ? 'bg-brand-gold text-white' : 'text-brand-dark/50 hover:text-brand-dark'
               }`}>
               {t.label}
@@ -190,9 +190,9 @@ export default function Pricing() {
                     <a
                       href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(pkg.waMsg)}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="block text-center font-body font-bold tracking-wide py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
+                      className="block text-center font-body font-bold tracking-wide py-3.5 rounded-full transition-all duration-200 hover:opacity-90"
                       style={{
-                        fontSize: 'clamp(8px, 1.1vw, 11px)',
+                        fontSize: 'clamp(11px, 1.3vw, 13px)',
                         background: pkg.solid ? '#fff' : 'var(--color-gold)',
                         color: pkg.solid ? 'var(--color-gold)' : '#fff',
                         border: 'none',
@@ -224,7 +224,7 @@ export default function Pricing() {
                           <a
                             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book the *${s.name}* activity (${s.note}) at KES ${s.price.toLocaleString()}.\n\nPlease confirm availability and let me know the best time to visit. Thank you!`)}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="text-[9px] font-body font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
+                            className="text-[11px] font-body font-bold uppercase tracking-wide px-3.5 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                             style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
                             Book
                           </a>
@@ -248,7 +248,7 @@ export default function Pricing() {
                           <a
                             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book a *${c.name}* session for *${c.note}* at KES ${c.price.toLocaleString()}.\n\nPlease let me know your available slots and how to confirm my reservation. Can't wait!`)}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="text-[9px] font-body font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
+                            className="text-[11px] font-body font-bold uppercase tracking-wide px-3.5 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                             style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
                             Book
                           </a>
@@ -266,7 +266,7 @@ export default function Pricing() {
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I was browsing your individual activities and I'm interested in getting more value. Could you help me pick the best package for my group and visit date? Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
+                  className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                   Help Me Pick a Package
                 </a>
@@ -293,7 +293,7 @@ export default function Pricing() {
                       <a
                         href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to reserve a *${s.name}* at CabHouse Park.\n\nStarting from KES ${s.base.toLocaleString()} per night. Please let me know available dates, whether breakfast is available, and what I should bring or prepare for my stay. Looking forward to it!`)}`}
                         target="_blank" rel="noopener noreferrer"
-                        className="text-[9px] font-body font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
+                        className="text-[11px] font-body font-bold uppercase tracking-wide px-4 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                         style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
                         Reserve
                       </a>
@@ -310,7 +310,7 @@ export default function Pricing() {
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to plan a stay at CabHouse Park and also enjoy the park activities while I'm there. Can you help me put together a combined stay + activities plan for my group? Please share available dates and any special offers. Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
+                  className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                   Plan My Stay + Activities
                 </a>
@@ -344,8 +344,8 @@ export default function Pricing() {
                       <a
                         href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(msgs[i])}`}
                         target="_blank" rel="noopener noreferrer"
-                        className="mt-4 block text-center font-body font-bold py-2.5 rounded-full transition-all duration-200 hover:brightness-110"
-                        style={{ fontSize: 'clamp(9px, 1.1vw, 11px)', backgroundColor: 'var(--color-gold)', color: '#fff' }}>
+                        className="mt-4 block text-center font-body font-bold py-3.5 rounded-full transition-all duration-200 hover:brightness-110"
+                        style={{ fontSize: 'clamp(11px, 1.2vw, 13px)', backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                         {ctas[i]}
                       </a>
                     </div>
@@ -360,7 +360,7 @@ export default function Pricing() {
                 <a
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'm planning an event and would like help choosing the right venue.\n\nCould you help me based on my headcount, date, and budget? I'm open to Gardens, Indoor Hall, or the Premium Tent. Please get in touch so we can plan this together. Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex-shrink-0 text-[10px] font-body font-bold tracking-wide px-5 py-2 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
+                  className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                   Help Me Choose a Venue
                 </a>
