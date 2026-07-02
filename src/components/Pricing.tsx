@@ -102,7 +102,7 @@ export default function Pricing() {
       style={{ background: 'var(--canvas)' }}
       className="px-3 md:px-5 pt-3"
     >
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-6 lg:px-10 flex flex-col" style={{ minHeight: 480 }}>
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-4 lg:px-10 flex flex-col" style={{ minHeight: 480 }}>
       <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10">
 
         {/* Header row */}

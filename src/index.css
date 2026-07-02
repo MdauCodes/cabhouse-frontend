@@ -37,6 +37,11 @@
   --type-eyebrow: 0.68rem;                        /* ALL-CAPS pill labels */
 }
 
+/* Home page gets a warmer, richer background than the rest of the site */
+#home-page {
+  --canvas: #E8D5A8;
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body {

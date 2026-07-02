@@ -38,7 +38,7 @@ export default function BrandShowcase() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-5 lg:px-10 py-14 lg:py-20">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20">
 
         <div
           ref={ref as React.RefObject<HTMLDivElement>}

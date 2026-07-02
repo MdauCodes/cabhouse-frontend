@@ -29,7 +29,7 @@ export default function OffersStrip() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-5 lg:px-10 py-10 lg:py-12">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-8 lg:py-12">
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7"

@@ -43,7 +43,7 @@ export default function ExperiencesStrip() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="bg-brand-dark rounded-3xl overflow-hidden px-5 lg:px-10 py-14 lg:py-16">
+      <div className="bg-brand-dark rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-16">
       <div className="max-w-7xl mx-auto">
 
         <div

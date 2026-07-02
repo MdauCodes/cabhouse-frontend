@@ -17,7 +17,7 @@ import CookieBanner from '../components/CookieBanner'
 
 export default function Home() {
   return (
-    <div style={{ overflowX: 'clip', background: 'var(--canvas)' }}>
+    <div id="home-page" style={{ overflowX: 'clip', background: 'var(--canvas)' }}>
       <AnnouncementBar />
       <Navbar />
       <HeroCarousel />

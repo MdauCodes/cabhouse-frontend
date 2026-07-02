@@ -97,7 +97,7 @@ export default function Testimonials() {
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-6 lg:px-10 py-12 lg:py-14">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl overflow-hidden px-4 lg:px-10 py-10 lg:py-14">
 
         {/* Header */}
         <div
