@@ -133,7 +133,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {BRANDS.map((b, i) => (
               <FadeIn key={b.name} delay={i * 0.1}>
-                <a href={b.href} className="group block border border-brand-dark/10 bg-white/30 rounded-2xl p-6 hover:border-brand-dark/30 hover:bg-white/50 transition-all duration-300">
+                <a href={b.href} className="group block border border-black/10 bg-white/30 rounded-2xl p-6 hover:border-black/25 hover:bg-white/50 transition-all duration-300">
                   <div className={`w-10 h-10 ${b.color} text-white rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
                     {b.icon}
                   </div>

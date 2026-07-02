@@ -183,7 +183,7 @@ function HeroSection() {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 30%, rgba(17,17,17,0.6) 60%, rgba(17,17,17,0.15) 100%)' }} />
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/30" />
       <div ref={ref as React.RefObject<HTMLDivElement>}
-        className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
+        className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em' }}>
@@ -193,14 +193,14 @@ function HeroSection() {
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
           CabHouse Water is purified and bottled right here in Kisii — clean, safe and ready for your home, office or event.
         </p>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
             target="_blank" rel="noopener noreferrer"
-            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide">
+            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center">
             Order via WhatsApp
           </a>
           <a href="#order"
-            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide">
+            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center">
             Bulk Enquiry
           </a>
         </div>
@@ -237,8 +237,8 @@ export default function WaterPage() {
                 <a key={i}
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex items-start gap-4 p-5 rounded-xl border border-brand-dark/10 bg-white/30 hover:bg-white/50 hover:border-brand-dark/20 transition-all duration-200 group">
-                  <span className="w-8 h-8 rounded-full bg-brand-dark/10 text-brand-dark flex items-center justify-center font-display font-bold text-sm flex-shrink-0 group-hover:bg-brand-dark/20 transition-colors">
+                  className="flex items-start gap-4 p-5 rounded-xl border border-black/10 bg-white/30 hover:bg-white/50 hover:border-black/20 transition-all duration-200 group">
+                  <span className="w-8 h-8 rounded-full bg-black/10 text-brand-dark flex items-center justify-center font-display font-bold text-sm flex-shrink-0 group-hover:bg-brand-dark/20 transition-colors">
                     {i + 1}
                   </span>
                   <div>
@@ -255,12 +255,12 @@ export default function WaterPage() {
             </h3>
             <div className="flex flex-wrap gap-3">
               {FORMATS.map((f, i) => (
-                <div key={i} className="flex items-center gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-4 py-3">
+                <div key={i} className="flex items-center gap-3 bg-white/30 border border-black/10 rounded-xl px-4 py-3">
                   <div>
                     <p className="font-display font-bold text-brand-dark text-base leading-none">{f.size}</p>
                     <p className="text-brand-dark/50 font-body text-[10px] mt-0.5">{f.use}</p>
                   </div>
-                  <span className="text-[8px] font-body font-bold uppercase tracking-widest bg-brand-dark/10 text-brand-dark/60 px-2 py-0.5 rounded-full ml-1">
+                  <span className="text-[8px] font-body font-bold uppercase tracking-widest bg-black/10 text-brand-dark/60 px-2 py-0.5 rounded-full ml-1">
                     {f.tag}
                   </span>
                 </div>

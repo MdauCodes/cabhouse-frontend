@@ -92,7 +92,7 @@ function HeroSection() {
 
       <div
         ref={ref as React.RefObject<HTMLDivElement>}
-        className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
+        className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}
       >
         <h1
@@ -107,7 +107,7 @@ function HeroSection() {
           Eight activity zones, three pool areas and a go-kart track — all in one admission at Kisii's biggest recreation destination.
         </p>
 
-        <div className="flex items-center gap-5 mb-10">
+        <div className="flex flex-wrap items-center gap-4 mb-8">
           {[
             { v: '8', l: 'Activity Zones' },
             { v: 'KES 1K', l: 'Entry from' },
@@ -123,17 +123,17 @@ function HeroSection() {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book a visit to CabHouse Park")}`}
             target="_blank" rel="noopener noreferrer"
-            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide"
+            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
           >
             Book via WhatsApp
           </a>
           <a
             href="#packages"
-            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide"
+            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
           >
             See Packages
           </a>
@@ -188,7 +188,7 @@ function ActivityRow({ a, idx }: { a: typeof ACTIVITIES[0]; idx: number }) {
       }}
     >
       <div className="flex items-center gap-5 min-w-0">
-        <span className="w-8 h-8 rounded-full bg-brand-dark/10 flex items-center justify-center text-brand-dark font-display font-bold text-xs flex-shrink-0">
+        <span className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center text-brand-dark font-display font-bold text-xs flex-shrink-0">
           {idx + 1}
         </span>
         <div className="min-w-0">
@@ -201,7 +201,7 @@ function ActivityRow({ a, idx }: { a: typeof ACTIVITIES[0]; idx: number }) {
         <a
           href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I'd like to book ${a.title} at CabHouse Park`)}`}
           target="_blank" rel="noopener noreferrer"
-          className="text-[11px] font-body font-bold uppercase tracking-widest px-3.5 py-2 rounded-full border border-brand-dark/20 text-brand-dark/60 hover:border-brand-dark hover:text-brand-dark hover:bg-brand-dark/10 transition-all duration-200 hidden sm:inline-flex"
+          className="text-[11px] font-body font-bold uppercase tracking-widest px-3.5 py-2 rounded-full border border-black/20 text-brand-dark/60 hover:border-brand-dark hover:text-brand-dark hover:bg-black/10 transition-all duration-200 hidden sm:inline-flex"
         >
           Book
         </a>
@@ -376,7 +376,7 @@ function DiningSection() {
                     transition: `opacity 0.45s ease ${0.1 + i * 0.06}s, transform 0.45s ease ${0.1 + i * 0.06}s`,
                   }}
                 >
-                  <span className="w-7 h-7 rounded-full bg-brand-dark/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="w-7 h-7 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-dark" />
                   </span>
                   <div>
@@ -427,7 +427,7 @@ function DiningSection() {
                 { v: '200+',  l: 'Seating capacity' },
                 { v: 'Daily', l: 'Open all week' },
               ].map((s, i) => (
-                <div key={i} className="rounded-xl border border-brand-dark/10 bg-white/20 px-4 py-4">
+                <div key={i} className="rounded-xl border border-black/10 bg-white/20 px-4 py-4">
                   <p className="font-display font-black text-brand-dark text-xl leading-none" style={{ letterSpacing: '-0.02em' }}>{s.v}</p>
                   <p className="text-brand-dark/50 font-body text-[10px] mt-1 uppercase tracking-wide">{s.l}</p>
                 </div>

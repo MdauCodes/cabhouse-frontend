@@ -38,7 +38,7 @@ function Hero() {
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#1a2e1f' }} />
-      <div className="absolute inset-0 bg-brand-dark/75" />
+      <div className="absolute inset-0 bg-black/65" />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,20,8,0.75) 0%, rgba(8,20,8,0.45) 55%, transparent 100%)' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,20,8,0.80) 0%, transparent 60%)' }} />
       <div ref={ref as React.RefObject<HTMLDivElement>}
@@ -80,7 +80,7 @@ export default function RelaxPage() {
             <div ref={ref as React.RefObject<HTMLDivElement>}
               style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(16px)', transition: 'all 0.5s ease' }}>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-6 h-px bg-brand-dark/40" />
+                <div className="w-6 h-px bg-black/30" />
                 <p className="text-brand-dark/60 font-body text-[10px] tracking-[0.3em] uppercase font-semibold">Accommodation</p>
               </div>
               <h2 className="font-display font-black text-brand-dark leading-[0.93] mb-10"
@@ -90,16 +90,16 @@ export default function RelaxPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {STAYS.map((s, i) => (
-                <div key={i} className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6">
+                <div key={i} className="bg-white/30 border border-black/10 rounded-2xl p-6">
                   <h3 className="font-display font-bold text-brand-dark text-xl mb-2">{s.name}</h3>
                   <p className="text-brand-dark/55 font-body text-sm leading-relaxed mb-5">{s.desc}</p>
                   <div className="space-y-2 mb-5">
-                    <div className="flex justify-between text-sm font-body border-b border-brand-dark/10 pb-2">
+                    <div className="flex justify-between text-sm font-body border-b border-black/10 pb-2">
                       <span className="text-brand-dark/50">Room only</span>
                       <span className="font-display font-bold text-brand-dark">KES {s.base.toLocaleString()}</span>
                     </div>
                     {s.b1 && (
-                      <div className="flex justify-between text-sm font-body border-b border-brand-dark/10 pb-2">
+                      <div className="flex justify-between text-sm font-body border-b border-black/10 pb-2">
                         <span className="text-brand-dark/50">+Breakfast / 1 pax</span>
                         <span className="text-brand-dark font-semibold">KES {s.b1.toLocaleString()}</span>
                       </div>

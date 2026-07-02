@@ -83,7 +83,7 @@ function Hero() {
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 380 }}>
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: 'var(--color-dark)' }} />
-      <div className="absolute inset-0 bg-brand-dark/75" />
+      <div className="absolute inset-0 bg-black/70" />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(8,20,8,0.70) 0%, rgba(8,20,8,0.40) 55%, transparent 100%)' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,20,8,0.75) 0%, transparent 60%)' }} />
       <div ref={ref as React.RefObject<HTMLDivElement>}
@@ -142,7 +142,7 @@ export default function EventsPage() {
               <div
                 key={e.id}
                 id={e.id}
-                className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6 lg:p-7"
+                className="bg-white/30 border border-black/10 rounded-2xl p-6 lg:p-7"
                 style={{
                   opacity: corpInView ? 1 : 0,
                   transform: corpInView ? 'none' : 'translateY(16px)',
@@ -248,7 +248,7 @@ export default function EventsPage() {
               <div
                 key={e.id}
                 id={e.id}
-                className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6"
+                className="bg-white/30 border border-black/10 rounded-2xl p-6"
                 style={{
                   opacity: socialInView ? 1 : 0,
                   transform: socialInView ? 'none' : 'translateY(16px)',

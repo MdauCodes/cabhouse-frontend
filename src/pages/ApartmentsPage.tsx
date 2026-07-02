@@ -200,7 +200,7 @@ function HeroSection() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url('/assets/apartments-top.png')`, backgroundColor: 'var(--color-dark)' }}
       />
-      <div className="absolute inset-0 bg-brand-dark/60 lg:hidden" />
+      <div className="absolute inset-0 bg-black/55 lg:hidden" />
       <div
         className="absolute inset-0 hidden lg:block"
         style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 28%, rgba(17,17,17,0.75) 50%, rgba(17,17,17,0.2) 80%, transparent 100%)' }}
@@ -209,7 +209,7 @@ function HeroSection() {
 
       <div
         ref={ref as React.RefObject<HTMLDivElement>}
-        className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-20 max-w-7xl mx-auto"
+        className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}
       >
         <p className="text-brand-gold/70 font-body text-[9px] uppercase tracking-[0.3em] font-bold mb-3">CabHouse Apartments · Kisii Town</p>
@@ -223,17 +223,17 @@ function HeroSection() {
         <p className="text-white/70 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
           Fully furnished, serviced apartments in the heart of Kisii. Whether you're here for a night or a year, we have a space for you.
         </p>
-        <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
             target="_blank" rel="noopener noreferrer"
-            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide"
+            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
           >
             Check Availability
           </a>
           <a
             href="#enquire"
-            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide"
+            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
           >
             Corporate Enquiry
           </a>
@@ -291,8 +291,8 @@ export default function ApartmentsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
               {UNITS.map((u, i) => (
-                <div key={i} className="bg-white/30 border border-brand-dark/10 rounded-2xl p-6 hover:bg-white/50 transition-all duration-200">
-                  <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-brand-dark/70 bg-brand-dark/10 px-2.5 py-1 rounded-full">
+                <div key={i} className="bg-white/30 border border-black/10 rounded-2xl p-6 hover:bg-white/50 transition-all duration-200">
+                  <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-brand-dark/70 bg-black/10 px-2.5 py-1 rounded-full">
                     {u.tag}
                   </span>
                   <h3 className="font-display font-bold text-brand-dark mt-4 mb-2" style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}>
@@ -315,7 +315,7 @@ export default function ApartmentsPage() {
             {/* Perks strip */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {PERKS.map((item, i) => (
-                <div key={i} className="border border-brand-dark/10 rounded-xl p-4 bg-white/30">
+                <div key={i} className="border border-black/10 rounded-xl p-4 bg-white/30">
                   <p className="text-brand-dark/60 font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{item.label}</p>
                   <p className="font-display font-bold text-brand-dark text-base mb-0.5">{item.value}</p>
                   <p className="text-brand-dark/40 font-body text-[10px]">{item.sub}</p>
