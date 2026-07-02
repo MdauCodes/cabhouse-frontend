@@ -198,7 +198,7 @@ function HeroSection() {
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '65dvh', minHeight: 380 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/assets/cabhouse-apartments.png')`, backgroundColor: 'var(--color-dark)' }}
+        style={{ backgroundImage: `url('/assets/apartments-top.png')`, backgroundColor: 'var(--color-dark)' }}
       />
       <div className="absolute inset-0 bg-brand-dark/60 lg:hidden" />
       <div
@@ -245,6 +245,7 @@ function HeroSection() {
 }
 
 const APT_PHOTOS = [
+  { src: '/assets/apartments-top.png', label: 'CabHouse Apartments' },
   { src: '/assets/apartments-6.jpeg', label: 'Apartment' },
   { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
   { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
