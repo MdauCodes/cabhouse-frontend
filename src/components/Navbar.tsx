@@ -68,7 +68,7 @@ export default function Navbar() {
         boxShadow: scrolled ? '0 4px 24px rgba(26,23,20,0.10)' : 'none',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-[56px]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-[92px]">
 
         {/* Logo */}
         <a href="/" className="flex items-center flex-shrink-0">
