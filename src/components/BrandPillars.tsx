@@ -57,7 +57,7 @@ const SIDES = [
     cta: 'Order Water',
     href: '/water',
     imageSrc: '/assets/cabhouse-water.png',
-    logoSrc: '/assets/logo-water.png',
+    logoSrc: '/assets/logo-water-noBackground.png',
   },
   {
     id: 'apt',
@@ -69,7 +69,7 @@ const SIDES = [
     cta: 'Book a Stay',
     href: '/apartments',
     imageSrc: '/assets/cabhouse-apartments.png',
-    logoSrc: '/assets/logo-apartments.png',
+    logoSrc: '/assets/logo-apartments-noBackground.png',
   },
 ]
 

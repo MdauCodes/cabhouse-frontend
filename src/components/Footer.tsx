@@ -45,7 +45,7 @@ export default function Footer() {
           {/* Brand col — spans 2 on mobile, 1 on lg */}
           <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/assets/logo-agencies.png" alt="CabHouse" className="h-10 w-auto" />
+              <img src="/assets/logo-agencies-noBackground.png" alt="CabHouse" className="h-10 w-auto" />
               <div>
                 <p className="font-display font-black text-white text-sm leading-none">CabHouse</p>
                 <p className="font-body text-white/40 text-[9px] uppercase tracking-widest">Agencies Ltd</p>
