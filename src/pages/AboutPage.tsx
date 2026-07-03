@@ -109,7 +109,7 @@ export default function AboutPage() {
               Converge.
             </h1>
             <p className="text-white/60 font-body text-sm leading-relaxed max-w-xl">
-              Born and built in Kisii — CabHouse Agencies brings together adventure, pure hydration and comfortable living under one name. We don't just host people; we give them something to talk about.
+              Welcome to a world where hospitality, wellness and adventure converge — all under one name in Kisii. CabHouse Agencies was built to elevate how you play, rest, eat and feel, whether you're here for a day or a season.
             </p>
           </FadeIn>
         </div>

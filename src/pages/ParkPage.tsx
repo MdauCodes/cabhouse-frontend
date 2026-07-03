@@ -7,7 +7,7 @@ import MasonryGallery from '../components/MasonryGallery'
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500' },
   { title: 'Sky Bike',          desc: 'Pedal through the air for an exhilarating cardio workout with panoramic views.', price: 'KES 500' },
-  { title: 'Rainbow Slide',     desc: "Kenya's most colourful mega-slide — unlimited rides all day.", price: 'KES 500' },
+  { title: 'Rainbow Slide',     desc: "Feel the rush of pure joy on our 100m vibrant gravity slide — unlimited rides all day.", price: 'KES 500' },
   { title: 'Mountain & Bridge', desc: 'Build strength and confidence on rugged, professionally guided outdoor courses.', price: 'KES 500' },
   { title: 'Swimming Pool',     desc: 'Multiple pools with giant inflatables. Perfect for families and groups.', price: 'KES 500' },
   { title: 'Go-Karts',         desc: 'Race the dedicated kart track. 15-minute or 30-minute sessions.', price: 'From KES 500' },
@@ -104,7 +104,7 @@ function HeroSection() {
         </h1>
 
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Zip lines, sky bikes, go-karts, three pool areas and eight activity zones — Kisii's wildest day out, all under one roof and one admission.
+          Escape the ordinary at Kisii's premier recreation destination — zip lines, sky bikes, go-karts, three pools and eight activity zones built for every age, every group, every occasion.
         </p>
 
         <div className="flex flex-wrap items-center gap-4 mb-8">
@@ -460,7 +460,7 @@ function StaySection() {
               Stay the <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Night</em>
             </h2>
             <p className="text-white/55 font-body text-xs leading-relaxed max-w-sm">
-              Extend your day into a full overnight experience. Wooden cabins, tented cabins or camping under the stars.
+              Don't let the day end here. Choose from cosy wooden cabins, immersive fully-equipped tented camps or open-sky camping — all set within the CabHouse grounds.
             </p>
           </div>
           <div className="flex flex-col gap-2 lg:items-end">

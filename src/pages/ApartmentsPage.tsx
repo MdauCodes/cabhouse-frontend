@@ -29,10 +29,10 @@ const UNITS = [
 ]
 
 const PERKS = [
-  { label: 'Location', value: 'Kisii Town', sub: 'Central business district' },
-  { label: 'Stay Terms', value: 'Daily / Monthly', sub: 'Flexible lease options' },
-  { label: 'Wi-Fi', value: 'Included', sub: 'High-speed connection' },
-  { label: 'Housekeeping', value: 'Available', sub: 'On request' },
+  { label: 'Location', value: 'Kisii Town', sub: 'Heart of the CBD — close to major business hubs' },
+  { label: 'Stay Terms', value: 'Daily / Monthly', sub: 'Overnight visits, business trips, relocations' },
+  { label: 'Wi-Fi & Workspace', value: 'Included', sub: 'High-speed connection with dedicated desk space' },
+  { label: 'Housekeeping', value: 'Available', sub: 'On request — so it always feels like home' },
 ]
 
 function DualCTA() {
@@ -221,7 +221,7 @@ function HeroSection() {
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>in Kisii Town</em>
         </h1>
         <p className="text-white/70 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Fully furnished, serviced apartments in the heart of Kisii. Whether you're here for a night or a year, we have a space for you.
+          The sophisticated comfort of home blended with world-class hospitality — right in the heart of Kisii. Whether it's an overnight visit, a business trip or a full relocation, we have your space ready.
         </p>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a

@@ -191,7 +191,7 @@ function HeroSection() {
           <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Delivered to You</em>
         </h1>
         <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Purified and bottled right here in Kisii. No compromise on taste, no question on safety — just clean, crisp water wherever you need it.
+          Pure, crisp hydration engineered to fuel your active lifestyle — responsibly sourced, rigorously filtered and bottled right here in Kisii.
         </p>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
@@ -217,6 +217,25 @@ export default function WaterPage() {
     <Layout>
       <HeroSection />
 
+      {/* Quality pillars — green */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-10" style={{ backgroundColor: '#1a2e1f' }}>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-10">
+            {[
+              { label: 'Source & Purity', value: 'Responsibly Sourced', sub: 'Rigorously filtered for absolute purity — every batch tested before it reaches you.' },
+              { label: 'Taste & Minerals', value: 'Crisp & Balanced', sub: 'Clean, refreshing taste with naturally balanced minerals. Engineered to fuel an active lifestyle.' },
+              { label: 'Eco-Friendly', value: 'Sustainable Packaging', sub: 'Packaged in materials that protect both your health and our planet.' },
+            ].map((q, i) => (
+              <div key={i}>
+                <p className="text-brand-gold font-body text-[9px] uppercase tracking-[0.3em] font-semibold mb-1">{q.label}</p>
+                <p className="text-white font-display font-bold text-base mb-1" style={{ letterSpacing: '-0.01em' }}>{q.value}</p>
+                <p className="text-white/45 font-body text-xs leading-relaxed">{q.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* What we offer — gold */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
         <div className="rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: '#D4B882' }}>
@@ -228,7 +247,7 @@ export default function WaterPage() {
                 style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
                 Water for Every <em className="not-italic" style={{ color: '#7a5a2a' }}>Need</em>
               </h2>
-              <p className="text-brand-dark/50 font-body text-xs">Domestic · Commercial · Events · Trade</p>
+              <p className="text-brand-dark/50 font-body text-xs">Perfect for intense workouts · corporate boardrooms · daily family hydration</p>
             </div>
 
             {/* Use cases */}
