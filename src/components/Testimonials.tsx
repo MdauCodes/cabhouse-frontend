@@ -186,7 +186,7 @@ export default function Testimonials() {
         </div>
       </div>
 
-      <div className="-mx-6 lg:-mx-10 mt-12" style={{ lineHeight: 0 }}>
+      <div className="-mx-3 md:-mx-5 mt-12" style={{ lineHeight: 0 }}>
         <svg viewBox="0 0 1440 32" preserveAspectRatio="none" style={{ width: '100%', height: 32, display: 'block' }}>
           <path d="M0,8 C240,32 480,0 720,16 C960,32 1200,0 1440,8 L1440,32 L0,32 Z" fill="var(--color-dark)" />
         </svg>

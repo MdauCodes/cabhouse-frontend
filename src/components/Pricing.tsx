@@ -119,10 +119,10 @@ export default function Pricing() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-5 bg-brand-dark/8 rounded-full p-1 self-start flex-shrink-0">
+        <div className="flex gap-1 mb-5 bg-brand-dark/8 rounded-full p-1 w-full sm:w-auto sm:self-start sm:flex-shrink-0">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
-              className={`px-4 sm:px-5 py-2.5 rounded-full font-body text-sm font-semibold transition-all duration-200 ${
+              className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-full font-body text-sm font-semibold transition-all duration-200 ${
                 tab === t.id ? 'bg-brand-gold text-white' : 'text-brand-dark/50 hover:text-brand-dark'
               }`}>
               {t.label}
