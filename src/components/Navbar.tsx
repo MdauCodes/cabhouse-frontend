@@ -25,12 +25,12 @@ const NAV_BORDER = 'rgba(200, 135, 58, 0.20)'
 export default function Navbar() {
   const { pathname } = useLocation()
   const logo = pathname.startsWith('/park')
-    ? '/assets/park-logo.png'
+    ? '/assets/logo-park-noBackground.png'
     : pathname.startsWith('/water')
-    ? '/assets/logo-water.png'
+    ? '/assets/logo-water-noBackground.png'
     : pathname.startsWith('/apartments')
-    ? '/assets/logo-apartments.png'
-    : '/assets/logo-agencies.png'
+    ? '/assets/logo-apartments-noBackground.png'
+    : '/assets/logo-agencies-noBackground.png'
 
   const [open,      setOpen]      = useState(false)
   const [scrolled,  setScrolled]  = useState(false)
