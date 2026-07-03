@@ -30,7 +30,7 @@ function WhatsAppPanel() {
         <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
       </h3>
       <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
-        Quick answers, same-day bookings, and personal help "” we reply in minutes.
+        Quick answers, same-day bookings, and personal help — we reply in minutes.
       </p>
 
       <div className="space-y-2 mb-8 flex-1">
@@ -116,7 +116,7 @@ function EmailPanel() {
         <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
       </h3>
       <p className="text-white/50 font-body text-xs leading-relaxed mb-7 max-w-xs">
-        For team events, school trips, weddings and bulk bookings "” we'll come back with a tailored proposal.
+        For team events, school trips, weddings and bulk bookings — we'll come back with a tailored proposal.
       </p>
 
       {sent ? (

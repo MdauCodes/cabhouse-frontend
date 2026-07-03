@@ -121,7 +121,7 @@ export default function Hero() {
         </h1>
 
         <p className="text-white/80 font-body text-sm leading-relaxed mb-10 max-w-[30rem]">
-          Play, stay, dine and celebrate "” everything you need for an unforgettable day is waiting for you in Kisii.
+          Play, stay, dine and celebrate — everything you need for an unforgettable day is waiting for you in Kisii.
         </p>
 
         {/* Proof stats */}

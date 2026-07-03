@@ -128,7 +128,7 @@ function ParkCard({ inView }: { inView: boolean }) {
         </h2>
 
         <p className="text-white/80 font-body text-xs leading-relaxed mb-5 max-w-[30rem]">
-          Zip lines, go-karts, pools, dining and overnight camping "” everything for an unforgettable day, all in one place in Kisii.
+          Zip lines, go-karts, pools, dining and overnight camping — everything for an unforgettable day, all in one place in Kisii.
         </p>
 
         {/* Mini stats */}

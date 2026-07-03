@@ -203,7 +203,7 @@ const FEATURES: FeatureConfig[] = [
   {
     eyebrow: 'CabHouse Events',
     title: 'Celebrate', accent: 'Here',
-    body: 'Gardens for 200, indoor halls, premium tents, restaurant and bar. Weddings, corporate retreats and galas "” complete venue.',
+    body: 'Gardens for 200, indoor halls, premium tents, restaurant and bar. Weddings, corporate retreats and galas — complete venue.',
     stats: [{ v: '200', l: 'Guests' }, { v: 'Gardens', l: 'Hall & Tents' }, { v: 'Full', l: 'Catering' }],
     cta: 'Plan an Event', href: '/events', dark: false,
     imageBlock: 'bleed', reverse: true, imageId: 'feat-events',

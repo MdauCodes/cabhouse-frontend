@@ -7,7 +7,7 @@ const EXPERIENCES = [
   { id: 'exp-play',      pillar: 'Play',      unit: 'CabHouse Park',       desc: 'Pools, inflatables, go-karts and bumper cars. Joy for every age.', href: '/park' },
   { id: 'exp-explore',   pillar: 'Explore',   unit: 'CabHouse Adventures', desc: 'Zip lines, sky bikes and rope courses. Push your limits.', href: '/park' },
   { id: 'exp-celebrate', pillar: 'Celebrate', unit: 'CabHouse Events',     desc: 'Weddings, galas and team-building hosted to perfection.', href: '/events' },
-  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Car Hire',   desc: 'Rentals and transfers "” freedom on every road.', href: '/contact' },
+  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Car Hire',   desc: 'Rentals and transfers — freedom on every road.', href: '/contact' },
 ]
 
 function Card({ exp, idx, tall }: { exp: typeof EXPERIENCES[0]; idx: number; tall?: boolean }) {
@@ -86,9 +86,9 @@ export default function ExperienceCards() {
           </a>
         </div>
 
-        {/* Bento grid "” 3 cols, 2 rows: Relax tall on left, 2x2 on right */}
+        {/* Bento grid — 3 cols, 2 rows: Relax tall on left, 2x2 on right */}
         <div className="grid grid-cols-2 lg:grid-cols-3 grid-rows-2 gap-3 flex-1 min-h-0">
-          {/* Relax "” spans both rows */}
+          {/* Relax — spans both rows */}
           <div className="col-span-1 row-span-2">
             <Card exp={EXPERIENCES[0]} idx={0} tall />
           </div>

@@ -22,8 +22,8 @@ const BLOCKS: Block[] = [
     eyebrow: 'Adventures',
     title: 'Push Your',
     accent: 'Limits',
-    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide “” all set against the open Kisii sky.',
-    bullets: ['100m Rainbow Slide', 'Sky Bike “” aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
+    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide — all set against the open Kisii sky.',
+    bullets: ['100m Rainbow Slide', 'Sky Bike — aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
     cta: 'Book Adventures',
     waMsg: 'Hi, I want to book adventure activities at CabHouse Park',
     href: '/park',
@@ -36,8 +36,8 @@ const BLOCKS: Block[] = [
     eyebrow: 'Games & Rides',
     title: 'Play All',
     accent: 'Day',
-    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park “” non-stop action for every age.',
-    bullets: ['Bumper Cars “” 10 / 30 min / 1 hr', 'Go-Karts “” 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
+    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park — non-stop action for every age.',
+    bullets: ['Bumper Cars — 10 / 30 min / 1 hr', 'Go-Karts — 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
     cta: 'See All Games',
     waMsg: 'Hi, I want to book games at CabHouse Park',
     href: '/park',
@@ -65,7 +65,7 @@ const BLOCKS: Block[] = [
     title: 'Celebrate &',
     accent: 'Stay',
     body: 'Elegant halls, garden spaces and premium tents for events. Stay the night in cozy cabins or under the stars in a tented camp.',
-    bullets: ['Gardens “” up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
+    bullets: ['Gardens — up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
     cta: 'Plan Your Event',
     waMsg: 'Hi, I want to inquire about events or stays at CabHouse',
     href: '/events',
@@ -179,13 +179,13 @@ export default function ParkDeepDive() {
             className="font-display font-black text-white leading-[0.93]"
             style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}
           >
-            CabHouse Park "”{' '}
-            <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Your Playground</em>
+            CabHouse Park —{' '}
+            <em className=”not-italic” style={{ color: 'var(--color-gold)' }}>Your Playground</em>
           </h2>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}`}
-            target="_blank" rel="noopener noreferrer"
-            className="flex-shrink-0 bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-xs px-6 py-2.5 rounded-full transition-all uppercase tracking-wide hidden lg:inline-flex"
+            target=”_blank” rel=”noopener noreferrer”
+            className=”flex-shrink-0 bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-xs px-6 py-2.5 rounded-full transition-all uppercase tracking-wide inline-flex”
           >
             Book Your Visit
           </a>
