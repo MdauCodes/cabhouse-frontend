@@ -174,25 +174,15 @@ function DualCTA() {
 }
 
 function HeroSection() {
-  const img = useMediaUrl('hero-2')
   const { ref, inView } = useInView(0.05)
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 340 }}>
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: img ? `url(${img})` : undefined, backgroundColor: '#0a1f2e' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, var(--color-dark) 0%, var(--color-dark) 30%, rgba(17,17,17,0.6) 60%, rgba(17,17,17,0.15) 100%)' }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/30" />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/assets/cabhouse-section-herosection.webp)', backgroundColor: '#0a1f2e' }} />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/50" />
       <div ref={ref as React.RefObject<HTMLDivElement>}
-        className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
-        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}>
-        <h1 className="font-display font-black text-white leading-[0.93] mb-4"
-          style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em' }}>
-          Pure Water,<br />
-          <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Delivered to You</em>
-        </h1>
-        <p className="text-white/55 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
-          Pure, crisp hydration engineered to fuel your active lifestyle — responsibly sourced, rigorously filtered and bottled right here in Kisii.
-        </p>
+        className="relative z-10 h-full flex flex-col justify-end px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
+        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 40 }}>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
             target="_blank" rel="noopener noreferrer"
