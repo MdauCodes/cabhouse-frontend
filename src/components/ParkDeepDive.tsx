@@ -1,4 +1,4 @@
-﻿import { useMediaUrl } from '../hooks/useMedia'
+import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
@@ -22,8 +22,8 @@ const BLOCKS: Block[] = [
     eyebrow: 'Adventures',
     title: 'Push Your',
     accent: 'Limits',
-    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide “” all set against the open Kisii sky.',
-    bullets: ['100m Rainbow Slide', 'Sky Bike “” aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
+    body: 'Rope courses, sky bike, zip line and the 100m rainbow slide — all set against the open Kisii sky.',
+    bullets: ['100m Rainbow Slide', 'Sky Bike — aerial cycling', 'Zip Line', 'Mountain & Bridge Challenge'],
     cta: 'Book Adventures',
     waMsg: 'Hi, I want to book adventure activities at CabHouse Park',
     href: '/park',
@@ -36,8 +36,8 @@ const BLOCKS: Block[] = [
     eyebrow: 'Games & Rides',
     title: 'Play All',
     accent: 'Day',
-    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park “” non-stop action for every age.',
-    bullets: ['Bumper Cars “” 10 / 30 min / 1 hr', 'Go-Karts “” 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
+    body: 'Bumper cars, go-karts, giant pool inflatables and a kids park — non-stop action for every age.',
+    bullets: ['Bumper Cars — 10 / 30 min / 1 hr', 'Go-Karts — 15 / 30 min', 'Swimming Pool & Inflatables', 'Bouncing Castles'],
     cta: 'See All Games',
     waMsg: 'Hi, I want to book games at CabHouse Park',
     href: '/park',
@@ -65,7 +65,7 @@ const BLOCKS: Block[] = [
     title: 'Celebrate &',
     accent: 'Stay',
     body: 'Elegant halls, garden spaces and premium tents for events. Stay the night in cozy cabins or under the stars in a tented camp.',
-    bullets: ['Gardens “” up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
+    bullets: ['Gardens — up to 200 pax', 'Indoor Hall & Premium Tents', 'Cabins from KES 3,000', 'Camping from KES 1,500'],
     cta: 'Plan Your Event',
     waMsg: 'Hi, I want to inquire about events or stays at CabHouse',
     href: '/events',
@@ -93,13 +93,13 @@ function ParkBlock({ b, index: _index }: { b: Block; index: number }) {
         background: b.bg,
       }}
     >
-      {/* Image "” 280px on mobile, full height on desktop */}
+      {/* Image — 280px on mobile, full height on desktop */}
       <div className="relative w-full lg:w-[55%] overflow-hidden flex-shrink-0 h-[280px] lg:h-full">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: url ? `url(${url})` : undefined, backgroundColor: 'var(--color-dark)' }}
         />
-        {/* Fade "” bottom on mobile, side on desktop */}
+        {/* Fade — bottom on mobile, side on desktop */}
         <div
           className="absolute inset-0 pointer-events-none hidden lg:block"
           style={{ background: `linear-gradient(${fadeDir}, transparent 30%, ${b.bg} 90%)` }}
@@ -192,7 +192,7 @@ export default function ParkDeepDive() {
         </div>
       </div>
 
-      {/* Alternating panels "” full width */}
+      {/* Alternating panels — full width */}
       <div className="flex flex-col">
         {BLOCKS.map((b, i) => (
           <ParkBlock key={i} b={b} index={i} />

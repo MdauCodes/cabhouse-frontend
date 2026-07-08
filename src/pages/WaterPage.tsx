@@ -176,27 +176,57 @@ function DualCTA() {
 function HeroSection() {
   const { ref, inView } = useInView(0.05)
   return (
-    <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
-    <div className="relative overflow-hidden rounded-3xl" style={{ height: '60dvh', minHeight: 340 }}>
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/assets/cabhouse-section-herosection.webp)', backgroundColor: '#0a1f2e' }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/50" />
-      <div ref={ref as React.RefObject<HTMLDivElement>}
-        className="relative z-10 h-full flex flex-col justify-end px-5 sm:px-10 lg:px-16 max-w-7xl mx-auto"
-        style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 40 }}>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
-            target="_blank" rel="noopener noreferrer"
-            className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center">
-            Order via WhatsApp
-          </a>
-          <a href="#order"
-            className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center">
-            Bulk Enquiry
-          </a>
+    <>
+      {/* Banner — full display, no overlay, no CTA on top of it */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div className="overflow-hidden rounded-3xl w-full">
+          <img
+            src="/assets/cabhouse-section-herosection.webp"
+            alt="CabHouse Water Refilling & Bottling"
+            className="w-full object-cover object-top block"
+            style={{ maxHeight: 480, minHeight: 220 }}
+          />
         </div>
-      </div>
-    </div>
-    </section>
+      </section>
+
+      {/* CTA strip below the banner */}
+      <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+        <div
+          ref={ref as React.RefObject<HTMLDivElement>}
+          className="rounded-3xl overflow-hidden px-6 sm:px-10 py-7 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{
+            backgroundColor: '#1a2e1f',
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'none' : 'translateY(12px)',
+            transition: 'all 0.6s ease',
+          }}
+        >
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-1" style={{ color: 'var(--color-gold)' }}>
+              Pure · Crisp · Delivered
+            </p>
+            <p className="font-display font-black text-white leading-tight" style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
+              Order CabHouse Water Today
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
+            <a
+              href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to order CabHouse Water")}`}
+              target="_blank" rel="noopener noreferrer"
+              className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 uppercase tracking-wide text-center"
+            >
+              Order via WhatsApp
+            </a>
+            <a
+              href="#order"
+              className="border border-white/30 hover:border-white/60 text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 uppercase tracking-wide text-center"
+            >
+              Bulk Enquiry
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
   )
 }
 
