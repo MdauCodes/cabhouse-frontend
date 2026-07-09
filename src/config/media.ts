@@ -23,7 +23,10 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   { id: 'hero-1', label: 'Hero Slide 1', section: 'Hero', type: 'image', localPath: '/assets/hero-3.webp', cloudinaryUrl: null, alt: 'Rope bridge against clear blue sky' },
   { id: 'hero-2', label: 'Hero Slide 2', section: 'Hero', type: 'image', localPath: '/assets/hero-5.webp', cloudinaryUrl: null, alt: 'Group on high ropes adventure course' },
   { id: 'hero-3', label: 'Hero Slide 3', section: 'Hero', type: 'image', localPath: '/assets/hero-6.png', cloudinaryUrl: null, alt: 'CabHouse Park activity' },
-  { id: 'hero-4', label: 'Hero Slide 4', section: 'Hero', type: 'image', localPath: '/assets/hero-7.png', cloudinaryUrl: null, alt: 'CabHouse Park experience' },
+  { id: 'hero-4', label: 'Hero Slide 4', section: 'Hero', type: 'image', localPath: '/assets/hero-7.png',       cloudinaryUrl: null, alt: 'CabHouse Park experience' },
+  { id: 'hero-5', label: 'Hero Slide 5', section: 'Hero', type: 'image', localPath: '/assets/hero-new-1.webp', cloudinaryUrl: null, alt: 'Rope bridge against brilliant blue sky' },
+  { id: 'hero-6', label: 'Hero Slide 6', section: 'Hero', type: 'image', localPath: '/assets/hero-new-2.webp', cloudinaryUrl: null, alt: 'Group on rope course with harnesses' },
+  { id: 'hero-7', label: 'Hero Slide 7', section: 'Hero', type: 'image', localPath: '/assets/hero-new-3.webp', cloudinaryUrl: null, alt: 'Kids in pool with inflatable slide' },
   { id: 'hero-video',   label: 'Hero Background Video', section: 'Hero', type: 'video', localPath: '',                    cloudinaryUrl: null },
 
   // ── Experience Cards (Relax / Play / Explore / Celebrate / Move) ──────────

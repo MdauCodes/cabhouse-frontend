@@ -5,9 +5,12 @@ const wa = SITE.contact.whatsapp.replace('+', '')
 
 const PARK_SLIDES = [
   '/assets/hero-5.webp',
+  '/assets/hero-new-1.webp',
   '/assets/hero-4.webp',
+  '/assets/hero-new-2.webp',
   '/assets/hero-7.png',
   '/assets/hero-8.png',
+  '/assets/hero-new-3.webp',
   '/assets/hero-6.png',
   '/assets/hero-10.png',
 ]

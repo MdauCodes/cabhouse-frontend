@@ -264,7 +264,15 @@ const APT_PHOTOS = [
   { src: '/assets/apartments-7.jpeg', label: 'Apartment' },
   { src: '/assets/confortable-bed-15.jpeg', label: 'Bedroom' },
   { src: '/assets/confortable-bed-22.jpeg', label: 'Bedroom' },
-  { src: '/assets/clean-toilet-30.jpeg', label: 'Bathroom' },
+  { src: '/assets/clean-toilet-30.jpeg',   label: 'Bathroom' },
+  { src: '/assets/confortable-bed-8.jpeg', label: 'Bedroom' },
+  { src: '/assets/drinks-bar-36.jpeg',     label: 'Bar & Drinks' },
+  { src: '/assets/confortable-bed-19.jpeg',label: 'Bedroom' },
+  { src: '/assets/clean-toilet-35.jpeg',   label: 'Bathroom' },
+  { src: '/assets/confortable-bed-20.jpeg',label: 'Bedroom' },
+  { src: '/assets/confortable-bed-21.jpeg',label: 'Bedroom' },
+  { src: '/assets/confortable-bed-26.jpeg',label: 'Bedroom' },
+  { src: '/assets/confortable-bed-27.jpeg',label: 'Bedroom' },
 ]
 
 export default function ApartmentsPage() {

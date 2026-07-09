@@ -48,8 +48,11 @@ export default function Hero() {
   const slide2 = useMediaUrl('hero-2')
   const slide3 = useMediaUrl('hero-3')
   const slide4 = useMediaUrl('hero-4')
+  const slide5 = useMediaUrl('hero-5')
+  const slide6 = useMediaUrl('hero-6')
+  const slide7 = useMediaUrl('hero-7')
 
-  const slides = [slide1, slide2, slide3, slide4].filter(Boolean)
+  const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7].filter(Boolean)
   const [current, setCurrent] = useState(0)
   const [transitioning, setTransitioning] = useState(false)
 
