@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-  Upload, Check, Settings, Image, RefreshCw, Copy,
+  Upload, Check, Image, RefreshCw, Copy,
   ChevronDown, Users, TicketPercent, FileText, Activity,
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
-  TrendingUp, CreditCard, ShieldCheck, LayoutGrid,
-  ChevronRight, AlertCircle, ArrowUpRight, MoreHorizontal,
+  TrendingUp, ShieldCheck, LayoutGrid,
+  ChevronRight, AlertCircle, ArrowUpRight,
   Pencil, ToggleLeft, ToggleRight,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
@@ -401,7 +401,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
           {tab === 'services'  && <ServicesTab  token={token} />}
-          {tab === 'users'     && <UsersTab     token={token} session={session} />}
+          {tab === 'users'     && <UsersTab     token={token} />}
           {tab === 'activity'  && <ActivityTab  token={token} />}
         </main>
       </div>
@@ -537,7 +537,7 @@ function MediaTab({ token }: { token: string }) {
           ))}
         </div>
       </div>
-      {view === 'slots'  && <SlotsTab  token={token} creds={creds} />}
+      {view === 'slots'  && <SlotsTab  token={token} />}
       {view === 'upload' && <UploadTab creds={creds} />}
       {view === 'config' && <CredentialsTab creds={creds} setCreds={setCreds} onSave={() => { localStorage.setItem(CLD_CLOUD_KEY, creds.cloudName.trim()); localStorage.setItem(CLD_PRESET_KEY, creds.uploadPreset.trim()) }} />}
     </div>
@@ -646,7 +646,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
   )
 }
 
-function SlotsTab({ token, creds }: { token: string; creds: { cloudName: string; uploadPreset: string } }) {
+function SlotsTab({ token }: { token: string }) {
   const [uploads] = useState<UploadedAsset[]>(() => {
     try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
   })
@@ -1064,7 +1064,7 @@ function ServicesTab({ token }: { token: string }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 interface UserRow { id: string; email: string; username: string; role: string; active: boolean; createdAt: string }
 
-function UsersTab({ token, session }: { token: string; session: AdminSession }) {
+function UsersTab({ token }: { token: string }) {
   const [roleFilter, setRoleFilter] = useState<'ADMIN' | 'STAFF'>('STAFF')
   const [users, setUsers] = useState<UserRow[]>([])
   const [loading, setLoading] = useState(true)
