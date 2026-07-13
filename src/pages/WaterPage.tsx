@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
-import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 
