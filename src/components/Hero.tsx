@@ -132,7 +132,7 @@ export default function Hero() {
           {[
             { v: '8+', l: 'Activities' },
             { v: '4.7★', l: 'Google Rating' },
-            { v: 'Daily', l: '8 AM "“ 8 PM' },
+            { v: 'Daily', l: '8 AM — 8 PM' },
           ].map((s, i) => (
             <div key={i} className="flex items-center gap-6">
               <div>

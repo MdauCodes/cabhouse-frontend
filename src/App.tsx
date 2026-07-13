@@ -8,6 +8,8 @@ import ApartmentsPage from './pages/ApartmentsPage'
 import WaterPage from './pages/WaterPage'
 import MdauDev from './pages/MdauDev'
 import AboutPage from './pages/AboutPage'
+import PatronPortal from './pages/PatronPortal'
+import StaffPOS from './pages/StaffPOS'
 import LoadingScreen from './components/LoadingScreen'
 
 export default function App() {
@@ -31,6 +33,8 @@ export default function App() {
           <Route path="/water" element={<WaterPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/mdau/dev" element={<MdauDev />} />
+          <Route path="/mdau/pos" element={<StaffPOS />} />
+          <Route path="/patrons" element={<PatronPortal />} />
         </Routes>
       </BrowserRouter>
     </>
