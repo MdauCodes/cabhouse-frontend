@@ -1,14 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-  Upload, Check, Settings, Image, RefreshCw, Copy, ExternalLink,
+  Upload, Check, Settings, Image, RefreshCw, Copy,
   ChevronDown, Users, TicketPercent, FileText, Activity,
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
+  TrendingUp, CreditCard, ShieldCheck, LayoutGrid,
+  ChevronRight, AlertCircle, ArrowUpRight, MoreHorizontal,
+  Pencil, ToggleLeft, ToggleRight,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
 import { api, staffAuth } from '../lib/api'
 
-// ── Auth storage ─────────────────────────────────────────────────────────────
+// ── Auth ─────────────────────────────────────────────────────────────────────
 const ADMIN_TOKEN_KEY = 'cabhouse_admin_token'
 const ADMIN_USER_KEY  = 'cabhouse_admin_user'
 
@@ -21,10 +24,10 @@ function getSession(): AdminSession | null {
     return t && u ? { accessToken: t, ...JSON.parse(u) } : null
   } catch { return null }
 }
-function saveSession(data: { accessToken: string; username: string; role: string }) {
-  localStorage.setItem(ADMIN_TOKEN_KEY, data.accessToken)
-  localStorage.setItem(ADMIN_USER_KEY, JSON.stringify({ username: data.username, role: data.role }))
-  staffAuth.setToken(data.accessToken)
+function saveSession(d: { accessToken: string; username: string; role: string }) {
+  localStorage.setItem(ADMIN_TOKEN_KEY, d.accessToken)
+  localStorage.setItem(ADMIN_USER_KEY, JSON.stringify({ username: d.username, role: d.role }))
+  staffAuth.setToken(d.accessToken)
 }
 function clearSession() {
   localStorage.removeItem(ADMIN_TOKEN_KEY)
@@ -32,58 +35,116 @@ function clearSession() {
   staffAuth.clear()
 }
 
-// ── Cloudinary config ─────────────────────────────────────────────────────────
+// ── Cloudinary ───────────────────────────────────────────────────────────────
 const CLD_CLOUD_KEY  = 'cld_cloud_name'
 const CLD_PRESET_KEY = 'cld_upload_preset'
 function getClds() {
   return { cloudName: localStorage.getItem(CLD_CLOUD_KEY) ?? '', uploadPreset: localStorage.getItem(CLD_PRESET_KEY) ?? '' }
 }
-
 interface UploadedAsset { url: string; publicId: string; type: 'image' | 'video'; bytes: number; format: string }
 
-// ── Shared UI ─────────────────────────────────────────────────────────────────
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+// ── Primitive UI ──────────────────────────────────────────────────────────────
+function Spinner({ size = 16 }: { size?: number }) {
+  return <Loader2 size={size} className="animate-spin" />
+}
+
+function Badge({ children, variant = 'gray' }: {
+  children: React.ReactNode
+  variant?: 'green' | 'amber' | 'blue' | 'purple' | 'red' | 'gray'
+}) {
+  const cls = {
+    green:  'bg-emerald-50 text-emerald-700 ring-emerald-100',
+    amber:  'bg-amber-50 text-amber-700 ring-amber-100',
+    blue:   'bg-blue-50 text-blue-700 ring-blue-100',
+    purple: 'bg-violet-50 text-violet-700 ring-violet-100',
+    red:    'bg-red-50 text-red-700 ring-red-100',
+    gray:   'bg-slate-100 text-slate-600 ring-slate-200',
+  }[variant]
   return (
-    <div className={`bg-white/4 border border-white/10 rounded-2xl ${className}`}>{children}</div>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold ring-1 ring-inset uppercase tracking-wide ${cls}`}>
+      {children}
+    </span>
   )
 }
-function Label({ children }: { children: React.ReactNode }) {
-  return <p className="text-white/50 text-xs uppercase tracking-widest mb-2">{children}</p>
+
+function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+  const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-amber-500','bg-pink-500','bg-cyan-500']
+  const color = colors[initials.charCodeAt(0) % colors.length]
+  const sz = size === 'sm' ? 'w-7 h-7 text-[10px]' : 'w-8 h-8 text-xs'
+  return (
+    <span className={`${sz} ${color} rounded-full flex items-center justify-center text-white font-bold flex-shrink-0`}>
+      {initials}
+    </span>
+  )
 }
+
+function Card({ children, className = '', padding = true }: { children: React.ReactNode; className?: string; padding?: boolean }) {
+  return (
+    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${padding ? 'p-5' : ''} ${className}`}>
+      {children}
+    </div>
+  )
+}
+
+function StatCard({ label, value, sub, icon: Icon, trend, color = 'blue' }: {
+  label: string; value: string | number; sub?: string
+  icon: any; trend?: { value: string; up: boolean }
+  color?: 'blue' | 'green' | 'amber' | 'purple'
+}) {
+  const iconBg = { blue: 'bg-blue-50 text-blue-600', green: 'bg-emerald-50 text-emerald-600', amber: 'bg-amber-50 text-amber-600', purple: 'bg-violet-50 text-violet-600' }[color]
+  return (
+    <Card className="flex items-start gap-4">
+      <div className={`p-2.5 rounded-xl ${iconBg}`}><Icon size={18} /></div>
+      <div className="flex-1 min-w-0">
+        <p className="text-slate-500 text-xs font-medium mb-0.5">{label}</p>
+        <p className="text-slate-900 text-2xl font-bold tracking-tight">{value}</p>
+        {sub && <p className="text-slate-400 text-xs mt-0.5">{sub}</p>}
+        {trend && (
+          <p className={`text-xs font-medium mt-1 flex items-center gap-0.5 ${trend.up ? 'text-emerald-600' : 'text-red-500'}`}>
+            <ArrowUpRight size={12} className={trend.up ? '' : 'rotate-90'} /> {trend.value}
+          </p>
+        )}
+      </div>
+    </Card>
+  )
+}
+
+function FieldGroup({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+      {children}
+      {hint && <p className="text-slate-400 text-xs mt-1">{hint}</p>}
+    </div>
+  )
+}
+
 function Input({ className = '', ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <input
-      {...props}
-      className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-amber-500/60 transition-colors ${className}`}
-    />
+    <input {...props}
+      className={`w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${className}`} />
   )
 }
+
 function Textarea({ className = '', ...props }: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <textarea
-      {...props}
-      className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-amber-500/60 transition-colors resize-none ${className}`}
-    />
+    <textarea {...props}
+      className={`w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-none ${className}`} />
   )
 }
-function Btn({
-  children, variant = 'primary', size = 'md', disabled, onClick, type = 'button', className = ''
-}: {
-  children: React.ReactNode
-  variant?: 'primary' | 'ghost' | 'danger' | 'success'
-  size?: 'sm' | 'md'
-  disabled?: boolean
-  onClick?: () => void
-  type?: 'button' | 'submit'
-  className?: string
+
+function Btn({ children, variant = 'primary', size = 'md', disabled, onClick, type = 'button', className = '' }: {
+  children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  size?: 'sm' | 'md'; disabled?: boolean; onClick?: () => void; type?: 'button' | 'submit'; className?: string
 }) {
-  const base = 'inline-flex items-center gap-2 font-body font-semibold rounded-xl transition-all disabled:opacity-40'
-  const sizes = { sm: 'px-3 py-2 text-xs', md: 'px-5 py-2.5 text-sm' }
+  const base = 'inline-flex items-center gap-1.5 font-semibold rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed'
+  const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm' }
   const variants = {
-    primary: 'bg-amber-600 hover:bg-amber-500 text-white',
-    ghost: 'bg-white/6 hover:bg-white/12 text-white/70 hover:text-white',
-    danger: 'bg-red-500/15 hover:bg-red-500/25 text-red-400',
-    success: 'bg-green-600/15 hover:bg-green-600/25 text-green-400',
+    primary:   'bg-slate-900 text-white hover:bg-slate-800 shadow-sm',
+    secondary: 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm',
+    ghost:     'text-slate-600 hover:text-slate-900 hover:bg-slate-100',
+    danger:    'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100',
   }
   return (
     <button type={type} disabled={disabled} onClick={onClick}
@@ -92,19 +153,36 @@ function Btn({
     </button>
   )
 }
-function Badge({ children, color = 'gray' }: { children: React.ReactNode; color?: 'gold' | 'green' | 'blue' | 'purple' | 'gray' | 'red' }) {
-  const colors = {
-    gold:   'bg-amber-500/15 text-amber-400',
-    green:  'bg-green-500/15 text-green-400',
-    blue:   'bg-blue-500/15 text-blue-400',
-    purple: 'bg-purple-500/15 text-purple-400',
-    gray:   'bg-white/8 text-white/50',
-    red:    'bg-red-500/15 text-red-400',
-  }
-  return <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${colors[color]}`}>{children}</span>
+
+function EmptyState({ icon: Icon, title, sub }: { icon: any; title: string; sub?: string }) {
+  return (
+    <div className="py-16 text-center">
+      <div className="mx-auto w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+        <Icon size={22} className="text-slate-400" />
+      </div>
+      <p className="text-slate-700 font-semibold text-sm mb-1">{title}</p>
+      {sub && <p className="text-slate-400 text-xs">{sub}</p>}
+    </div>
+  )
 }
-function Spinner() {
-  return <Loader2 size={16} className="animate-spin text-white/40" />
+
+// ── Modal shell ───────────────────────────────────────────────────────────────
+function Modal({ title, onClose, children, width = 'max-w-md' }: {
+  title: string; onClose: () => void; children: React.ReactNode; width?: string
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className={`w-full ${width} bg-white rounded-2xl shadow-xl`} onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <h3 className="text-slate-900 font-semibold">{title}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors rounded-lg p-1 hover:bg-slate-100">
+            <X size={16} />
+          </button>
+        </div>
+        <div className="px-6 py-5">{children}</div>
+      </div>
+    </div>
+  )
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -118,49 +196,74 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
   const [loading, setLoading] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault(); setError(''); setLoading(true)
     try {
-      const data = await api.post<{ accessToken: string; username: string; role: string }>(
-        '/auth/login', { username, password }
-      )
+      const data = await api.post<{ accessToken: string; username: string; role: string }>('/auth/login', { username, password })
       if (data.role === 'STAFF') throw new Error('Staff accounts use the POS terminal — not the admin panel')
-      saveSession(data)
-      onLogin(data)
-    } catch (err: any) {
-      setError(err.message ?? 'Login failed')
-    } finally {
-      setLoading(false)
-    }
+      saveSession(data); onLogin(data)
+    } catch (err: any) { setError(err.message ?? 'Invalid credentials') } finally { setLoading(false) }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-6">
-      <div className="w-full max-w-sm">
-        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-amber-500 text-center mb-2">CabHouse</p>
-        <h1 className="font-display font-black text-white text-2xl text-center mb-1" style={{ letterSpacing: '-0.03em' }}>Admin Panel</h1>
-        <p className="text-white/30 text-sm text-center mb-10">Sign in with your admin credentials</p>
-        <form onSubmit={handleLogin} className="space-y-3">
-          <div>
-            <Label>Username</Label>
-            <Input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="username" required autoFocus />
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-[420px] bg-slate-900 flex-col justify-between p-12">
+        <div>
+          <div className="flex items-center gap-2 mb-12">
+            <div className="w-8 h-8 bg-amber-500 rounded-lg" />
+            <span className="text-white font-bold text-lg tracking-tight">CabHouse</span>
           </div>
-          <div>
-            <Label>Password</Label>
-            <div className="relative">
-              <Input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required className="pr-11" />
-              <button type="button" onClick={() => setShowPw(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
-                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-              </button>
+          <h1 className="text-white text-3xl font-bold leading-tight mb-4" style={{ letterSpacing: '-0.03em' }}>
+            Manage everything<br />from one place.
+          </h1>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Media, patron accounts, coupon settings, staff users, and the full activity log — all wired to your live backend.
+          </p>
+        </div>
+        <div className="space-y-3">
+          {['Media slots synced to backend','Real-time patron balances','Coupon earning rate control','Staff user management'].map(f => (
+            <div key={f} className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <Check size={10} className="text-emerald-400" />
+              </div>
+              <span className="text-slate-400 text-sm">{f}</span>
             </div>
+          ))}
+        </div>
+      </div>
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-sm">
+          <div className="lg:hidden flex items-center gap-2 mb-8">
+            <div className="w-7 h-7 bg-amber-500 rounded-lg" />
+            <span className="text-slate-900 font-bold">CabHouse</span>
           </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          <Btn type="submit" disabled={loading} className="w-full justify-center mt-2">
-            {loading ? <><Spinner /> Signing in…</> : 'Sign In'}
-          </Btn>
-        </form>
+          <h2 className="text-slate-900 text-2xl font-bold mb-1" style={{ letterSpacing: '-0.02em' }}>Sign in</h2>
+          <p className="text-slate-500 text-sm mb-8">Admin and manager accounts only</p>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <FieldGroup label="Username">
+              <Input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="your username" required autoFocus />
+            </FieldGroup>
+            <FieldGroup label="Password">
+              <div className="relative">
+                <Input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required className="pr-10" />
+                <button type="button" onClick={() => setShowPw(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </FieldGroup>
+            {error && (
+              <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
+                <AlertCircle size={14} className="text-red-500 mt-0.5 flex-shrink-0" />
+                <p className="text-red-700 text-xs">{error}</p>
+              </div>
+            )}
+            <Btn type="submit" disabled={loading} className="w-full justify-center mt-2 py-2.5">
+              {loading ? <><Spinner size={14} /> Signing in…</> : 'Continue'}
+            </Btn>
+          </form>
+        </div>
       </div>
     </div>
   )
@@ -169,115 +272,274 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'media' | 'patrons' | 'coupons' | 'users' | 'services' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'services' | 'users' | 'activity'
 
-const NAV: { id: Tab; label: string; Icon: any; roles: string[] }[] = [
-  { id: 'media',    label: 'Media',     Icon: Image,          roles: ['SUPERADMIN','ADMIN'] },
-  { id: 'patrons',  label: 'Patrons',   Icon: Users,          roles: ['SUPERADMIN','ADMIN'] },
-  { id: 'coupons',  label: 'Coupons',   Icon: TicketPercent,  roles: ['SUPERADMIN','ADMIN'] },
-  { id: 'services', label: 'Services',  Icon: FileText,       roles: ['SUPERADMIN','ADMIN'] },
-  { id: 'users',    label: 'Users',     Icon: Settings,       roles: ['SUPERADMIN','ADMIN'] },
-  { id: 'activity', label: 'Activity',  Icon: Activity,       roles: ['SUPERADMIN','ADMIN'] },
+const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
+  { id: 'overview',  label: 'Overview',   Icon: LayoutGrid,    group: 'main' },
+  { id: 'patrons',   label: 'Patrons',    Icon: Users,         group: 'main' },
+  { id: 'coupons',   label: 'Coupons',    Icon: TicketPercent, group: 'main' },
+  { id: 'media',     label: 'Media',      Icon: Image,         group: 'content' },
+  { id: 'services',  label: 'Services',   Icon: FileText,      group: 'content' },
+  { id: 'users',     label: 'Users',      Icon: ShieldCheck,   group: 'system' },
+  { id: 'activity',  label: 'Activity',   Icon: Activity,      group: 'system' },
 ]
 
+const PAGE_TITLES: Record<Tab, string> = {
+  overview: 'Overview', media: 'Media', patrons: 'Patrons',
+  coupons: 'Coupons', services: 'Services', users: 'Users', activity: 'Activity Log',
+}
+
+function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
+  tab: Tab; onTab: (t: Tab) => void; onLogout: () => void; session: AdminSession; open: boolean; onClose: () => void
+}) {
+  const groups = [
+    { label: 'Main', items: NAV.filter(n => n.group === 'main') },
+    { label: 'Content', items: NAV.filter(n => n.group === 'content') },
+    { label: 'System', items: NAV.filter(n => n.group === 'system') },
+  ]
+
+  function NavItem({ item }: { item: typeof NAV[0] }) {
+    const active = tab === item.id
+    return (
+      <button onClick={() => { onTab(item.id); onClose() }}
+        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+          active ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+        }`}>
+        <item.Icon size={15} />
+        {item.label}
+      </button>
+    )
+  }
+
+  const inner = (
+    <div className="h-full flex flex-col overflow-y-auto">
+      {/* Logo */}
+      <div className="px-4 py-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-amber-500 rounded-lg flex-shrink-0" />
+          <div>
+            <p className="text-slate-900 font-bold text-sm leading-none">CabHouse</p>
+            <p className="text-slate-400 text-[10px] mt-0.5">Admin Panel</p>
+          </div>
+        </div>
+        <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-slate-600"><X size={18} /></button>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 p-3 space-y-5">
+        {groups.map(g => (
+          <div key={g.label}>
+            <p className="px-3 mb-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{g.label}</p>
+            <div className="space-y-0.5">
+              {g.items.map(item => <NavItem key={item.id} item={item} />)}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      {/* User */}
+      <div className="p-3 border-t border-slate-100 space-y-0.5">
+        <a href="/" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium transition-all">
+          <ChevronRight size={15} /> View site
+        </a>
+        <button onClick={onLogout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-red-600 hover:bg-red-50 font-medium transition-all">
+          <LogOut size={15} /> Sign out
+        </button>
+        <div className="flex items-center gap-2.5 px-3 py-2.5 mt-1 rounded-xl bg-slate-50 border border-slate-100">
+          <Avatar name={session.username} size="sm" />
+          <div className="min-w-0">
+            <p className="text-slate-800 text-xs font-semibold truncate">{session.username}</p>
+            <p className="text-slate-400 text-[10px]">{session.role}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      {open && <div className="fixed inset-0 z-20 bg-black/30 lg:hidden" onClick={onClose} />}
+      <aside className={`fixed lg:static z-30 inset-y-0 left-0 w-56 bg-white border-r border-slate-200 transition-transform duration-200
+        ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        {inner}
+      </aside>
+    </>
+  )
+}
+
+function TopBar({ title, session, onMenuOpen }: { title: string; session: AdminSession; onMenuOpen: () => void }) {
+  return (
+    <div className="h-14 border-b border-slate-200 bg-white px-5 flex items-center justify-between flex-shrink-0">
+      <div className="flex items-center gap-3">
+        <button onClick={onMenuOpen} className="lg:hidden text-slate-500 hover:text-slate-900 transition-colors">
+          <Menu size={20} />
+        </button>
+        <div className="flex items-center gap-1.5 text-sm">
+          <span className="text-slate-400">cabhouse.site</span>
+          <ChevronRight size={12} className="text-slate-300" />
+          <span className="text-slate-900 font-semibold">{title}</span>
+        </div>
+      </div>
+      <Avatar name={session.username} />
+    </div>
+  )
+}
+
 function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout: () => void }) {
-  const [tab, setTab] = useState<Tab>('media')
+  const [tab, setTab] = useState<Tab>('overview')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const token = session.accessToken
 
-  const allowedNav = NAV.filter(n => n.roles.includes(session.role))
-
-  function navigate(t: Tab) { setTab(t); setSidebarOpen(false) }
-
   return (
-    <div className="min-h-screen bg-gray-950 text-white font-body flex">
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/60 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-30 w-56 bg-gray-900 border-r border-white/8 flex flex-col transition-transform duration-200
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="px-5 py-5 border-b border-white/8">
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-amber-500 mb-0.5">CabHouse</p>
-          <p className="font-display font-black text-white text-sm" style={{ letterSpacing: '-0.02em' }}>Admin Panel</p>
-          <p className="text-white/30 text-[10px] mt-1">{session.username} · {session.role}</p>
-        </div>
-        <nav className="flex-1 p-3 space-y-0.5">
-          {allowedNav.map(({ id, label, Icon }) => (
-            <button key={id} onClick={() => navigate(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
-                tab === id
-                  ? 'bg-amber-600/20 text-amber-400 font-semibold'
-                  : 'text-white/50 hover:text-white hover:bg-white/5'
-              }`}>
-              <Icon size={15} />
-              {label}
-            </button>
-          ))}
-        </nav>
-        <div className="p-3 border-t border-white/8">
-          <button onClick={onLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-red-400 hover:bg-red-500/8 transition-all">
-            <LogOut size={15} /> Sign out
-          </button>
-          <a href="/" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all mt-0.5">
-            <ExternalLink size={15} /> View Site
-          </a>
-        </div>
-      </aside>
-
-      {/* Main */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top bar (mobile) */}
-        <div className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-white/8">
-          <button onClick={() => setSidebarOpen(true)} className="text-white/60 hover:text-white">
-            <Menu size={20} />
-          </button>
-          <p className="font-semibold text-sm text-white capitalize">{tab}</p>
-        </div>
-
-        <div className="flex-1 p-5 lg:p-8 overflow-auto">
-          {tab === 'media'    && <MediaTab    token={token} />}
-          {tab === 'patrons'  && <PatronsTab  token={token} />}
-          {tab === 'coupons'  && <CouponsTab  token={token} />}
-          {tab === 'services' && <ServicesTab token={token} />}
-          {tab === 'users'    && <UsersTab    token={token} session={session} />}
-          {tab === 'activity' && <ActivityTab token={token} />}
-        </div>
+    <div className="h-screen bg-slate-50 flex overflow-hidden">
+      <Sidebar tab={tab} onTab={setTab} onLogout={onLogout} session={session} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <TopBar title={PAGE_TITLES[tab]} session={session} onMenuOpen={() => setSidebarOpen(true)} />
+        <main className="flex-1 overflow-auto p-5 lg:p-8">
+          {tab === 'overview'  && <OverviewTab  token={token} onNav={setTab} />}
+          {tab === 'media'     && <MediaTab     token={token} />}
+          {tab === 'patrons'   && <PatronsTab   token={token} />}
+          {tab === 'coupons'   && <CouponsTab   token={token} />}
+          {tab === 'services'  && <ServicesTab  token={token} />}
+          {tab === 'users'     && <UsersTab     token={token} session={session} />}
+          {tab === 'activity'  && <ActivityTab  token={token} />}
+        </main>
       </div>
     </div>
   )
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MEDIA TAB (Cloudinary upload + backend slot sync)
+// OVERVIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void }) {
+  const [stats, setStats] = useState<{ totalPatrons: number; activePatrons: number; totalCouponsIssued: number; totalCouponsRedeemed: number } | null>(null)
+  const [settings, setSettings] = useState<{ baseAmount: string; couponValue: string } | null>(null)
+  const [recentActivity, setRecentActivity] = useState<any[]>([])
+
+  useEffect(() => {
+    api.get<any>('/dashboard/stats', token).then(setStats).catch(() => {})
+    api.get<any>('/coupons/settings', token).then(setSettings).catch(() => {})
+    api.get<any>('/activity?page=0&size=5', token).then(d => setRecentActivity(d.content ?? [])).catch(() => {})
+  }, [token])
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-slate-900 text-xl font-bold">Good day</h1>
+        <p className="text-slate-500 text-sm">Here's what's happening at CabHouse.</p>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Total Patrons" value={stats?.totalPatrons ?? '—'} sub="enrolled members" icon={Users} color="blue" />
+        <StatCard label="Active Patrons" value={stats?.activePatrons ?? '—'} sub="verified accounts" icon={ShieldCheck} color="green" />
+        <StatCard label="Coupons Issued" value={stats?.totalCouponsIssued ?? '—'} sub="all time" icon={TicketPercent} color="amber" />
+        <StatCard label="Coupons Redeemed" value={stats?.totalCouponsRedeemed ?? '—'} sub="all time" icon={TrendingUp} color="purple" />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        {/* Quick actions */}
+        <Card className="lg:col-span-1">
+          <h3 className="text-slate-900 font-semibold text-sm mb-4">Quick Actions</h3>
+          <div className="space-y-2">
+            {[
+              { label: 'Manage Patrons', sub: 'Search, view balances', tab: 'patrons' as Tab, icon: Users },
+              { label: 'Coupon Settings', sub: 'Adjust earning rate', tab: 'coupons' as Tab, icon: TicketPercent },
+              { label: 'Update Media', sub: 'Swap images & videos', tab: 'media' as Tab, icon: Image },
+              { label: 'Manage Users', sub: 'Staff & admin accounts', tab: 'users' as Tab, icon: ShieldCheck },
+            ].map(a => (
+              <button key={a.tab} onClick={() => onNav(a.tab)}
+                className="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all text-left group">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center flex-shrink-0 transition-colors">
+                  <a.icon size={14} className="text-slate-600" />
+                </div>
+                <div>
+                  <p className="text-slate-800 text-sm font-medium">{a.label}</p>
+                  <p className="text-slate-400 text-xs">{a.sub}</p>
+                </div>
+                <ChevronRight size={14} className="text-slate-300 ml-auto group-hover:text-slate-500 transition-colors" />
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        {/* Coupon summary */}
+        <Card className="lg:col-span-1">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-slate-900 font-semibold text-sm">Coupon Rate</h3>
+            <button onClick={() => onNav('coupons')} className="text-xs text-blue-600 hover:text-blue-700 font-medium">Edit</button>
+          </div>
+          {settings ? (
+            <div className="space-y-4">
+              <div className="bg-slate-50 rounded-xl p-4 text-center">
+                <p className="text-3xl font-bold text-slate-900 tracking-tight">KES {Number(settings.baseAmount).toLocaleString()}</p>
+                <p className="text-slate-500 text-xs mt-1">spend earns 1 coupon</p>
+              </div>
+              <div className="bg-amber-50 rounded-xl p-4 text-center">
+                <p className="text-3xl font-bold text-amber-700 tracking-tight">KES {Number(settings.couponValue).toLocaleString()}</p>
+                <p className="text-amber-600 text-xs mt-1">value per coupon redeemed</p>
+              </div>
+            </div>
+          ) : (
+            <EmptyState icon={TicketPercent} title="Not configured" sub="Set a coupon rate to get started" />
+          )}
+        </Card>
+
+        {/* Recent activity */}
+        <Card className="lg:col-span-1" padding={false}>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <h3 className="text-slate-900 font-semibold text-sm">Recent Activity</h3>
+            <button onClick={() => onNav('activity')} className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all</button>
+          </div>
+          {recentActivity.length === 0 ? (
+            <div className="px-5 py-8"><EmptyState icon={Activity} title="No activity yet" /></div>
+          ) : (
+            <div className="divide-y divide-slate-50">
+              {recentActivity.map((l: any) => (
+                <div key={l.id} className="flex items-start gap-3 px-5 py-3">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Activity size={10} className="text-slate-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-slate-700 text-xs font-medium truncate">{l.action?.replace(/_/g, ' ')}</p>
+                    <p className="text-slate-400 text-[10px]">{new Date(l.createdAt).toLocaleString('en-KE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MEDIA TAB
 // ═══════════════════════════════════════════════════════════════════════════════
 function MediaTab({ token }: { token: string }) {
-  const [view, setView] = useState<'upload' | 'slots' | 'credentials'>('slots')
+  const [view, setView] = useState<'slots' | 'upload' | 'config'>('slots')
   const [creds, setCreds] = useState(getClds)
-
-  function saveCreds() {
-    localStorage.setItem(CLD_CLOUD_KEY, creds.cloudName.trim())
-    localStorage.setItem(CLD_PRESET_KEY, creds.uploadPreset.trim())
-  }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display font-bold text-xl text-white">Media Management</h2>
-        <div className="flex gap-1">
-          {(['slots','upload','credentials'] as const).map(v => (
-            <Btn key={v} variant={view === v ? 'primary' : 'ghost'} size="sm" onClick={() => setView(v)}>
-              {v === 'slots' ? 'Image Slots' : v === 'upload' ? 'Upload' : 'Cloudinary Config'}
-            </Btn>
+        <div>
+          <h2 className="text-slate-900 font-bold text-lg">Media Management</h2>
+          <p className="text-slate-500 text-sm">Manage images and videos across all site sections.</p>
+        </div>
+        <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
+          {(['slots','upload','config'] as const).map(v => (
+            <button key={v} onClick={() => setView(v)}
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all capitalize ${view === v ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+              {v === 'slots' ? 'Image Slots' : v === 'upload' ? 'Upload' : 'Cloudinary'}
+            </button>
           ))}
         </div>
       </div>
-      {view === 'slots'       && <SlotsTab token={token} />}
-      {view === 'upload'      && <UploadTab creds={creds} />}
-      {view === 'credentials' && <CredentialsTab creds={creds} setCreds={setCreds} onSave={saveCreds} />}
+      {view === 'slots'  && <SlotsTab  token={token} creds={creds} />}
+      {view === 'upload' && <UploadTab creds={creds} />}
+      {view === 'config' && <CredentialsTab creds={creds} setCreds={setCreds} onSave={() => { localStorage.setItem(CLD_CLOUD_KEY, creds.cloudName.trim()); localStorage.setItem(CLD_PRESET_KEY, creds.uploadPreset.trim()) }} />}
     </div>
   )
 }
@@ -290,12 +552,16 @@ function CredentialsTab({ creds, setCreds, onSave }: {
   const [saved, setSaved] = useState(false)
   function save() { onSave(); setSaved(true); setTimeout(() => setSaved(false), 2000) }
   return (
-    <Card className="p-6 max-w-lg">
-      <h3 className="text-white font-semibold mb-5">Cloudinary Credentials</h3>
+    <Card className="max-w-lg">
+      <h3 className="text-slate-900 font-semibold mb-5">Cloudinary Config</h3>
       <div className="space-y-4">
-        <div><Label>Cloud Name</Label><Input value={creds.cloudName} onChange={e => setCreds({ ...creds, cloudName: e.target.value })} placeholder="e.g. my-cloud" /></div>
-        <div><Label>Unsigned Upload Preset</Label><Input value={creds.uploadPreset} onChange={e => setCreds({ ...creds, uploadPreset: e.target.value })} placeholder="e.g. cabhouse_unsigned" /></div>
-        <Btn onClick={save}>{saved ? <><Check size={14} /> Saved</> : 'Save'}</Btn>
+        <FieldGroup label="Cloud Name">
+          <Input value={creds.cloudName} onChange={e => setCreds({ ...creds, cloudName: e.target.value })} placeholder="e.g. my-cloud" />
+        </FieldGroup>
+        <FieldGroup label="Unsigned Upload Preset" hint="Must be set to 'Unsigned' mode in your Cloudinary console">
+          <Input value={creds.uploadPreset} onChange={e => setCreds({ ...creds, uploadPreset: e.target.value })} placeholder="e.g. cabhouse_unsigned" />
+        </FieldGroup>
+        <Btn onClick={save}>{saved ? <><Check size={13} /> Saved</> : 'Save'}</Btn>
       </div>
     </Card>
   )
@@ -313,7 +579,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
   function saveUploads(list: UploadedAsset[]) { setUploads(list); localStorage.setItem('cld_uploads', JSON.stringify(list)) }
 
   async function uploadFiles(files: FileList | File[]) {
-    if (!creds.cloudName || !creds.uploadPreset) { setError('Set Cloudinary credentials first.'); return }
+    if (!creds.cloudName || !creds.uploadPreset) { setError('Configure Cloudinary credentials first.'); return }
     setError(null); setUploading(true); setProgress(0)
     const arr = Array.from(files); const results: UploadedAsset[] = []
     for (let i = 0; i < arr.length; i++) {
@@ -325,7 +591,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
         if (!res.ok) throw new Error(res.statusText)
         const d = await res.json()
         results.push({ url: d.secure_url, publicId: d.public_id, type: rt, bytes: d.bytes, format: d.format })
-      } catch (err) { setError(`Failed: ${file.name}`) }
+      } catch { setError(`Upload failed: ${file.name}`) }
       setProgress(Math.round(((i + 1) / arr.length) * 100))
     }
     saveUploads([...results, ...uploads]); setUploading(false)
@@ -334,35 +600,41 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
   return (
     <div className="max-w-3xl">
       <div
-        className="border-2 border-dashed border-white/10 hover:border-amber-500/40 rounded-2xl p-14 text-center cursor-pointer transition-all"
+        className="border-2 border-dashed border-slate-200 hover:border-blue-300 rounded-2xl p-14 text-center cursor-pointer transition-colors bg-white"
         onClick={() => inputRef.current?.click()}
         onDragOver={e => e.preventDefault()}
         onDrop={e => { e.preventDefault(); e.dataTransfer.files.length && uploadFiles(e.dataTransfer.files) }}
       >
-        <Upload size={28} className="mx-auto text-white/30 mb-3" />
-        <p className="text-white/50 text-sm">Drag & drop images here or click to browse</p>
+        <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
+          <Upload size={20} className="text-slate-400" />
+        </div>
+        <p className="text-slate-700 font-semibold text-sm">Drop files here or click to browse</p>
+        <p className="text-slate-400 text-xs mt-1">Images and videos up to 100MB</p>
         <input ref={inputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={e => e.target.files && uploadFiles(e.target.files)} />
       </div>
+
       {uploading && (
         <div className="mt-4">
-          <div className="flex justify-between text-xs text-white/40 mb-1"><span>Uploading…</span><span>{progress}%</span></div>
-          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-amber-500 transition-all" style={{ width: `${progress}%` }} /></div>
+          <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Uploading…</span><span>{progress}%</span></div>
+          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500 transition-all" style={{ width: `${progress}%` }} /></div>
         </div>
       )}
-      {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
+      {error && <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">{error}</div>}
+
       {uploads.length > 0 && (
         <div className="mt-8">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-white/60 text-sm font-semibold">{uploads.length} uploaded</p>
-            <button onClick={() => saveUploads([])} className="text-xs text-white/30 hover:text-red-400 transition-colors">Clear all</button>
+            <p className="text-slate-700 text-sm font-semibold">{uploads.length} file{uploads.length !== 1 ? 's' : ''} uploaded</p>
+            <button onClick={() => saveUploads([])} className="text-xs text-slate-400 hover:text-red-600 transition-colors">Clear all</button>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
             {uploads.map(a => (
-              <div key={a.publicId} className="group relative rounded-xl overflow-hidden aspect-square bg-white/5 border border-white/10">
+              <div key={a.publicId} className="group relative rounded-xl overflow-hidden aspect-square bg-slate-100 border border-slate-200">
                 <img src={a.url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button onClick={() => { navigator.clipboard.writeText(a.url) }} className="bg-amber-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
-                    <Copy size={10} /> Copy
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button onClick={() => navigator.clipboard.writeText(a.url)}
+                    className="bg-white text-slate-900 text-[9px] font-bold px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                    <Copy size={9} /> Copy
                   </button>
                 </div>
               </div>
@@ -374,7 +646,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
   )
 }
 
-function SlotsTab({ token }: { token: string }) {
+function SlotsTab({ token, creds }: { token: string; creds: { cloudName: string; uploadPreset: string } }) {
   const [uploads] = useState<UploadedAsset[]>(() => {
     try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
   })
@@ -384,42 +656,38 @@ function SlotsTab({ token }: { token: string }) {
 
   useEffect(() => {
     api.get<{ slotId: string; cloudinaryUrl: string | null }[]>('/content/media-slots', token)
-      .then(slots => {
-        const map: Record<string, string | null> = {}
-        slots.forEach(s => { map[s.slotId] = s.cloudinaryUrl })
-        setBackendSlots(map)
-      }).catch(() => {})
+      .then(slots => { const m: Record<string, string | null> = {}; slots.forEach(s => { m[s.slotId] = s.cloudinaryUrl }); setBackendSlots(m) })
+      .catch(() => {})
   }, [token])
 
   async function applySlot(slotId: string, url: string) {
     await api.put(`/content/media-slots/${slotId}`, { cloudinaryUrl: url }, token)
-    setBackendSlots(prev => ({ ...prev, [slotId]: url }))
-    applyOverride(slotId, url)
+    setBackendSlots(prev => ({ ...prev, [slotId]: url })); applyOverride(slotId, url)
   }
-
   async function resetSlot(slotId: string) {
     await api.del(`/content/media-slots/${slotId}`, token)
-    setBackendSlots(prev => ({ ...prev, [slotId]: null }))
-    clearOverride(slotId)
+    setBackendSlots(prev => ({ ...prev, [slotId]: null })); clearOverride(slotId)
   }
 
   return (
-    <div className="max-w-4xl space-y-3">
+    <div className="space-y-2">
       {sections.map(section => {
         const slots = MEDIA_SLOTS.filter(s => s.section === section)
+        const liveCount = slots.filter(s => backendSlots[s.id]).length
         const isOpen = openSection === section
         return (
-          <Card key={section}>
+          <Card key={section} padding={false}>
             <button onClick={() => setOpenSection(isOpen ? '' : section)}
-              className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/3 transition-colors rounded-2xl">
+              className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors rounded-xl text-left">
               <div className="flex items-center gap-3">
-                <span className="text-white font-semibold text-sm">{section}</span>
-                <Badge color="gray">{slots.length} slots</Badge>
+                <span className="text-slate-900 font-semibold text-sm">{section}</span>
+                <span className="text-slate-400 text-xs">{slots.length} slots</span>
+                {liveCount > 0 && <Badge variant="green">{liveCount} live</Badge>}
               </div>
-              <ChevronDown size={15} className={`text-white/40 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={15} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             {isOpen && (
-              <div className="border-t border-white/8 divide-y divide-white/5">
+              <div className="border-t border-slate-100 divide-y divide-slate-50">
                 {slots.map(slot => (
                   <SlotRow key={slot.id} slot={slot} uploads={uploads}
                     backendUrl={backendSlots[slot.id] ?? null}
@@ -446,38 +714,34 @@ function SlotRow({ slot, uploads, backendUrl, onApply, onReset }: {
   const [saving, setSaving] = useState(false)
 
   async function apply(url: string) {
-    setSaving(true)
-    try { await onApply(slot.id, url); setManual(''); setShowPicker(false) }
-    finally { setSaving(false) }
+    setSaving(true); try { await onApply(slot.id, url); setManual(''); setShowPicker(false) } finally { setSaving(false) }
   }
-  async function reset() {
-    setSaving(true)
-    try { await onReset(slot.id) } finally { setSaving(false) }
-  }
+  async function reset() { setSaving(true); try { await onReset(slot.id) } finally { setSaving(false) } }
 
   return (
     <div className="px-5 py-4 flex gap-4">
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/5 border border-white/8 shrink-0">
-        {displayUrl ? <img src={displayUrl} alt={slot.alt} className="w-full h-full object-cover" loading="lazy" />
-          : <div className="w-full h-full flex items-center justify-center"><Image size={18} className="text-white/20" /></div>}
+      <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+        {displayUrl
+          ? <img src={displayUrl} alt={slot.alt} className="w-full h-full object-cover" loading="lazy" />
+          : <div className="w-full h-full flex items-center justify-center"><Image size={16} className="text-slate-300" /></div>}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <p className="text-white text-sm font-semibold">{slot.label}</p>
-          <span className="text-white/30 text-xs">{slot.id}</span>
-          {backendUrl && <Badge color="gold">Live</Badge>}
+          <p className="text-slate-800 text-sm font-semibold">{slot.label}</p>
+          <code className="text-slate-400 text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">{slot.id}</code>
+          {backendUrl && <Badge variant="amber">Live</Badge>}
         </div>
-        {displayUrl && <p className="text-white/25 text-[10px] font-mono truncate mb-2">{displayUrl}</p>}
+        {displayUrl && <p className="text-slate-400 text-[10px] font-mono truncate mb-2">{displayUrl}</p>}
         {uploads.length > 0 && (
           <div className="mb-2">
-            <button onClick={() => setShowPicker(!showPicker)} className="text-xs text-amber-500 hover:text-amber-400 flex items-center gap-1 transition-colors">
+            <button onClick={() => setShowPicker(!showPicker)} className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium transition-colors">
               Pick from uploads <ChevronDown size={10} className={showPicker ? 'rotate-180' : ''} />
             </button>
             {showPicker && (
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {uploads.map(u => (
                   <button key={u.publicId} onClick={() => apply(u.url)}
-                    className="w-12 h-12 rounded-lg overflow-hidden border-2 border-transparent hover:border-amber-500 transition-colors">
+                    className="w-10 h-10 rounded-lg overflow-hidden border-2 border-transparent hover:border-blue-500 transition-colors">
                     <img src={u.url} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
@@ -486,13 +750,14 @@ function SlotRow({ slot, uploads, backendUrl, onApply, onReset }: {
           </div>
         )}
         <div className="flex gap-2">
-          <input value={manual} onChange={e => setManual(e.target.value)} onKeyDown={e => e.key === 'Enter' && manual.trim() && apply(manual.trim())}
-            placeholder="Paste Cloudinary URL and press Enter…"
-            className="flex-1 bg-white/5 border border-white/8 rounded-lg px-3 py-1.5 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-amber-500/60 font-mono" />
+          <input value={manual} onChange={e => setManual(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && manual.trim() && apply(manual.trim())}
+            placeholder="Paste URL and press Enter…"
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono" />
           <Btn size="sm" disabled={!manual.trim() || saving} onClick={() => apply(manual.trim())}>
-            {saving ? <Spinner /> : 'Apply'}
+            {saving ? <Spinner size={12} /> : 'Apply'}
           </Btn>
-          {backendUrl && <Btn size="sm" variant="ghost" onClick={reset} disabled={saving}><RefreshCw size={12} /></Btn>}
+          {backendUrl && <Btn size="sm" variant="secondary" onClick={reset} disabled={saving}><RefreshCw size={11} /></Btn>}
         </div>
       </div>
     </div>
@@ -517,8 +782,7 @@ function PatronsTab({ token }: { token: string }) {
     const qs = query ? `&search=${encodeURIComponent(query)}` : ''
     api.get<{ content: PatronRow[]; totalElements: number }>(`/patrons?page=${page}&size=20${qs}`, token)
       .then(d => { setPatrons(d.content); setTotal(d.totalElements) })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+      .catch(() => {}).finally(() => setLoading(false))
   }, [page, query, token])
 
   function doSearch() { setPage(0); setQuery(search) }
@@ -527,49 +791,58 @@ function PatronsTab({ token }: { token: string }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="font-display font-bold text-xl text-white">Patrons</h2>
-          <p className="text-white/40 text-sm mt-0.5">{total} enrolled patron{total !== 1 ? 's' : ''}</p>
+          <h2 className="text-slate-900 font-bold text-lg">Patrons</h2>
+          <p className="text-slate-500 text-sm">{total} enrolled member{total !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex gap-2 mb-5 max-w-md">
+      <div className="flex gap-2 mb-5 max-w-sm">
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && doSearch()}
-            placeholder="Search by name…" className="pl-9" />
+            placeholder="Search by name…" className="pl-8" />
         </div>
         <Btn onClick={doSearch}>Search</Btn>
         {query && <Btn variant="ghost" onClick={() => { setSearch(''); setQuery(''); setPage(0) }}>Clear</Btn>}
       </div>
 
-      <Card>
+      <Card padding={false}>
         {loading ? (
-          <div className="py-16 flex justify-center"><Spinner /></div>
+          <div className="py-16 flex items-center justify-center gap-2 text-slate-400">
+            <Spinner size={16} /> <span className="text-sm">Loading patrons…</span>
+          </div>
         ) : patrons.length === 0 ? (
-          <p className="py-12 text-center text-white/30 text-sm">No patrons found</p>
+          <EmptyState icon={Users} title="No patrons found" sub={query ? 'Try a different search term' : 'Enroll your first patron via the POS terminal'} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/8">
-                  {['Name','Phone','Coupons','Status','Enrolled'].map(h => (
-                    <th key={h} className="text-left px-5 py-3 text-white/40 text-xs uppercase tracking-widest font-semibold">{h}</th>
-                  ))}
+                <tr className="border-b border-slate-100">
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Patron</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Phone</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Coupons</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Status</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Enrolled</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-50">
                 {patrons.map(p => (
-                  <tr key={p.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3.5 text-white font-semibold">{p.name}</td>
-                    <td className="px-5 py-3.5 text-white/60 font-mono text-xs">{p.phone}</td>
+                  <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3.5">
-                      <span className="font-display font-bold text-amber-400">{p.couponBalance}</span>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={p.name} size="sm" />
+                        <span className="text-slate-800 font-semibold">{p.name}</span>
+                      </div>
                     </td>
+                    <td className="px-5 py-3.5 text-slate-500 font-mono text-xs">{p.phone}</td>
                     <td className="px-5 py-3.5">
-                      <Badge color={p.active ? 'green' : 'red'}>{p.active ? 'Active' : 'Inactive'}</Badge>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-900 font-bold text-base">{p.couponBalance}</span>
+                        <span className="text-slate-400 text-xs">coupons</span>
+                      </div>
                     </td>
-                    <td className="px-5 py-3.5 text-white/40 text-xs">
+                    <td className="px-5 py-3.5"><Badge variant={p.active ? 'green' : 'red'}>{p.active ? 'Active' : 'Inactive'}</Badge></td>
+                    <td className="px-5 py-3.5 text-slate-400 text-xs">
                       {new Date(p.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                   </tr>
@@ -578,13 +851,12 @@ function PatronsTab({ token }: { token: string }) {
             </table>
           </div>
         )}
-
         {total > 20 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-white/8">
-            <p className="text-white/40 text-xs">Page {page + 1} of {Math.ceil(total / 20)}</p>
-            <div className="flex gap-2">
-              <Btn size="sm" variant="ghost" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Prev</Btn>
-              <Btn size="sm" variant="ghost" disabled={(page + 1) * 20 >= total} onClick={() => setPage(p => p + 1)}>Next</Btn>
+          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
+            <p className="text-slate-400 text-xs">Showing {page * 20 + 1}–{Math.min((page + 1) * 20, total)} of {total}</p>
+            <div className="flex gap-1">
+              <Btn size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous</Btn>
+              <Btn size="sm" variant="secondary" disabled={(page + 1) * 20 >= total} onClick={() => setPage(p => p + 1)}>Next</Btn>
             </div>
           </div>
         )}
@@ -625,50 +897,61 @@ function CouponsTab({ token }: { token: string }) {
   })) : []
 
   return (
-    <div className="max-w-2xl">
-      <h2 className="font-display font-bold text-xl text-white mb-6">Coupon Settings</h2>
+    <div className="max-w-2xl space-y-5">
+      <div>
+        <h2 className="text-slate-900 font-bold text-lg">Coupon Settings</h2>
+        <p className="text-slate-500 text-sm">Control how patrons earn and redeem coupons.</p>
+      </div>
 
-      <Card className="p-6 mb-6">
-        <h3 className="text-white font-semibold mb-1">Earning Rate</h3>
-        <p className="text-white/40 text-sm mb-5">Define how much a patron must spend to earn one coupon, and how much each coupon is worth when redeemed.</p>
-        <div className="grid grid-cols-2 gap-4 mb-5">
+      <Card>
+        <div className="flex items-start justify-between mb-5">
           <div>
-            <Label>Spend per coupon (KES)</Label>
-            <Input type="number" min="1" value={base} onChange={e => { setBase(e.target.value); setSaved(false) }} placeholder="e.g. 500" />
-            <p className="text-white/30 text-xs mt-1">Patron earns 1 coupon for every this amount spent</p>
+            <h3 className="text-slate-900 font-semibold">Earning Rate</h3>
+            {current && <p className="text-slate-400 text-xs mt-0.5">Currently: KES {Number(current.baseAmount).toLocaleString()} = 1 coupon · 1 coupon = KES {Number(current.couponValue).toLocaleString()}</p>}
           </div>
-          <div>
-            <Label>Coupon value (KES)</Label>
-            <Input type="number" min="1" value={value} onChange={e => { setValue(e.target.value); setSaved(false) }} placeholder="e.g. 50" />
-            <p className="text-white/30 text-xs mt-1">Discount value when a patron redeems 1 coupon</p>
-          </div>
+          {saved && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
         </div>
-        {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
+        <div className="grid grid-cols-2 gap-4 mb-5">
+          <FieldGroup label="Spend per coupon (KES)" hint="Earn 1 coupon for every this amount spent">
+            <Input type="number" min="1" value={base} onChange={e => { setBase(e.target.value); setSaved(false) }} placeholder="e.g. 500" />
+          </FieldGroup>
+          <FieldGroup label="Coupon value (KES)" hint="KES discount when 1 coupon is redeemed">
+            <Input type="number" min="1" value={value} onChange={e => { setValue(e.target.value); setSaved(false) }} placeholder="e.g. 50" />
+          </FieldGroup>
+        </div>
+        {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs mb-4">{error}</div>}
         <Btn onClick={save} disabled={!base || !value || saving}>
-          {saving ? <><Spinner /> Saving…</> : saved ? <><Check size={14} /> Saved</> : 'Save Settings'}
+          {saving ? <><Spinner size={13} /> Saving…</> : 'Save Settings'}
         </Btn>
-
-        {current && (
-          <p className="text-white/30 text-xs mt-4">
-            Current live: KES {Number(current.baseAmount).toLocaleString()} = 1 coupon · 1 coupon = KES {Number(current.couponValue).toLocaleString()}
-          </p>
-        )}
       </Card>
 
       {preview.length > 0 && (
-        <Card className="p-6">
-          <h3 className="text-white font-semibold mb-4">Preview — what patrons earn</h3>
-          <div className="space-y-2">
-            {preview.map(p => (
-              <div key={p.spend} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                <span className="text-white/60 text-sm">KES {p.spend.toLocaleString()} spend</span>
-                <div className="flex items-center gap-4">
-                  <span className="text-amber-400 font-bold text-sm">{p.coupons} coupon{p.coupons !== 1 ? 's' : ''}</span>
-                  <span className="text-white/30 text-xs">= KES {p.discount.toLocaleString()} value</span>
-                </div>
-              </div>
-            ))}
+        <Card padding={false}>
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h3 className="text-slate-900 font-semibold text-sm">Earning Preview</h3>
+            <p className="text-slate-400 text-xs mt-0.5">What patrons earn at common spend amounts</p>
           </div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-50">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold">Spend</th>
+                <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold">Coupons Earned</th>
+                <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold">Discount Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {preview.map(p => (
+                <tr key={p.spend} className="hover:bg-slate-50">
+                  <td className="px-5 py-3 text-slate-600 font-medium">KES {p.spend.toLocaleString()}</td>
+                  <td className="px-5 py-3">
+                    <span className="font-bold text-slate-900">{p.coupons}</span>
+                    <span className="text-slate-400 text-xs ml-1">coupon{p.coupons !== 1 ? 's' : ''}</span>
+                  </td>
+                  <td className="px-5 py-3 text-emerald-700 font-semibold">KES {p.discount.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Card>
       )}
     </div>
@@ -691,8 +974,7 @@ function ServicesTab({ token }: { token: string }) {
   }, [token])
 
   async function save() {
-    if (!editing) return
-    setSaving(true)
+    if (!editing) return; setSaving(true)
     try {
       const updated = await api.put<ServiceRow>(`/content/services/${editing.id}`, {
         title: editing.title, description: editing.description,
@@ -705,51 +987,73 @@ function ServicesTab({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="font-display font-bold text-xl text-white mb-6">CMS Services</h2>
-      <div className="grid lg:grid-cols-2 gap-4">
-        {/* List */}
-        <div className="space-y-2">
+      <div className="mb-6">
+        <h2 className="text-slate-900 font-bold text-lg">CMS Services</h2>
+        <p className="text-slate-500 text-sm">Edit service titles, descriptions, and visibility.</p>
+      </div>
+      <div className="grid lg:grid-cols-5 gap-5">
+        <div className="lg:col-span-2 space-y-2">
           {services.map(s => (
             <button key={s.id} onClick={() => { setEditing({ ...s }); setSaved(false) }}
-              className={`w-full text-left p-4 rounded-2xl border transition-all ${
-                editing?.id === s.id ? 'border-amber-500/50 bg-amber-500/5' : 'border-white/8 bg-white/4 hover:bg-white/7'
+              className={`w-full text-left p-4 rounded-xl border transition-all ${
+                editing?.id === s.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
               }`}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-white font-semibold text-sm">{s.title}</span>
-                <Badge color={s.visible ? 'green' : 'gray'}>{s.visible ? 'Visible' : 'Hidden'}</Badge>
+                <span className="text-slate-800 font-semibold text-sm">{s.title}</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant={s.visible ? 'green' : 'gray'}>{s.visible ? 'Visible' : 'Hidden'}</Badge>
+                  <Pencil size={12} className="text-slate-400" />
+                </div>
               </div>
-              <p className="text-white/40 text-xs line-clamp-2">{s.description}</p>
+              <p className="text-slate-400 text-xs line-clamp-2">{s.description}</p>
             </button>
           ))}
         </div>
 
-        {/* Editor */}
-        {editing && (
-          <Card className="p-5 h-fit">
-            <h3 className="text-white font-semibold mb-4 text-sm">Editing: {editing.serviceKey}</h3>
-            <div className="space-y-4">
-              <div><Label>Title</Label><Input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} /></div>
-              <div><Label>Description</Label><Textarea rows={4} value={editing.description} onChange={e => setEditing({ ...editing, description: e.target.value })} /></div>
-              <div className="flex items-center gap-4">
-                <div className="flex-1"><Label>Display Order</Label>
-                  <Input type="number" min="0" value={editing.displayOrder} onChange={e => setEditing({ ...editing, displayOrder: parseInt(e.target.value) || 0 })} />
-                </div>
+        <div className="lg:col-span-3">
+          {editing ? (
+            <Card>
+              <div className="flex items-center justify-between mb-5">
                 <div>
-                  <Label>Visibility</Label>
-                  <button onClick={() => setEditing({ ...editing, visible: !editing.visible })}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
-                      editing.visible ? 'bg-green-500/15 text-green-400 border-green-500/20' : 'bg-white/5 text-white/40 border-white/10'
-                    }`}>
-                    {editing.visible ? 'Visible' : 'Hidden'}
-                  </button>
+                  <h3 className="text-slate-900 font-semibold">Edit Service</h3>
+                  <p className="text-slate-400 text-xs mt-0.5 font-mono">{editing.serviceKey}</p>
+                </div>
+                {saved && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
+              </div>
+              <div className="space-y-4">
+                <FieldGroup label="Title">
+                  <Input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+                </FieldGroup>
+                <FieldGroup label="Description">
+                  <Textarea rows={4} value={editing.description} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+                </FieldGroup>
+                <div className="grid grid-cols-2 gap-4">
+                  <FieldGroup label="Display Order">
+                    <Input type="number" min="0" value={editing.displayOrder}
+                      onChange={e => setEditing({ ...editing, displayOrder: parseInt(e.target.value) || 0 })} />
+                  </FieldGroup>
+                  <FieldGroup label="Visibility">
+                    <button onClick={() => setEditing({ ...editing, visible: !editing.visible })}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                        editing.visible ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-500'
+                      }`}>
+                      {editing.visible ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                      {editing.visible ? 'Visible' : 'Hidden'}
+                    </button>
+                  </FieldGroup>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <Btn onClick={save} disabled={saving}>{saving ? <><Spinner size={13} /> Saving…</> : 'Save Changes'}</Btn>
+                  <Btn variant="ghost" onClick={() => setEditing(null)}>Cancel</Btn>
                 </div>
               </div>
-              <Btn onClick={save} disabled={saving}>
-                {saving ? <><Spinner /> Saving…</> : saved ? <><Check size={14} /> Saved</> : 'Save Changes'}
-              </Btn>
+            </Card>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <EmptyState icon={Pencil} title="Select a service to edit" sub="Click any service on the left to start editing" />
             </div>
-          </Card>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
@@ -761,7 +1065,7 @@ function ServicesTab({ token }: { token: string }) {
 interface UserRow { id: string; email: string; username: string; role: string; active: boolean; createdAt: string }
 
 function UsersTab({ token, session }: { token: string; session: AdminSession }) {
-  const [roleFilter, setRoleFilter] = useState<'ADMIN' | 'STAFF'>('ADMIN')
+  const [roleFilter, setRoleFilter] = useState<'ADMIN' | 'STAFF'>('STAFF')
   const [users, setUsers] = useState<UserRow[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -772,51 +1076,63 @@ function UsersTab({ token, session }: { token: string; session: AdminSession }) 
     api.get<{ content: UserRow[] }>(`/users?role=${roleFilter}&size=50`, token)
       .then(d => setUsers(d.content)).catch(() => {}).finally(() => setLoading(false))
   }
-
   useEffect(() => { load() }, [roleFilter, token])
 
-  const roleColor: Record<string, 'gold' | 'blue' | 'purple'> = { SUPERADMIN: 'gold', ADMIN: 'blue', STAFF: 'purple' }
+  const roleVariant: Record<string, 'amber' | 'blue' | 'purple'> = { SUPERADMIN: 'amber', ADMIN: 'blue', STAFF: 'purple' }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display font-bold text-xl text-white">Users</h2>
+        <div>
+          <h2 className="text-slate-900 font-bold text-lg">Users</h2>
+          <p className="text-slate-500 text-sm">Manage admin and staff accounts.</p>
+        </div>
         <Btn onClick={() => setShowCreate(true)}><Plus size={14} /> Add User</Btn>
       </div>
 
-      <div className="flex gap-1 mb-5">
-        {(['ADMIN','STAFF'] as const).map(r => (
-          <Btn key={r} variant={roleFilter === r ? 'primary' : 'ghost'} size="sm" onClick={() => setRoleFilter(r)}>{r}</Btn>
+      <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-5 w-fit">
+        {(['STAFF', 'ADMIN'] as const).map(r => (
+          <button key={r} onClick={() => setRoleFilter(r)}
+            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${roleFilter === r ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+            {r}s
+          </button>
         ))}
       </div>
 
-      <Card>
-        {loading ? <div className="py-16 flex justify-center"><Spinner /></div>
-        : users.length === 0 ? <p className="py-12 text-center text-white/30 text-sm">No {roleFilter.toLowerCase()}s yet</p>
-        : (
+      <Card padding={false}>
+        {loading ? (
+          <div className="py-16 flex items-center justify-center gap-2 text-slate-400">
+            <Spinner size={16} /> <span className="text-sm">Loading users…</span>
+          </div>
+        ) : users.length === 0 ? (
+          <EmptyState icon={Users} title={`No ${roleFilter.toLowerCase()}s yet`} sub={`Create the first ${roleFilter.toLowerCase()} account using the button above`} />
+        ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/8">
-                  {['Username','Email','Role','Status','Created',''].map((h, i) => (
-                    <th key={i} className="text-left px-5 py-3 text-white/40 text-xs uppercase tracking-widest font-semibold">{h}</th>
+                <tr className="border-b border-slate-100">
+                  {['User','Email','Role','Status','Created',''].map((h, i) => (
+                    <th key={i} className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-50">
                 {users.map(u => (
-                  <tr key={u.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3.5 text-white font-semibold">{u.username}</td>
-                    <td className="px-5 py-3.5 text-white/50 text-xs">{u.email}</td>
-                    <td className="px-5 py-3.5"><Badge color={roleColor[u.role] ?? 'gray'}>{u.role}</Badge></td>
-                    <td className="px-5 py-3.5"><Badge color={u.active ? 'green' : 'red'}>{u.active ? 'Active' : 'Inactive'}</Badge></td>
-                    <td className="px-5 py-3.5 text-white/30 text-xs">
+                  <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <Avatar name={u.username} size="sm" />
+                        <span className="text-slate-800 font-semibold">{u.username}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-400 text-xs">{u.email}</td>
+                    <td className="px-5 py-3.5"><Badge variant={roleVariant[u.role] ?? 'gray'}>{u.role}</Badge></td>
+                    <td className="px-5 py-3.5"><Badge variant={u.active ? 'green' : 'red'}>{u.active ? 'Active' : 'Inactive'}</Badge></td>
+                    <td className="px-5 py-3.5 text-slate-400 text-xs">
                       {new Date(u.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-5 py-3.5">
-                      {u.id !== session.accessToken && (
-                        <Btn size="sm" variant="ghost" onClick={() => setResetTarget(u)}>Reset PW</Btn>
-                      )}
+                      <Btn size="sm" variant="ghost" onClick={() => setResetTarget(u)}>Reset PW</Btn>
                     </td>
                   </tr>
                 ))}
@@ -839,39 +1155,38 @@ function CreateUserModal({ token, onDone, onClose }: { token: string; onDone: ()
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setError(''); setLoading(true)
-    try {
-      await api.post('/users', form, token)
-      onDone()
-    } catch (e: any) { setError(e.message) } finally { setLoading(false) }
+    try { await api.post('/users', form, token); onDone() }
+    catch (e: any) { setError(e.message) } finally { setLoading(false) }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-3xl p-6 bg-gray-900 border border-white/10" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-white font-bold text-lg">Add User</h3>
-          <button onClick={onClose} className="text-white/30 hover:text-white"><X size={18} /></button>
+    <Modal title="Add User" onClose={onClose}>
+      <form onSubmit={submit} className="space-y-4">
+        <FieldGroup label="Email">
+          <Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="user@example.com" required />
+        </FieldGroup>
+        <FieldGroup label="Username">
+          <Input value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} placeholder="username" required />
+        </FieldGroup>
+        <FieldGroup label="Password">
+          <Input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="min 8 characters" required />
+        </FieldGroup>
+        <FieldGroup label="Role">
+          <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="STAFF">Staff — POS access only</option>
+            <option value="ADMIN">Admin — Full panel access</option>
+          </select>
+        </FieldGroup>
+        {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">{error}</div>}
+        <div className="flex gap-2 pt-1">
+          <Btn type="submit" disabled={loading} className="flex-1 justify-center">
+            {loading ? <><Spinner size={13} /> Creating…</> : 'Create User'}
+          </Btn>
+          <Btn type="button" variant="secondary" onClick={onClose}>Cancel</Btn>
         </div>
-        <form onSubmit={submit} className="space-y-3">
-          <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="user@example.com" required /></div>
-          <div><Label>Username</Label><Input value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} placeholder="username" required /></div>
-          <div><Label>Password</Label><Input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="min 8 characters" required /></div>
-          <div>
-            <Label>Role</Label>
-            <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none">
-              <option value="STAFF">STAFF</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
-          </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          <div className="flex gap-2 pt-1">
-            <Btn type="button" variant="ghost" onClick={onClose} className="flex-1 justify-center">Cancel</Btn>
-            <Btn type="submit" disabled={loading} className="flex-1 justify-center">{loading ? <><Spinner /> Creating…</> : 'Create'}</Btn>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   )
 }
 
@@ -883,38 +1198,45 @@ function ResetPasswordModal({ token, user, onDone, onClose }: { token: string; u
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setError(''); setLoading(true)
-    try {
-      await api.patch(`/users/${user.id}/password`, { newPassword: pw }, token)
-      setDone(true); setTimeout(onDone, 1500)
-    } catch (e: any) { setError(e.message) } finally { setLoading(false) }
+    try { await api.patch(`/users/${user.id}/password`, { newPassword: pw }, token); setDone(true); setTimeout(onDone, 1500) }
+    catch (e: any) { setError(e.message) } finally { setLoading(false) }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={onClose}>
-      <div className="w-full max-w-sm rounded-3xl p-6 bg-gray-900 border border-white/10" onClick={e => e.stopPropagation()}>
-        <h3 className="text-white font-bold text-lg mb-1">Reset Password</h3>
-        <p className="text-white/40 text-sm mb-5">{user.username}</p>
-        {done ? (
-          <p className="text-green-400 text-sm flex items-center gap-2"><Check size={16} /> Password updated</p>
-        ) : (
-          <form onSubmit={submit} className="space-y-3">
-            <div><Label>New Password</Label><Input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="min 8 characters" required /></div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            <div className="flex gap-2 pt-1">
-              <Btn type="button" variant="ghost" onClick={onClose} className="flex-1 justify-center">Cancel</Btn>
-              <Btn type="submit" disabled={loading || pw.length < 8} className="flex-1 justify-center">{loading ? <><Spinner /> Saving…</> : 'Reset'}</Btn>
-            </div>
-          </form>
-        )}
+    <Modal title="Reset Password" onClose={onClose}>
+      <div className="flex items-center gap-3 mb-5 p-3 bg-slate-50 rounded-xl">
+        <Avatar name={user.username} />
+        <div>
+          <p className="text-slate-800 font-semibold text-sm">{user.username}</p>
+          <p className="text-slate-400 text-xs">{user.role}</p>
+        </div>
       </div>
-    </div>
+      {done ? (
+        <div className="flex items-center gap-2 text-emerald-600 text-sm font-medium">
+          <Check size={15} /> Password updated successfully
+        </div>
+      ) : (
+        <form onSubmit={submit} className="space-y-4">
+          <FieldGroup label="New Password">
+            <Input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="min 8 characters" required />
+          </FieldGroup>
+          {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">{error}</div>}
+          <div className="flex gap-2 pt-1">
+            <Btn type="submit" disabled={loading || pw.length < 8} className="flex-1 justify-center">
+              {loading ? <><Spinner size={13} /> Saving…</> : 'Reset Password'}
+            </Btn>
+            <Btn type="button" variant="secondary" onClick={onClose}>Cancel</Btn>
+          </div>
+        </form>
+      )}
+    </Modal>
   )
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // ACTIVITY TAB
 // ═══════════════════════════════════════════════════════════════════════════════
-interface LogRow { id: string; actorId: string; action: string; entityType: string; entityId: string; detail: string | null; createdAt: string }
+interface LogRow { id: string; action: string; entityType: string; detail: string | null; createdAt: string }
 
 function ActivityTab({ token }: { token: string }) {
   const [logs, setLogs] = useState<LogRow[]>([])
@@ -929,9 +1251,9 @@ function ActivityTab({ token }: { token: string }) {
       .catch(() => {}).finally(() => setLoading(false))
   }, [page, token])
 
-  const actionColor: Record<string, 'green' | 'gold' | 'red' | 'blue' | 'gray'> = {
-    ENROLL_PATRON: 'green', RECORD_SPEND: 'gold', REDEEM_COUPONS: 'blue',
-    CREATE_USER: 'green', DEACTIVATE_USER: 'red', UPDATE_COUPON_SETTINGS: 'gold',
+  const actionVariant: Record<string, 'green' | 'amber' | 'blue' | 'red' | 'gray'> = {
+    ENROLL_PATRON: 'green', RECORD_SPEND: 'amber', REDEEM_COUPONS: 'blue',
+    CREATE_USER: 'green', DEACTIVATE_USER: 'red', UPDATE_COUPON_SETTINGS: 'amber',
     UPDATE_MEDIA_SLOT: 'blue', CLEAR_MEDIA_SLOT: 'gray',
   }
 
@@ -939,33 +1261,35 @@ function ActivityTab({ token }: { token: string }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="font-display font-bold text-xl text-white">Activity Log</h2>
-          <p className="text-white/40 text-sm mt-0.5">{total} recorded action{total !== 1 ? 's' : ''}</p>
+          <h2 className="text-slate-900 font-bold text-lg">Activity Log</h2>
+          <p className="text-slate-500 text-sm">{total} recorded event{total !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
-      <Card>
-        {loading ? <div className="py-16 flex justify-center"><Spinner /></div>
-        : logs.length === 0 ? <p className="py-12 text-center text-white/30 text-sm">No activity yet</p>
-        : (
+      <Card padding={false}>
+        {loading ? (
+          <div className="py-16 flex items-center justify-center gap-2 text-slate-400">
+            <Spinner size={16} /> <span className="text-sm">Loading activity…</span>
+          </div>
+        ) : logs.length === 0 ? (
+          <EmptyState icon={Activity} title="No activity recorded yet" sub="Actions performed across the system will appear here" />
+        ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/8">
+                <tr className="border-b border-slate-100">
                   {['Action','Entity','Detail','Time'].map(h => (
-                    <th key={h} className="text-left px-5 py-3 text-white/40 text-xs uppercase tracking-widest font-semibold">{h}</th>
+                    <th key={h} className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-50">
                 {logs.map(l => (
-                  <tr key={l.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3">
-                      <Badge color={actionColor[l.action] ?? 'gray'}>{l.action.replace(/_/g, ' ')}</Badge>
-                    </td>
-                    <td className="px-5 py-3 text-white/50 text-xs">{l.entityType}</td>
-                    <td className="px-5 py-3 text-white/40 text-xs max-w-[200px] truncate">{l.detail ?? '—'}</td>
-                    <td className="px-5 py-3 text-white/30 text-xs whitespace-nowrap">
+                  <tr key={l.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-5 py-3.5"><Badge variant={actionVariant[l.action] ?? 'gray'}>{l.action.replace(/_/g, ' ')}</Badge></td>
+                    <td className="px-5 py-3.5 text-slate-500 text-xs">{l.entityType}</td>
+                    <td className="px-5 py-3.5 text-slate-400 text-xs max-w-[240px] truncate">{l.detail ?? '—'}</td>
+                    <td className="px-5 py-3.5 text-slate-400 text-xs whitespace-nowrap">
                       {new Date(l.createdAt).toLocaleString('en-KE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                     </td>
                   </tr>
@@ -974,13 +1298,12 @@ function ActivityTab({ token }: { token: string }) {
             </table>
           </div>
         )}
-
         {total > 50 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-white/8">
-            <p className="text-white/40 text-xs">Page {page + 1} of {Math.ceil(total / 50)}</p>
-            <div className="flex gap-2">
-              <Btn size="sm" variant="ghost" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Prev</Btn>
-              <Btn size="sm" variant="ghost" disabled={(page + 1) * 50 >= total} onClick={() => setPage(p => p + 1)}>Next</Btn>
+          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
+            <p className="text-slate-400 text-xs">Page {page + 1} of {Math.ceil(total / 50)}</p>
+            <div className="flex gap-1">
+              <Btn size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous</Btn>
+              <Btn size="sm" variant="secondary" disabled={(page + 1) * 50 >= total} onClick={() => setPage(p => p + 1)}>Next</Btn>
             </div>
           </div>
         )}
@@ -990,13 +1313,11 @@ function ActivityTab({ token }: { token: string }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// PAGE ENTRY
+// ENTRY
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function MdauDev() {
   const [session, setSession] = useState<AdminSession | null>(getSession)
-
   function handleLogout() { clearSession(); setSession(null) }
-
   return session
     ? <AdminDashboard session={session} onLogout={handleLogout} />
     : <AdminLogin onLogin={setSession} />

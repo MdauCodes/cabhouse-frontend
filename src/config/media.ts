@@ -56,14 +56,14 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   { id: 'gallery-1',  label: 'Gallery Image 1', section: 'Gallery', type: 'image', localPath: '/assets/raw-8.jpeg', cloudinaryUrl: null, alt: 'Rope bridge' },
   { id: 'gallery-2',  label: 'Gallery Image 2', section: 'Gallery', type: 'image', localPath: '/assets/raw-4.jpeg', cloudinaryUrl: null, alt: 'Group rope course' },
   { id: 'gallery-3',  label: 'Gallery Image 3', section: 'Gallery', type: 'image', localPath: '/assets/hero-3.webp', cloudinaryUrl: null, alt: 'CabHouse Park' },
-  { id: 'gallery-v1', label: 'Gallery Video 1',  section: 'Gallery', type: 'video', localPath: '/assets/vid-21.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v2', label: 'Gallery Video 2',  section: 'Gallery', type: 'video', localPath: '/assets/vid-23.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v3', label: 'Gallery Video 3',  section: 'Gallery', type: 'video', localPath: '/assets/vid-31.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v4', label: 'Gallery Video 4',  section: 'Gallery', type: 'video', localPath: '/assets/vid-32.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v5', label: 'Gallery Video 5',  section: 'Gallery', type: 'video', localPath: '/assets/vid-49.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v6', label: 'Gallery Video 6',  section: 'Gallery', type: 'video', localPath: '/assets/vid-50.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v7', label: 'Gallery Video 7',  section: 'Gallery', type: 'video', localPath: '/assets/vid-51.mp4', cloudinaryUrl: null },
-  { id: 'gallery-v8', label: 'Gallery Video 8',  section: 'Gallery', type: 'video', localPath: '/assets/vid-52.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v1', label: 'Gallery Video 1',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/4af0df44d799f35d39ae697c6e7f9e58_1783922443120.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v2', label: 'Gallery Video 2',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/51c6138def58311b20d61b7011a55c0d_1783925968206.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v3', label: 'Gallery Video 3',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/99f343f855506e7be8bd476d8a43c2e9_1783925919420.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v4', label: 'Gallery Video 4',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d05eae8a47403e5e4b10b718dc29acdf_1783926120068.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v5', label: 'Gallery Video 5',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d25a549f5bc833357bbce4d28caf846f_1783925991247.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v6', label: 'Gallery Video 6',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d25a549f5bc833357bbce4d28caf846f_1783926021257.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v7', label: 'Gallery Video 7',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/ebb227e92d423cc1f0e366a0c3a10ab6_1783926433436.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v8', label: 'Gallery Video 8',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/4af0df44d799f35d39ae697c6e7f9e58_1783922443120.mp4', cloudinaryUrl: null },
 ]
 
 export function getSlot(id: string): MediaSlot | undefined {
