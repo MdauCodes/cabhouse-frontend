@@ -1,4 +1,5 @@
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8081/api'
+const PROD_API = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+const BASE = import.meta.env.DEV ? 'http://localhost:8081/api' : PROD_API
 
 async function request<T>(
   path: string,
