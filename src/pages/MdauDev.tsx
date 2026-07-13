@@ -275,7 +275,7 @@ function MediaTab({ token }: { token: string }) {
           ))}
         </div>
       </div>
-      {view === 'slots'       && <SlotsTab token={token} creds={creds} />}
+      {view === 'slots'       && <SlotsTab token={token} />}
       {view === 'upload'      && <UploadTab creds={creds} />}
       {view === 'credentials' && <CredentialsTab creds={creds} setCreds={setCreds} onSave={saveCreds} />}
     </div>
@@ -374,7 +374,7 @@ function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string
   )
 }
 
-function SlotsTab({ token, creds }: { token: string; creds: { cloudName: string; uploadPreset: string } }) {
+function SlotsTab({ token }: { token: string }) {
   const [uploads] = useState<UploadedAsset[]>(() => {
     try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
   })
