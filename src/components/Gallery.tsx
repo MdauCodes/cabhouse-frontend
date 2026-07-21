@@ -164,18 +164,8 @@ function ReelCard({
         </a>
       </div>
 
-      {/* Bottom: tag + label + progress bar */}
-      <div className="absolute bottom-0 left-0 right-4 p-4 pb-5 pointer-events-none">
-        <span
-          className="inline-block font-body font-bold text-[8px] uppercase tracking-[0.25em] px-2 py-0.5 rounded-full mb-2"
-          style={{ backgroundColor: 'rgba(200,135,58,0.25)', color: 'var(--color-gold)' }}
-        >
-          {reel.tag}
-        </span>
-        <p className="text-white font-display font-black text-lg leading-tight mb-3" style={{ letterSpacing: '-0.02em' }}>
-          {reel.label}
-        </p>
-        {/* Progress */}
+      {/* Bottom: progress bar only */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 pb-5 pointer-events-none">
         <div className="h-0.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.18)' }}>
           <div
             className="h-full rounded-full"

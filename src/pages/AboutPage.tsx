@@ -13,7 +13,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Holistic Well-Being',
-    desc: 'We believe good living goes beyond a single moment. Every service we offer — from the rope course to the water bottle — is designed to move you, nourish you and leave you better than we found you.',
+    desc: 'We promote healthy, active living across all our entertainment and hospitality services. Every offering — from the rope course to the water bottle — is designed to move you, nourish you and leave you better than we found you.',
   },
   {
     icon: (
@@ -22,7 +22,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Uncompromising Quality',
-    desc: 'Maintained facilities, rigorous water filtration, clean apartments — quality isn\'t a talking point here, it\'s what you walk into every time. Your safety and comfort are non-negotiable.',
+    desc: 'From meticulously maintained facilities to pristine water filtration and clean, furnished apartments — quality is not a talking point here, it\'s what you walk into every time. Your safety and comfort come first.',
   },
   {
     icon: (
@@ -31,7 +31,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Unified Convenience',
-    desc: 'Play, sleep, drink well, celebrate — all under one name in Kisii. We\'re your one call for recreation, accommodation and pure hydration, because life is too short to coordinate too many people.',
+    desc: 'We serve as your single, trusted partner for recreation, accommodation and pure hydration. Play, sleep, drink well, celebrate — all under one name in Kisii, because life is too short to coordinate too many people.',
   },
 ]
 
@@ -41,7 +41,7 @@ const BRANDS = [
     name: 'CabHouse Park',
     href: '/park',
     color: 'bg-brand-gold',
-    desc: 'Your ultimate playground for active fun, family bonding and corporate milestones. Eight activity zones, dining, events and overnight stays.',
+    desc: 'Your ultimate playground for active fun, family bonding and corporate milestones. Thrilling games, serene gardens, dining, events and overnight stays.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -109,7 +109,7 @@ export default function AboutPage() {
               Converge.
             </h1>
             <p className="text-white/60 font-body text-sm leading-relaxed max-w-xl">
-              Welcome to a world where hospitality, wellness and adventure converge — all under one name in Kisii. CabHouse Agencies was built to elevate how you play, rest, eat and feel, whether you're here for a day or a season.
+              Welcome to a world where hospitality, wellness and adventure converge seamlessly. At CabHouse Agencies Ltd, we deliver premium lifestyle solutions designed to elevate your everyday experiences, travels and celebrations — all under one name in Kisii.
             </p>
           </FadeIn>
         </div>
@@ -196,7 +196,7 @@ export default function AboutPage() {
             <em className="not-italic" style={{ color: '#7a5a2a' }}>Nourish Your Soul.</em>
           </h2>
           <p className="text-brand-dark/55 font-body text-sm leading-relaxed max-w-xl mx-auto mb-8">
-            From high-flying thrills to serene gardens and quiet cabin mornings — CabHouse is where Kisii comes alive. Plan your visit, bring the whole group, and make memories that need no filter.
+            Discover the ultimate outdoor destination where thrilling adventures meet natural wellness — designed to recharge your body and uplift your spirit. Make Kisii your next fun destination, holiday stop, or corporate retreat.
           </p>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to know more about CabHouse Agencies")}`}

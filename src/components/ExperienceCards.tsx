@@ -7,7 +7,7 @@ const EXPERIENCES = [
   { id: 'exp-play',      pillar: 'Play',      unit: 'CabHouse Park',       desc: 'Pools, inflatables, go-karts and bumper cars. Joy for every age.', href: '/park' },
   { id: 'exp-explore',   pillar: 'Explore',   unit: 'CabHouse Adventures', desc: 'Zip lines, sky bikes and rope courses. Push your limits.', href: '/park' },
   { id: 'exp-celebrate', pillar: 'Celebrate', unit: 'CabHouse Events',     desc: 'Weddings, galas and team-building hosted to perfection.', href: '/events' },
-  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Car Hire',   desc: 'Rentals and transfers — freedom on every road.', href: '/contact' },
+  { id: 'exp-move',      pillar: 'Move',      unit: 'CabHouse Park',       desc: 'Go-karts, bumper cars and sky bikes. Stay active, stay alive.', href: '/park' },
 ]
 
 function Card({ exp, idx, tall }: { exp: typeof EXPERIENCES[0]; idx: number; tall?: boolean }) {

@@ -2,6 +2,108 @@ import { useState } from 'react'
 import { SITE } from '../config/site'
 import { useInView } from '../hooks/useInView'
 
+// ── Channel picker modal ──────────────────────────────────────────────────────
+function ChannelPicker({ formData, onClose }: {
+  formData: { name: string; company: string; email: string; phone: string; message: string }
+  onClose: () => void
+}) {
+  const wa = SITE.contact.whatsapp.replace('+', '')
+  const waText = [
+    `Hi CabHouse! I'd like to make an enquiry.`,
+    `Name: ${formData.name}`,
+    formData.company ? `Organisation: ${formData.company}` : '',
+    formData.phone ? `Phone: ${formData.phone}` : '',
+    formData.email ? `Email: ${formData.email}` : '',
+    ``,
+    formData.message,
+  ].filter(Boolean).join('\n')
+
+  const subject = encodeURIComponent(`Enquiry from ${formData.company || formData.name}`)
+  const body = encodeURIComponent(
+    [
+      `Name: ${formData.name}`,
+      formData.company ? `Organisation: ${formData.company}` : '',
+      `Email: ${formData.email}`,
+      formData.phone ? `Phone: ${formData.phone}` : '',
+      '',
+      `Message:\n${formData.message}`,
+    ].filter(Boolean).join('\n')
+  )
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm rounded-3xl overflow-hidden"
+        style={{ backgroundColor: '#1a2e1f' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="px-6 pt-6 pb-2">
+          <p className="text-white/40 font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-1">Send your enquiry via</p>
+          <h3 className="font-display font-black text-white text-xl mb-1" style={{ letterSpacing: '-0.02em' }}>
+            How would you like<br />
+            <em className="not-italic" style={{ color: 'var(--color-gold)' }}>to reach us?</em>
+          </h3>
+          <p className="text-white/40 font-body text-xs mt-1 mb-5">We reply on both channels — pick what's easiest for you.</p>
+        </div>
+
+        <div className="px-6 pb-6 flex flex-col gap-3">
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/${wa}?text=${encodeURIComponent(waText)}`}
+            target="_blank" rel="noopener noreferrer"
+            onClick={onClose}
+            className="flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-200 group"
+            style={{ backgroundColor: 'rgba(37,211,102,0.08)', borderColor: 'rgba(37,211,102,0.2)' }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#25D366' }}>
+              <svg className="w-5 h-5" fill="white" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.862L0 24l6.338-1.506A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.001-1.375l-.359-.214-3.724.976.993-3.626-.235-.372A9.818 9.818 0 012.182 12c0-5.42 4.398-9.818 9.818-9.818 5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-white font-body font-bold text-sm">Send via WhatsApp</p>
+              <p className="text-white/40 font-body text-xs">Instant reply · opens your WhatsApp</p>
+            </div>
+            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/25 group-hover:text-white/60 transition-colors flex-shrink-0" stroke="currentColor" strokeWidth="2.5">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+          </a>
+
+          {/* Email */}
+          <a
+            href={`mailto:${SITE.contact.email}?subject=${subject}&body=${body}`}
+            onClick={onClose}
+            className="flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-200 group"
+            style={{ backgroundColor: 'rgba(200,168,76,0.08)', borderColor: 'rgba(200,168,76,0.2)' }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'var(--color-gold)' }}>
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-white font-body font-bold text-sm">Send via Email</p>
+              <p className="text-white/40 font-body text-xs">Opens your email app · pre-filled</p>
+            </div>
+            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/25 group-hover:text-white/60 transition-colors flex-shrink-0" stroke="currentColor" strokeWidth="2.5">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+          </a>
+
+          <button onClick={onClose} className="text-white/30 font-body text-xs py-2 hover:text-white/60 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const WA_OPTIONS = [
   { label: 'Book Park Entry',        msg: "Hi, I'd like to book a visit to CabHouse Park" },
   { label: 'Plan an Overnight Stay', msg: "Hi, I'd like to book an overnight stay at CabHouse Park" },
@@ -71,7 +173,7 @@ function WhatsAppPanel() {
 
 function EmailPanel() {
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', message: '' })
-  const [sent, setSent] = useState(false)
+  const [showPicker, setShowPicker] = useState(false)
   const { ref, inView } = useInView(0.08)
 
   const set = (k: keyof typeof form) =>
@@ -80,20 +182,7 @@ function EmailPanel() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Enquiry from ${form.company || form.name}`)
-    const body = encodeURIComponent(
-      [
-        `Name: ${form.name}`,
-        form.company ? `Organisation: ${form.company}` : '',
-        `Email: ${form.email}`,
-        form.phone ? `Phone: ${form.phone}` : '',
-        '',
-        `Message:\n${form.message}`,
-      ].filter(Boolean).join('\n')
-    )
-    window.location.href = `mailto:${SITE.contact.email}?subject=${subject}&body=${body}`
-    setSent(true)
-    setTimeout(() => setSent(false), 5000)
+    setShowPicker(true)
   }
 
   const inputCls =
@@ -119,17 +208,8 @@ function EmailPanel() {
         For team events, school trips, weddings and bulk bookings — we'll come back with a tailored proposal.
       </p>
 
-      {sent ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-4">
-            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth="2">
-              <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <p className="font-display font-bold text-white text-base mb-1">Your email app is opening</p>
-          <p className="text-white/50 font-body text-xs">Your enquiry is pre-filled and ready to send to us.</p>
-        </div>
-      ) : (
+      {showPicker && <ChannelPicker formData={form} onClose={() => setShowPicker(false)} />}
+      {(
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input required value={form.name} onChange={set('name')} placeholder="Your name *" className={inputCls} />
@@ -156,7 +236,7 @@ function EmailPanel() {
             </svg>
           </button>
           <p className="text-white/30 font-body text-[10px] mt-1">
-            Opens your email app with the message pre-filled · no account needed
+            Choose WhatsApp or Email after submitting
           </p>
         </form>
       )}
