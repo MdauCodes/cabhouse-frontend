@@ -768,6 +768,155 @@ function SlotRow({ slot, uploads, backendUrl, onApply, onReset }: {
 // PATRONS TAB
 // ═══════════════════════════════════════════════════════════════════════════════
 interface PatronRow { id: string; name: string; phone: string; couponBalance: number; createdAt: string; active: boolean }
+interface TxRow { id: string; amount: number; couponsAwarded: number; note: string | null; createdAt: string }
+interface RedRow { id: string; couponsRedeemed: number; valueRedeemed: number; note: string | null; createdAt: string }
+interface PatronDetail extends PatronRow {
+  recentTransactions: TxRow[]
+  recentRedemptions: RedRow[]
+}
+
+function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
+  patronId: string; token: string; onClose: () => void; onBalanceChanged: (id: string, newBalance: number) => void
+}) {
+  const [detail, setDetail] = useState<PatronDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [adjustDelta, setAdjustDelta] = useState('')
+  const [adjustReason, setAdjustReason] = useState('')
+  const [adjusting, setAdjusting] = useState(false)
+  const [adjustError, setAdjustError] = useState('')
+  const [adjustDone, setAdjustDone] = useState(false)
+
+  useEffect(() => {
+    api.get<PatronDetail>(`/patrons/${patronId}`, token)
+      .then(setDetail).catch(() => {}).finally(() => setLoading(false))
+  }, [patronId, token])
+
+  async function submitAdjust() {
+    if (!adjustDelta || !adjustReason.trim()) return
+    const delta = parseInt(adjustDelta)
+    if (isNaN(delta) || delta === 0) { setAdjustError('Enter a non-zero number'); return }
+    setAdjustError(''); setAdjusting(true)
+    try {
+      const updated = await api.post<PatronRow>(`/patrons/${patronId}/adjust`, { delta, reason: adjustReason }, token)
+      setDetail(prev => prev ? { ...prev, couponBalance: updated.couponBalance } : prev)
+      onBalanceChanged(patronId, updated.couponBalance)
+      setAdjustDelta(''); setAdjustReason(''); setAdjustDone(true)
+      setTimeout(() => setAdjustDone(false), 2500)
+    } catch (e: any) { setAdjustError(e.message ?? 'Adjustment failed') } finally { setAdjusting(false) }
+  }
+
+  return (
+    <Modal title="Patron Detail" onClose={onClose} width="max-w-2xl">
+      {loading ? (
+        <div className="py-10 flex justify-center"><Spinner size={20} /></div>
+      ) : !detail ? (
+        <EmptyState icon={Users} title="Failed to load patron" />
+      ) : (
+        <div className="space-y-5">
+          {/* Header */}
+          <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
+            <Avatar name={detail.name} />
+            <div className="flex-1 min-w-0">
+              <p className="text-slate-900 font-bold">{detail.name}</p>
+              <p className="text-slate-500 text-xs font-mono">{detail.phone}</p>
+              <p className="text-slate-400 text-xs mt-0.5">Enrolled {new Date(detail.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-bold text-slate-900">{detail.couponBalance}</p>
+              <p className="text-slate-400 text-xs">coupons</p>
+              <div className="mt-1"><Badge variant={detail.active ? 'green' : 'red'}>{detail.active ? 'Active' : 'Inactive'}</Badge></div>
+            </div>
+          </div>
+
+          {/* Adjust balance */}
+          <div className="border border-slate-200 rounded-xl p-4">
+            <p className="text-slate-800 font-semibold text-sm mb-3">Manual Balance Adjustment</p>
+            <div className="flex gap-2 mb-2">
+              <div className="w-32 flex-shrink-0">
+                <Input
+                  type="number" value={adjustDelta}
+                  onChange={e => { setAdjustDelta(e.target.value); setAdjustError('') }}
+                  placeholder="+5 or −3"
+                />
+              </div>
+              <Input
+                value={adjustReason} onChange={e => setAdjustReason(e.target.value)}
+                placeholder="Reason for adjustment (required)"
+              />
+              <Btn disabled={!adjustDelta || !adjustReason.trim() || adjusting} onClick={submitAdjust}>
+                {adjusting ? <Spinner size={13} /> : adjustDone ? <><Check size={13} /> Done</> : 'Apply'}
+              </Btn>
+            </div>
+            {adjustError && <p className="text-red-600 text-xs">{adjustError}</p>}
+            <p className="text-slate-400 text-xs">Use positive numbers to add coupons, negative to deduct. Logged to Activity.</p>
+          </div>
+
+          {/* Transaction history */}
+          <div>
+            <p className="text-slate-700 font-semibold text-sm mb-2">Recent Spend Transactions</p>
+            {detail.recentTransactions.length === 0 ? (
+              <p className="text-slate-400 text-xs py-3">No transactions yet.</p>
+            ) : (
+              <div className="border border-slate-100 rounded-xl overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead><tr className="bg-slate-50 border-b border-slate-100">
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Amount</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Coupons</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Note</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Date</th>
+                  </tr></thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {detail.recentTransactions.map(tx => (
+                      <tr key={tx.id} className="hover:bg-slate-50">
+                        <td className="px-4 py-2.5 font-medium text-slate-800">KES {Number(tx.amount).toLocaleString()}</td>
+                        <td className="px-4 py-2.5"><span className="font-bold text-amber-700">+{tx.couponsAwarded}</span></td>
+                        <td className="px-4 py-2.5 text-slate-400 max-w-[140px] truncate">{tx.note ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
+                          {new Date(tx.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short' })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Redemption history */}
+          <div>
+            <p className="text-slate-700 font-semibold text-sm mb-2">Recent Redemptions</p>
+            {detail.recentRedemptions.length === 0 ? (
+              <p className="text-slate-400 text-xs py-3">No redemptions yet.</p>
+            ) : (
+              <div className="border border-slate-100 rounded-xl overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead><tr className="bg-slate-50 border-b border-slate-100">
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Coupons</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Value</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Note</th>
+                    <th className="text-left px-4 py-2.5 text-slate-500 font-semibold">Date</th>
+                  </tr></thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {detail.recentRedemptions.map(r => (
+                      <tr key={r.id} className="hover:bg-slate-50">
+                        <td className="px-4 py-2.5"><span className="font-bold text-blue-700">−{r.couponsRedeemed}</span></td>
+                        <td className="px-4 py-2.5 font-medium text-emerald-700">KES {Number(r.valueRedeemed).toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-slate-400 max-w-[140px] truncate">{r.note ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
+                          {new Date(r.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short' })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </Modal>
+  )
+}
 
 function PatronsTab({ token }: { token: string }) {
   const [patrons, setPatrons] = useState<PatronRow[]>([])
@@ -776,6 +925,7 @@ function PatronsTab({ token }: { token: string }) {
   const [search, setSearch] = useState('')
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -786,6 +936,10 @@ function PatronsTab({ token }: { token: string }) {
   }, [page, query, token])
 
   function doSearch() { setPage(0); setQuery(search) }
+
+  function handleBalanceChanged(id: string, newBalance: number) {
+    setPatrons(prev => prev.map(p => p.id === id ? { ...p, couponBalance: newBalance } : p))
+  }
 
   return (
     <div>
@@ -823,11 +977,12 @@ function PatronsTab({ token }: { token: string }) {
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Coupons</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Status</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Enrolled</th>
+                  <th className="px-5 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {patrons.map(p => (
-                  <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={p.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => setSelectedId(p.id)}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <Avatar name={p.name} size="sm" />
@@ -845,6 +1000,9 @@ function PatronsTab({ token }: { token: string }) {
                     <td className="px-5 py-3.5 text-slate-400 text-xs">
                       {new Date(p.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
+                    <td className="px-5 py-3.5">
+                      <ChevronRight size={13} className="text-slate-300" />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -861,6 +1019,10 @@ function PatronsTab({ token }: { token: string }) {
           </div>
         )}
       </Card>
+      {selectedId && (
+        <PatronDetailModal patronId={selectedId} token={token}
+          onClose={() => setSelectedId(null)} onBalanceChanged={handleBalanceChanged} />
+      )}
     </div>
   )
 }
@@ -1251,8 +1413,9 @@ function ActivityTab({ token }: { token: string }) {
       .catch(() => {}).finally(() => setLoading(false))
   }, [page, token])
 
-  const actionVariant: Record<string, 'green' | 'amber' | 'blue' | 'red' | 'gray'> = {
+  const actionVariant: Record<string, 'green' | 'amber' | 'blue' | 'red' | 'gray' | 'purple'> = {
     ENROLL_PATRON: 'green', RECORD_SPEND: 'amber', REDEEM_COUPONS: 'blue',
+    ADJUST_COUPON_BALANCE: 'purple',
     CREATE_USER: 'green', DEACTIVATE_USER: 'red', UPDATE_COUPON_SETTINGS: 'amber',
     UPDATE_MEDIA_SLOT: 'blue', CLEAR_MEDIA_SLOT: 'gray',
   }
