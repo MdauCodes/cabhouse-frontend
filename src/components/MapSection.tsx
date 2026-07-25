@@ -41,7 +41,7 @@ export default function MapSection() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-brand-dark font-body text-xs font-semibold">Kisii, Kenya</p>
-                  <p className="text-brand-dark/50 font-body text-[10px] mt-0.5">Near Nyankororo Forest, Kisii-Riana Road</p>
+                  <p className="text-brand-dark/50 font-body text-[10px] mt-0.5">{SITE.location.address}</p>
                 </div>
               </div>
 
@@ -132,7 +132,7 @@ export default function MapSection() {
               </div>
               <div>
                 <p className="text-brand-dark font-body font-semibold text-sm">Open in Maps</p>
-                <p className="text-brand-dark/50 font-body text-xs mt-0.5">Near Nyankororo Forest, Kisii</p>
+                <p className="text-brand-dark/50 font-body text-xs mt-0.5">{SITE.location.address}</p>
               </div>
               <span className="font-body text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full" style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
                 Get Directions

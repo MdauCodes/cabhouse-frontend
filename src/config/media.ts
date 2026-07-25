@@ -52,6 +52,10 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   { id: 'feat-events',    label: 'Events Feature',    section: 'Featured', type: 'image', localPath: '/assets/recharge-in-style.png',    cloudinaryUrl: null, alt: 'Celebrate and Stay — CabHouse events and cabins' },
   { id: 'feat-video',     label: 'Featured Video',    section: 'Featured', type: 'video', localPath: '/assets/raw-15.mp4', cloudinaryUrl: null },
 
+  // ── Park — Your Playground (dedicated, not shared with Hero slides) ───────
+  { id: 'pdd-push-limits', label: 'Push Your Limits Panel', section: 'Park Playground', type: 'image', localPath: '/assets/hero-10.png', cloudinaryUrl: null, alt: '100m rainbow slide' },
+  { id: 'pdd-play-day',    label: 'Play All Day Panel',     section: 'Park Playground', type: 'image', localPath: '/assets/park-carousel.webp', cloudinaryUrl: null, alt: 'Sky bike carousel ride' },
+
   // ── Gallery (3 images + 8 videos) ────────────────────────────────────────
   { id: 'gallery-1',  label: 'Gallery Image 1', section: 'Gallery', type: 'image', localPath: '/assets/raw-8.jpeg', cloudinaryUrl: null, alt: 'Rope bridge' },
   { id: 'gallery-2',  label: 'Gallery Image 2', section: 'Gallery', type: 'image', localPath: '/assets/raw-4.jpeg', cloudinaryUrl: null, alt: 'Group rope course' },

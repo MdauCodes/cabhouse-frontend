@@ -5,7 +5,7 @@ const BRANDS = [
     name: 'CabHouse Park',
     tagline: 'PLAY. STAY. CELEBRATE.',
     desc: 'Your ultimate playground for active fun, family bonding, and corporate milestones. Games, restaurant, pool, camping, weddings and more.',
-    tags: ['Pool & Play', 'Restaurant', 'Camping', 'Events & Weddings'],
+    tags: ['Thrill & Play', 'Restaurant', 'Camping', 'Events & Weddings'],
     cta: 'EXPLORE PARK →',
     href: '/park',
     img: '/assets/park-pool.jpeg',
@@ -18,7 +18,7 @@ const BRANDS = [
     tags: ['Short Stays', 'Long Stays', 'Furnished Units'],
     cta: 'EXPLORE APARTMENTS →',
     href: '/apartments',
-    img: '/assets/cabhouse-apartments.png',
+    img: '/assets/updated-cabhouse aprtment image.png',
     badge: null,
   },
   {

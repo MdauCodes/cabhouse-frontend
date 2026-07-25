@@ -202,7 +202,7 @@ function HeroSection() {
         >
           <div>
             <p className="font-body text-[10px] uppercase tracking-[0.25em] font-semibold mb-1" style={{ color: 'var(--color-gold)' }}>
-              Pure · Crisp · Delivered
+              Pure · Refreshing · Healthy
             </p>
             <p className="font-display font-black text-white leading-tight" style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
               Order CabHouse Water Today

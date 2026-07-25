@@ -49,7 +49,7 @@ export default function HeroCarousel() {
         {/* Apartments + Water row — mobile */}
         <div className="flex gap-2" style={{ height: '48vw', minHeight: 200 }}>
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block">
-            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/apartments-10.jpeg')" }} />
+            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/updated-cabhouse aprtment image.png')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(49,10,120,0.95) 0%, rgba(49,10,120,0.6) 45%, transparent 90%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
@@ -67,7 +67,7 @@ export default function HeroCarousel() {
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(2,52,90,0.95) 0%, rgba(2,52,90,0.6) 45%, transparent 90%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
               <p className="font-body text-[7px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: '#7DD3FC' }}>Water</p>
-              <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>Pure. Local.<br />Delivered.</h2>
+              <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>Pure, Refreshing<br />& Healthy.</h2>
               <span className="inline-flex items-center gap-1 font-body font-semibold text-[10px] text-white/60 group-hover:text-white transition-colors">
                 Order <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" className="w-2.5 h-2.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
               </span>
@@ -130,7 +130,7 @@ export default function HeroCarousel() {
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
-              style={{ backgroundImage: "url('/assets/apartments-10.jpeg')" }}
+              style={{ backgroundImage: "url('/assets/updated-cabhouse aprtment image.png')" }}
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(49,10,120,1) 0%, rgba(49,10,120,1) 30%, rgba(49,10,120,0.55) 60%, transparent 100%)' }} />
@@ -167,7 +167,7 @@ export default function HeroCarousel() {
                 CabHouse Water
               </p>
               <h2 className="font-display font-black text-white text-lg leading-tight mb-3" style={{ letterSpacing: '-0.02em' }}>
-                Pure. Local.<br />Delivered.
+                Pure, Refreshing<br />& Healthy.
               </h2>
               <span className="inline-flex items-center gap-1.5 font-body font-semibold text-xs text-white/60 group-hover:text-white transition-colors">
                 Order Now

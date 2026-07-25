@@ -11,15 +11,15 @@ const OFFERS = [
   {
     tag: 'Groups',
     title: 'School Excursion',
-    price: 'From KES 800/head',
+    price: 'Negotiated rates on packages',
     desc: 'Guided packages with activity coordinators and meals.',
     href: '/events#school',
   },
   {
     tag: 'Stay & Play',
     title: 'Overnight Getaway',
-    price: 'From KES 3,000',
-    desc: 'Cabin stay plus full park access for the whole day.',
+    price: 'Discounted prices on games',
+    desc: 'Overnight stays plus full game access for the whole day.',
     href: '/relax',
   },
 ]

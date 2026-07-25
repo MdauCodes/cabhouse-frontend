@@ -10,8 +10,8 @@ const INTENTS = [
   },
   {
     num: '02',
-    title: 'A day out',
-    sub: 'Pool, play, camping & activities',
+    title: 'A fun day out',
+    sub: 'Swimming, indoor games, zipline',
     cta: 'Book a visit →',
     waMsg: "Hi, I'd like to book a day visit at CabHouse Park",
   },
@@ -24,7 +24,7 @@ const INTENTS = [
   },
   {
     num: '04',
-    title: 'An event hosted',
+    title: 'Moments to celebrate',
     sub: 'Birthdays, schools & corporate',
     cta: 'Plan an event →',
     waMsg: "Hi, I'd like to enquire about hosting an event at CabHouse",
@@ -37,14 +37,14 @@ export default function IntentSection() {
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="max-w-7xl mx-auto bg-[#D4B882] rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20">
         <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-dark)' }}>
-          Tell us what you need
+          Find Joy that meets your well-being
         </p>
         <h2
           className="font-display font-black text-brand-dark leading-[1.05] mb-12"
           style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.028em' }}
         >
-          We'll handle{' '}
-          <span className="text-brand-dark/40">the rest from here.</span>
+          We have{' '}
+          <span className="text-brand-dark/40">what you are looking for.</span>
         </h2>
 
         <div className="rounded-2xl p-5 lg:p-7 border border-brand-dark/10" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>

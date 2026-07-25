@@ -53,7 +53,7 @@ const SIDES = [
     label: 'Hydrate',
     tagColor: 'bg-sky-500/90 text-white',
     accentColor: '#38BDF8',
-    desc: 'Pure, crisp water delivered to your door. Bulk or domestic.',
+    desc: 'Pure, refreshing and healthy water, delivered to your door. Bulk or domestic.',
     cta: 'Order Water',
     href: '/water',
     imageSrc: '/assets/cabhouse-water.png',
@@ -68,7 +68,7 @@ const SIDES = [
     desc: 'Furnished apartments in Kisii town. Short or long term.',
     cta: 'Book a Stay',
     href: '/apartments',
-    imageSrc: '/assets/cabhouse-apartments.png',
+    imageSrc: '/assets/updated-cabhouse aprtment image.png',
     logoSrc: '/assets/logo-apartments-noBackground.png',
   },
 ]

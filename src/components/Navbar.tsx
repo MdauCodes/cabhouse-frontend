@@ -36,6 +36,8 @@ export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [parkOpen,  setParkOpen]  = useState(false)
   const [pkgOpen,   setPkgOpen]   = useState(false)
+  const [mParkOpen, setMParkOpen] = useState(false)
+  const [mPkgOpen,  setMPkgOpen]  = useState(false)
   const parkRef = useRef<HTMLDivElement>(null)
   const pkgRef  = useRef<HTMLDivElement>(null)
 
@@ -199,27 +201,45 @@ export default function Navbar() {
               Home
             </a>
 
-            {/* Park sub-group */}
-            <p className="text-[8px] uppercase tracking-widest font-bold pt-2.5 pb-1" style={{ color: 'var(--color-gold)' }}>CabHouse Park</p>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 pl-1">
-              {PARK_LINKS.map(l => (
-                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                  className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
-                  {l.label}
-                </a>
-              ))}
-            </div>
+            {/* Park sub-group — tap to expand */}
+            <button
+              onClick={() => setMParkOpen(v => !v)}
+              className="flex items-center justify-between text-brand-dark/70 font-body font-semibold py-2.5 text-sm border-b"
+              style={{ borderColor: 'rgba(200,135,58,0.10)' }}
+            >
+              CabHouse Park
+              <ChevronDown size={15} className={`transition-transform duration-200 ${mParkOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {mParkOpen && (
+              <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 py-1.5 pl-1">
+                {PARK_LINKS.map(l => (
+                  <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                    className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+            )}
 
-            {/* Packages sub-group */}
-            <p className="text-[8px] uppercase tracking-widest font-bold pt-2.5 pb-1" style={{ color: 'var(--color-gold)' }}>Offers &amp; Packages</p>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 pl-1">
-              {PACKAGES_LINKS.map(l => (
-                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-                  className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
-                  {l.label}
-                </a>
-              ))}
-            </div>
+            {/* Packages sub-group — tap to expand */}
+            <button
+              onClick={() => setMPkgOpen(v => !v)}
+              className="flex items-center justify-between text-brand-dark/70 font-body font-semibold py-2.5 text-sm border-b"
+              style={{ borderColor: 'rgba(200,135,58,0.10)' }}
+            >
+              Offers &amp; Packages
+              <ChevronDown size={15} className={`transition-transform duration-200 ${mPkgOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {mPkgOpen && (
+              <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 py-1.5 pl-1">
+                {PACKAGES_LINKS.map(l => (
+                  <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                    className="text-brand-dark/55 font-body text-xs py-1.5 hover:text-brand-dark transition-colors">
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+            )}
 
             {/* Remaining top-level */}
             <div className="border-t mt-2 pt-1.5" style={{ borderColor: 'rgba(200,135,58,0.10)' }}>

@@ -14,7 +14,7 @@ const COL_BRANDS = [
 ]
 
 const COL_EXPERIENCES = [
-  { label: 'Pool & Play',        href: '/park' },
+  { label: 'Thrill & Play',      href: '/park' },
   { label: 'Camping',            href: '/relax' },
   { label: 'Events & Weddings',  href: '/events' },
   { label: 'Restaurant',         href: '/park#dining' },

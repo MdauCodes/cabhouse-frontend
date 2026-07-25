@@ -5,7 +5,7 @@ const EXPERIENCES = [
     img: '/assets/park-pool.jpeg',
     badge: 'OPEN DAILY',
     badgeDark: true,
-    title: 'Pool & Play',
+    title: 'Thrill & Play',
     href: '/park',
   },
   {
@@ -16,21 +16,21 @@ const EXPERIENCES = [
     href: '/relax',
   },
   {
-    img: '/assets/park-group.jpeg',
+    img: '/assets/raw-17.jpeg',
     badge: 'GROUPS WELCOME',
     badgeDark: false,
     title: 'Events',
     href: '/events',
   },
   {
-    img: '/assets/park-adventure.jpeg',
+    img: '/assets/park-extra-1.png',
     badge: 'MOST POPULAR',
     badgeDark: false,
     title: 'Adventure',
     href: '/park#games',
   },
   {
-    img: '/assets/park-extra-1.png',
+    img: '/assets/wooden-tent-31.jpeg',
     badge: null,
     badgeDark: false,
     title: 'Stay Over',
