@@ -18,7 +18,7 @@ const BRANDS = [
     tags: ['Short Stays', 'Long Stays', 'Furnished Units'],
     cta: 'EXPLORE APARTMENTS →',
     href: '/apartments',
-    img: '/assets/updated-cabhouse aprtment image.png',
+    img: '/assets/apartment-top2.png',
     badge: null,
   },
   {

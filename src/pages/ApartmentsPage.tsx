@@ -190,7 +190,7 @@ function HeroSection() {
     <div className="relative overflow-hidden rounded-3xl" style={{ height: '65dvh', minHeight: 380 }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/assets/updated-cabhouse aprtment image.png')`, backgroundColor: 'var(--color-dark)' }}
+        style={{ backgroundImage: `url('/assets/apartment-top2.png')`, backgroundColor: 'var(--color-dark)' }}
       />
       <div className="absolute inset-0 bg-black/55 lg:hidden" />
       <div
@@ -205,31 +205,31 @@ function HeroSection() {
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease', paddingBottom: 48 }}
       >
         <div
-          className="max-w-[30rem] rounded-2xl px-5 py-6 sm:px-7 sm:py-7 -mx-5 sm:-mx-2"
-          style={{ backgroundColor: 'rgba(17,17,17,0.28)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+          className="max-w-[26rem] rounded-xl px-3 py-3 sm:px-4 sm:py-4 -mx-3 sm:-mx-2"
+          style={{ backgroundColor: 'rgba(17,17,17,0.4)', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
         >
-          <p className="text-brand-gold/80 font-body text-[9px] uppercase tracking-[0.3em] font-bold mb-3">CabHouse Apartments · Kisii Town</p>
+          <p className="text-brand-gold font-body text-xs uppercase tracking-[0.16em] font-black mb-2">CabHouse Apartments · Kisii Town</p>
           <h1
-            className="font-display font-black text-white leading-[0.93] mb-4"
-            style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.025em', textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}
+            className="font-display font-black text-white leading-[0.95] mb-2"
+            style={{ fontSize: 'clamp(1.15rem, 2.2vw, 1.7rem)', letterSpacing: '-0.02em', textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}
           >
             Your Home<br />
             <em className="not-italic" style={{ color: 'var(--color-gold)' }}>in Kisii Town</em>
           </h1>
-          <p className="text-white/85 font-body text-sm leading-relaxed mb-8 max-w-[28rem]">
+          <p className="text-white/85 font-body text-xs leading-relaxed mb-4 max-w-[24rem]">
             The sophisticated comfort of home blended with world-class hospitality — right in the heart of Kisii. Whether it's an overnight visit, a business trip or a full relocation, we have your space ready.
           </p>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <a
               href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
               target="_blank" rel="noopener noreferrer"
-              className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
+              className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
             >
               Check Availability
             </a>
             <a
               href="#enquire"
-              className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
+              className="border border-white/30 hover:border-white text-white font-body font-semibold text-xs px-4 py-2 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
             >
               Corporate Enquiry
             </a>
@@ -242,7 +242,7 @@ function HeroSection() {
 }
 
 const APT_PHOTOS = [
-  { src: '/assets/updated-cabhouse aprtment image.png', label: 'CabHouse Apartments' },
+  { src: '/assets/apartment-top2.png', label: 'CabHouse Apartments' },
   { src: '/assets/comfortable-living-room-16.jpeg', label: 'Living Room' },
   { src: '/assets/living-room-12.jpeg', label: 'Lounge' },
   { src: '/assets/confortable-bed-11.jpeg', label: 'Bedroom' },
@@ -334,8 +334,6 @@ export default function ApartmentsPage() {
         photos={APT_PHOTOS}
         title='Inside Your <em class="not-italic" style="color:var(--color-gold)">Home Away</em>'
         subtitle="Tap any photo to view full size"
-        columns="columns-2 sm:columns-3 lg:columns-4 xl:columns-5"
-        gap={6}
       />
 
       <DualCTA />

@@ -10,9 +10,19 @@ const REELS: { id: string; label: string; tag: string }[] = [
   { id: 'gallery-v3', label: 'Rainbow Slides - Unlimited Rides', tag: 'Fun' },
   { id: 'gallery-v4', label: 'Go-Karts - Race the Track', tag: 'Speed' },
   { id: 'gallery-v5', label: 'Group Fun at CabHouse Park', tag: 'Groups' },
-  { id: 'gallery-v6', label: 'Zipline - Soar 100m Above Kisii', tag: 'Extreme' },
+  { id: 'gallery-v6', label: 'Zipline Crew - Geared Up', tag: 'Extreme' },
   { id: 'gallery-v7', label: 'A Day at the Swimming Pool', tag: 'Family' },
   { id: 'gallery-v8', label: 'Camp Life Under the Stars', tag: 'Stays' },
+  { id: 'gallery-v9', label: 'Crossing the Ropes Course', tag: 'Adventure' },
+  { id: 'gallery-v10', label: 'Adventure Zone Overview', tag: 'Adventure' },
+  { id: 'gallery-v11', label: 'Climbing Wall Challenge', tag: 'Games' },
+  { id: 'gallery-v12', label: 'Sky Bike Carousel Fun', tag: 'Fun' },
+  { id: 'gallery-v13', label: 'Gearing Up for Adventure', tag: 'Groups' },
+  { id: 'gallery-v14', label: 'Adventure Squad Ready', tag: 'Groups' },
+  { id: 'gallery-v15', label: 'Indoor Team Building', tag: 'Corporate' },
+  { id: 'gallery-v16', label: 'Team Warm-Up Session', tag: 'Corporate' },
+  { id: 'gallery-v17', label: 'Outdoor Team Games', tag: 'Corporate' },
+  { id: 'gallery-v18', label: 'Unwind by the Cabins', tag: 'Stays' },
 ]
 
 const WA_URL = `https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(

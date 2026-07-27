@@ -499,8 +499,6 @@ function StaySection() {
       photos={CAMPING_PHOTOS}
       title='Stay the Night <em class="not-italic" style="color:var(--color-gold)">Gallery</em>'
       subtitle="Tap any photo to view full size"
-      columns="columns-2 sm:columns-3 lg:columns-4"
-      gap={8}
     />
     </>
   )
@@ -515,8 +513,6 @@ export default function ParkPage() {
         photos={PARK_PHOTOS}
         title='The Park <em class="not-italic" style="color:var(--color-gold)">In Pictures</em>'
         subtitle="Tap any photo to view full size"
-        columns="columns-2 sm:columns-3 lg:columns-4 xl:columns-5"
-        gap={8}
       />
       <PackagesSection />
       <DiningSection />

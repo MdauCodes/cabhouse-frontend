@@ -54,7 +54,7 @@ export const MEDIA_SLOTS: MediaSlot[] = [
 
   // ── Park — Your Playground (dedicated, not shared with Hero slides) ───────
   { id: 'pdd-push-limits', label: 'Push Your Limits Panel', section: 'Park Playground', type: 'image', localPath: '/assets/hero-10.png', cloudinaryUrl: null, alt: '100m rainbow slide' },
-  { id: 'pdd-play-day',    label: 'Play All Day Panel',     section: 'Park Playground', type: 'image', localPath: '/assets/park-carousel.webp', cloudinaryUrl: null, alt: 'Sky bike carousel ride' },
+  { id: 'pdd-play-day',    label: 'Play All Day Panel',     section: 'Park Playground', type: 'image', localPath: '/assets/raw-60.jpeg', cloudinaryUrl: null, alt: 'Bumper cars at CabHouse Park' },
 
   // ── Gallery (3 images + 8 videos) ────────────────────────────────────────
   { id: 'gallery-1',  label: 'Gallery Image 1', section: 'Gallery', type: 'image', localPath: '/assets/raw-8.jpeg', cloudinaryUrl: null, alt: 'Rope bridge' },
@@ -65,9 +65,19 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   { id: 'gallery-v3', label: 'Gallery Video 3',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/99f343f855506e7be8bd476d8a43c2e9_1783925919420.mp4',  cloudinaryUrl: null },
   { id: 'gallery-v4', label: 'Gallery Video 4',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d05eae8a47403e5e4b10b718dc29acdf_1783926120068.mp4',  cloudinaryUrl: null },
   { id: 'gallery-v5', label: 'Gallery Video 5',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d25a549f5bc833357bbce4d28caf846f_1783925991247.mp4',  cloudinaryUrl: null },
-  { id: 'gallery-v6', label: 'Gallery Video 6',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/d25a549f5bc833357bbce4d28caf846f_1783926021257.mp4',  cloudinaryUrl: null },
+  { id: 'gallery-v6', label: 'Gallery Video 6',  section: 'Gallery', type: 'video', localPath: '/assets/raw-56.mp4', cloudinaryUrl: null },
   { id: 'gallery-v7', label: 'Gallery Video 7',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/ebb227e92d423cc1f0e366a0c3a10ab6_1783926433436.mp4',  cloudinaryUrl: null },
-  { id: 'gallery-v8', label: 'Gallery Video 8',  section: 'Gallery', type: 'video', localPath: '/assets/more-videos/4af0df44d799f35d39ae697c6e7f9e58_1783922443120.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v8', label: 'Gallery Video 8',  section: 'Gallery', type: 'video', localPath: '/assets/raw-31.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v9',  label: 'Gallery Video 9',  section: 'Gallery', type: 'video', localPath: '/assets/raw-21.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v10', label: 'Gallery Video 10', section: 'Gallery', type: 'video', localPath: '/assets/raw-20.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v11', label: 'Gallery Video 11', section: 'Gallery', type: 'video', localPath: '/assets/raw-32.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v12', label: 'Gallery Video 12', section: 'Gallery', type: 'video', localPath: '/assets/raw-55.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v13', label: 'Gallery Video 13', section: 'Gallery', type: 'video', localPath: '/assets/raw-49.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v14', label: 'Gallery Video 14', section: 'Gallery', type: 'video', localPath: '/assets/raw-50.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v15', label: 'Gallery Video 15', section: 'Gallery', type: 'video', localPath: '/assets/raw-51.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v16', label: 'Gallery Video 16', section: 'Gallery', type: 'video', localPath: '/assets/raw-52.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v17', label: 'Gallery Video 17', section: 'Gallery', type: 'video', localPath: '/assets/raw-53.mp4', cloudinaryUrl: null },
+  { id: 'gallery-v18', label: 'Gallery Video 18', section: 'Gallery', type: 'video', localPath: '/assets/raw-54.mp4', cloudinaryUrl: null },
 ]
 
 export function getSlot(id: string): MediaSlot | undefined {

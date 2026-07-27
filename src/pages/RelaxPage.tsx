@@ -46,7 +46,7 @@ function Hero() {
         style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.8s ease' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-6 h-px bg-brand-gold" />
-          <p className="text-brand-gold font-body text-[10px] tracking-[0.3em] uppercase font-semibold">CabHouse Park · Stay &amp; Camp</p>
+          <p className="text-brand-gold font-body text-sm tracking-[0.18em] uppercase font-black">CabHouse Park · Stay &amp; Camp</p>
         </div>
         <h1 className="font-display font-black text-white leading-[0.93] mb-4"
           style={{ fontSize: 'var(--type-h1)', letterSpacing: '-0.02em' }}>
@@ -128,8 +128,6 @@ export default function RelaxPage() {
         photos={RELAX_PHOTOS}
         title='Sleeping Under <em class="not-italic" style="color:var(--color-gold)">the Stars</em>'
         subtitle="Tap any photo to view full size"
-        columns="columns-2 sm:columns-3 lg:columns-4"
-        gap={8}
       />
 
       {/* Info strip — green */}

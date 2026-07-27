@@ -4,18 +4,17 @@ import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
 export interface GalleryPhoto {
   src: string
   label?: string
-  span?: 'normal' | 'tall'
 }
 
 interface Props {
   photos: GalleryPhoto[]
   title?: string
   subtitle?: string
-  columns?: string
-  gap?: number
 }
 
-export default function MasonryGallery({ photos, title, subtitle, columns = 'columns-2 sm:columns-3 lg:columns-4', gap = 8 }: Props) {
+const STAR_CLIP = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
+
+export default function MasonryGallery({ photos, title, subtitle }: Props) {
   const [lightbox, setLightbox] = useState<{ idx: number } | null>(null)
 
   const close = useCallback(() => {
@@ -67,32 +66,44 @@ export default function MasonryGallery({ photos, title, subtitle, columns = 'col
             </div>
           )}
 
-          <div className={`${columns}`} style={{ columnGap: gap, lineHeight: 0 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {photos.map((p, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => open(i)}
-                className="break-inside-avoid group relative w-full overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold cursor-zoom-in"
-                style={{ marginBottom: gap, display: 'block' }}
+                className="relative group rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold cursor-zoom-in"
+                style={{ aspectRatio: '4/5', boxShadow: '0 10px 30px rgba(26,20,10,0.10)' }}
               >
-                <img
-                  src={p.src}
-                  alt={p.label ?? ''}
-                  loading="lazy"
-                  className="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-[1.05]"
-                  style={{ lineHeight: 0 }}
-                />
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 rounded-xl" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-2.5 border border-white/40">
-                    <ZoomIn className="w-4 h-4 text-white" strokeWidth={2} />
+                <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                  <img
+                    src={p.src}
+                    alt={p.label ?? ''}
+                    loading="lazy"
+                    className="w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-2.5 border border-white/40">
+                      <ZoomIn className="w-4 h-4 text-white" strokeWidth={2} />
+                    </div>
                   </div>
+                  {p.label && (
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-white font-body text-[10px] font-medium leading-tight">{p.label}</p>
+                    </div>
+                  )}
                 </div>
-                {p.label && (
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-xl">
-                    <p className="text-white font-body text-[10px] font-medium leading-tight">{p.label}</p>
+                {/* Ring accent */}
+                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 pointer-events-none" />
+                {/* Featured star badge on the first photo */}
+                {i === 0 && (
+                  <div
+                    className="absolute -top-2 -right-2 w-12 h-12 flex items-center justify-center"
+                    style={{ background: 'var(--color-gold)', clipPath: STAR_CLIP }}
+                  >
+                    <span className="text-white font-body text-[7px] font-bold uppercase">Featured</span>
                   </div>
                 )}
               </button>

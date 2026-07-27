@@ -68,7 +68,7 @@ const SIDES = [
     desc: 'Furnished apartments in Kisii town. Short or long term.',
     cta: 'Book a Stay',
     href: '/apartments',
-    imageSrc: '/assets/updated-cabhouse aprtment image.png',
+    imageSrc: '/assets/apartment-top2.png',
     logoSrc: '/assets/logo-apartments-noBackground.png',
   },
 ]
