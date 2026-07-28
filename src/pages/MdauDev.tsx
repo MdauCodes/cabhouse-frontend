@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
+import { invalidateContentCache } from '../hooks/useContentBlocks'
 import { api, staffAuth } from '../lib/api'
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -272,7 +273,7 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'services' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'services' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',   Icon: LayoutGrid,    group: 'main' },
@@ -280,13 +281,14 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'coupons',   label: 'Coupons',    Icon: TicketPercent, group: 'main' },
   { id: 'media',     label: 'Media',      Icon: Image,         group: 'content' },
   { id: 'services',  label: 'Services',   Icon: FileText,      group: 'content' },
+  { id: 'content',   label: 'Content',    Icon: Pencil,        group: 'content' },
   { id: 'users',     label: 'Users',      Icon: ShieldCheck,   group: 'system' },
   { id: 'activity',  label: 'Activity',   Icon: Activity,      group: 'system' },
 ]
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', services: 'Services', users: 'Users', activity: 'Activity Log',
+  coupons: 'Coupons', services: 'Services', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -401,6 +403,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
           {tab === 'services'  && <ServicesTab  token={token} />}
+          {tab === 'content'   && <ContentTab   token={token} />}
           {tab === 'users'     && <UsersTab     token={token} />}
           {tab === 'activity'  && <ActivityTab  token={token} />}
         </main>
@@ -1471,6 +1474,124 @@ function ActivityTab({ token }: { token: string }) {
           </div>
         )}
       </Card>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONTENT TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+interface ContentBlock { key: string; value: string; label: string; section: string; updatedAt: string }
+
+const CONTENT_SECTION_LABELS: Record<string, string> = {
+  announcement: 'Announcement Bar',
+  contact: 'Contact Details',
+  hero: 'Hero Headings',
+  pricing: 'Pricing',
+}
+
+function ContentTab({ token }: { token: string }) {
+  const [blocks, setBlocks] = useState<ContentBlock[]>([])
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [saving, setSaving] = useState<Record<string, boolean>>({})
+  const [saved, setSaved] = useState<Record<string, boolean>>({})
+  const [error, setError] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    api.get<ContentBlock[]>('/content/blocks', token)
+      .then(data => {
+        setBlocks(data)
+        const init: Record<string, string> = {}
+        data.forEach(b => { init[b.key] = b.value })
+        setDrafts(init)
+      }).catch(() => {})
+  }, [token])
+
+  async function saveBlock(key: string) {
+    setSaving(p => ({ ...p, [key]: true }))
+    setError(p => ({ ...p, [key]: '' }))
+    try {
+      await api.put<ContentBlock>(`/content/blocks/${key}`, { value: drafts[key] ?? '' }, token)
+      setBlocks(prev => prev.map(b => b.key === key ? { ...b, value: drafts[key] ?? '' } : b))
+      setSaved(p => ({ ...p, [key]: true }))
+      setTimeout(() => setSaved(p => ({ ...p, [key]: false })), 2000)
+      invalidateContentCache()
+    } catch {
+      setError(p => ({ ...p, [key]: 'Save failed' }))
+    } finally {
+      setSaving(p => ({ ...p, [key]: false }))
+    }
+  }
+
+  const sections = Object.entries(
+    blocks.reduce<Record<string, ContentBlock[]>>((acc, b) => {
+      ;(acc[b.section] = acc[b.section] ?? []).push(b)
+      return acc
+    }, {})
+  )
+
+  const isMultiline = (key: string) => key.includes('.heading') || key.includes('.subheading') || key.includes('.text')
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-slate-900 font-bold text-lg">Content Blocks</h2>
+        <p className="text-slate-500 text-sm">Edit text displayed on the website. Changes go live after the page cache refreshes (up to 5 minutes).</p>
+      </div>
+      <div className="space-y-8">
+        {sections.map(([section, items]) => (
+          <div key={section}>
+            <h3 className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block" />
+              {CONTENT_SECTION_LABELS[section] ?? section}
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {items.map(block => {
+                const changed = drafts[block.key] !== block.value
+                const multi = isMultiline(block.key)
+                return (
+                  <Card key={block.key}>
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="text-slate-800 text-sm font-semibold">{block.label}</p>
+                        <p className="text-slate-400 text-[10px] font-mono mt-0.5">{block.key}</p>
+                      </div>
+                      {saved[block.key] && (
+                        <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>
+                      )}
+                    </div>
+                    {multi ? (
+                      <Textarea
+                        rows={3}
+                        value={drafts[block.key] ?? ''}
+                        onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))}
+                      />
+                    ) : (
+                      <Input
+                        value={drafts[block.key] ?? ''}
+                        onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))}
+                      />
+                    )}
+                    {error[block.key] && (
+                      <p className="text-red-500 text-xs mt-1">{error[block.key]}</p>
+                    )}
+                    <div className="flex justify-end mt-3">
+                      <Btn
+                        onClick={() => saveBlock(block.key)}
+                        disabled={!changed || saving[block.key]}
+                        variant={changed ? 'primary' : 'ghost'}
+                      >
+                        {saving[block.key] ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                        {saving[block.key] ? 'Saving…' : 'Save'}
+                      </Btn>
+                    </div>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

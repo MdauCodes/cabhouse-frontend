@@ -1,18 +1,25 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { SITE } from '../config/site'
+import { useContentBlocks } from '../hooks/useContentBlocks'
 
 export default function AnnouncementBar() {
-  const [visible, setVisible] = useState(true)
-  if (!visible) return null
-  const wa = SITE.contact.whatsapp.replace('+', '')
+  const { get } = useContentBlocks()
+  const [dismissed, setDismissed] = useState(false)
+
+  const active = get('announcement.active', 'true') === 'true'
+  if (!active || dismissed) return null
+
+  const text = get('announcement.text', 'CabHouse Park is open daily · 8 AM – 8 PM · Kisii')
+  const wa = get('contact.whatsapp', SITE.contact.whatsapp).replace('+', '')
+
   return (
     <div className="flex items-center justify-between px-4 py-2.5 text-xs font-body font-medium" style={{ backgroundColor: 'var(--color-gold)' }}>
       <div className="flex-1" />
       <div className="flex items-center gap-3">
         <span className="flex items-center gap-2 text-black/80">
           <span className="w-1.5 h-1.5 rounded-full bg-black/40 animate-pulse" />
-          CabHouse Park is open daily · 8 AM – 8 PM · Kisii
+          {text}
         </span>
         <a
           href={`https://wa.me/${wa}`}
@@ -23,7 +30,7 @@ export default function AnnouncementBar() {
         </a>
       </div>
       <div className="flex-1 flex justify-end">
-        <button onClick={() => setVisible(false)} className="text-black/40 hover:text-black transition-colors p-1 ml-3">
+        <button onClick={() => setDismissed(true)} className="text-black/40 hover:text-black transition-colors p-1 ml-3">
           <X size={13} />
         </button>
       </div>

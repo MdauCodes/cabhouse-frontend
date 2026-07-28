@@ -1,90 +1,9 @@
 import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
-
-const PACKAGES = [
-  {
-    name: 'Bronze', price: 1000, tag: null, level: 1,
-    activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
-    bg: 'rgba(68,30,4,0.55)',
-    border: '1px solid rgba(160,80,20,0.30)',
-    accent: '#B87040',
-    dot: '#B87040',
-    priceSize: 'clamp(1rem, 1.8vw, 1.5rem)',
-    solid: false,
-    cta: 'Reserve My Spot',
-    waMsg: `Hi CabHouse 👋 I'd like to book the *Bronze Package* at KES 1,000 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides & Swings.\n\nPlease let me know your available dates and how many people I can bring. Thank you!`,
-  },
-  {
-    name: 'Silver', price: 1300, tag: null, level: 2,
-    activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
-    bg: 'linear-gradient(160deg, rgba(60,75,100,0.70) 0%, rgba(40,55,75,0.60) 100%)',
-    border: '1px solid rgba(148,163,184,0.35)',
-    accent: '#A8BACE',
-    dot: '#A8BACE',
-    priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)',
-    solid: false,
-    cta: 'Book Silver Package',
-    waMsg: `Hi CabHouse 👋 I'd like to book the *Silver Package* at KES 1,300 per person.\n\nThis includes: Bouncing Castles, Rainbow Slides, Swings & Swimming.\n\nKindly confirm availability and any group rates if applicable. Looking forward to visiting!`,
-  },
-  {
-    name: 'Platinum', price: 1400, tag: 'Popular', level: 3,
-    activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
-    bg: 'var(--color-gold)',
-    border: '2px solid rgba(255,255,255,0.20)',
-    accent: '#fff',
-    dot: '#fff',
-    priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)',
-    solid: true,
-    cta: 'Secure Platinum Now',
-    waMsg: `Hi CabHouse 👋 I'd like to book the *Platinum Package* at KES 1,400 per person — your most popular pick!\n\nThis includes: Zipline, Sky Bike, Rainbow Slides & Bridge & Mountain.\n\nPlease share available dates and whether group bookings receive any discount. Excited to experience this!`,
-  },
-  {
-    name: 'Gold', price: 2500, tag: 'All-In', level: 4,
-    activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
-    bg: 'linear-gradient(160deg, rgba(120,70,10,0.85) 0%, rgba(80,40,5,0.90) 100%)',
-    border: '2px solid rgba(250,190,60,0.55)',
-    accent: '#FBBF24',
-    dot: '#FBBF24',
-    priceSize: 'clamp(1.3rem, 2.3vw, 2rem)',
-    solid: false,
-    cta: 'Claim Gold Experience',
-    waMsg: `Hi CabHouse 👋 I'm interested in the *Gold All-In Package* at KES 2,500 per person — the full experience!\n\nThis covers: Every Activity, Unlimited Access & a Full Day Pass.\n\nI'd like to plan an unforgettable day out. Please confirm available dates, group size options, and anything I should know before arrival. Can't wait!`,
-  },
-]
-
-const SINGLES = [
-  { name: 'Mountain & Bridge', note: 'Unlimited', price: 500 },
-  { name: 'Swimming',          note: 'Unlimited', price: 500 },
-  { name: 'Zipline',           note: 'One round', price: 500 },
-  { name: 'Sky Bike',          note: 'One round', price: 500 },
-  { name: 'Rainbow Slide',     note: 'Unlimited', price: 500 },
-]
-
-const CARS = [
-  { name: 'Bumper Car',  note: '10 mins',  price: 300 },
-  { name: 'Bumper Car',  note: '30 mins',  price: 750 },
-  { name: 'Bumper Car',  note: '1 hour',   price: 1000 },
-  { name: 'Go-Kart',    note: '15 mins',  price: 500 },
-  { name: 'Go-Kart',    note: '30 mins',  price: 1000 },
-]
-
-const STAYS = [
-  { name: 'Wooden Cabin',        base: 3000, b1: 3500, b2: 4000 },
-  { name: 'Tented Cabin (Big)',  base: 2500, b1: 3000, b2: 3500 },
-  { name: 'Tented Cabin (Sm)',   base: 2000, b1: 2500, b2: 3000 },
-  { name: 'Camping Tent (Sm)',   base: 1500, b1: 2000, b2: null },
-  { name: 'Camping Tent (Big)',  base: 5000, b1: 7500, b2: null },
-]
-
-const VENUES = [
-  { name: 'Gardens',      note: 'Up to 200 pax',      price: 20000 },
-  { name: 'Indoor Hall',  note: 'Corporate & social',  price: 10000 },
-  { name: 'Premium Tent', note: 'Outdoor events',      price: 4000 },
-]
+import { useContentBlocks } from '../hooks/useContentBlocks'
 
 type Tab = 'packages' | 'activities' | 'stays' | 'venues'
-
 const TABS: { id: Tab; label: string }[] = [
   { id: 'packages',   label: 'Packages' },
   { id: 'activities', label: 'Activities' },
@@ -92,25 +11,96 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'venues',     label: 'Venues' },
 ]
 
+const wa = SITE.contact.whatsapp.replace('+', '')
+
 export default function Pricing() {
   const { ref, inView } = useInView()
   const [tab, setTab] = useState<Tab>('packages')
+  const { get } = useContentBlocks()
+  const p = (key: string, def: number) => Number(get(key, String(def)))
+
+  const SINGLES = [
+    { name: 'Mountain & Bridge', note: 'Unlimited', price: p('pricing.mountain', 500) },
+    { name: 'Swimming',          note: 'Unlimited', price: p('pricing.swimming', 500) },
+    { name: 'Zipline',           note: 'One round', price: p('pricing.zipline', 500) },
+    { name: 'Sky Bike',          note: 'One round', price: p('pricing.skybike', 500) },
+    { name: 'Rainbow Slide',     note: 'Unlimited', price: p('pricing.slide', 500) },
+  ]
+
+  const CARS = [
+    { name: 'Bumper Car', note: '10 mins', price: p('pricing.bumpercar.10', 300) },
+    { name: 'Bumper Car', note: '30 mins', price: p('pricing.bumpercar.30', 750) },
+    { name: 'Bumper Car', note: '1 hour',  price: p('pricing.bumpercar.60', 1000) },
+    { name: 'Go-Kart',   note: '15 mins', price: p('pricing.gokart.15', 500) },
+    { name: 'Go-Kart',   note: '30 mins', price: p('pricing.gokart.30', 1000) },
+  ]
+
+  const cabinWooden     = p('pricing.cabin.wooden', 3000)
+  const cabinTentedBig  = p('pricing.cabin.tented.big', 2500)
+  const cabinTentedSm   = p('pricing.cabin.tented.small', 2000)
+  const tentSm          = p('pricing.tent.small', 1500)
+  const tentBig         = p('pricing.tent.big', 5000)
+
+  const STAYS = [
+    { name: 'Wooden Cabin',       base: cabinWooden,    b1: cabinWooden + 500,   b2: cabinWooden + 1000 },
+    { name: 'Tented Cabin (Big)', base: cabinTentedBig, b1: cabinTentedBig + 500, b2: cabinTentedBig + 1000 },
+    { name: 'Tented Cabin (Sm)',  base: cabinTentedSm,  b1: cabinTentedSm + 500,  b2: cabinTentedSm + 1000 },
+    { name: 'Camping Tent (Sm)',  base: tentSm,         b1: tentSm + 500,         b2: null },
+    { name: 'Camping Tent (Big)', base: tentBig,        b1: tentBig + 2500,       b2: null },
+  ]
+
+  const VENUES = [
+    { name: 'Gardens',      note: 'Up to 200 pax',     price: p('pricing.venue.gardens', 20000) },
+    { name: 'Indoor Hall',  note: 'Corporate & social', price: p('pricing.venue.hall', 10000) },
+    { name: 'Premium Tent', note: 'Outdoor events',     price: p('pricing.venue.tent', 4000) },
+  ]
+
+  const PACKAGES = [
+    {
+      name: 'Bronze', price: p('pricing.bronze', 1000), tag: null, level: 1,
+      activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
+      bg: 'rgba(68,30,4,0.55)', border: '1px solid rgba(160,80,20,0.30)',
+      accent: '#B87040', dot: '#B87040', priceSize: 'clamp(1rem, 1.8vw, 1.5rem)', solid: false,
+      cta: 'Reserve My Spot',
+      waMsg: `Hi CabHouse 👋 I'd like to book the *Bronze Package* at KES ${p('pricing.bronze', 1000).toLocaleString()} per person.\n\nThis includes: Bouncing Castles, Rainbow Slides & Swings.\n\nPlease let me know your available dates and how many people I can bring. Thank you!`,
+    },
+    {
+      name: 'Silver', price: p('pricing.silver', 1300), tag: null, level: 2,
+      activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
+      bg: 'linear-gradient(160deg, rgba(60,75,100,0.70) 0%, rgba(40,55,75,0.60) 100%)',
+      border: '1px solid rgba(148,163,184,0.35)', accent: '#A8BACE', dot: '#A8BACE',
+      priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)', solid: false,
+      cta: 'Book Silver Package',
+      waMsg: `Hi CabHouse 👋 I'd like to book the *Silver Package* at KES ${p('pricing.silver', 1300).toLocaleString()} per person.\n\nThis includes: Bouncing Castles, Rainbow Slides, Swings & Swimming.\n\nKindly confirm availability and any group rates if applicable. Looking forward to visiting!`,
+    },
+    {
+      name: 'Platinum', price: p('pricing.platinum', 1400), tag: 'Popular', level: 3,
+      activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
+      bg: 'var(--color-gold)', border: '2px solid rgba(255,255,255,0.20)',
+      accent: '#fff', dot: '#fff', priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)', solid: true,
+      cta: 'Secure Platinum Now',
+      waMsg: `Hi CabHouse 👋 I'd like to book the *Platinum Package* at KES ${p('pricing.platinum', 1400).toLocaleString()} per person — your most popular pick!\n\nThis includes: Zipline, Sky Bike, Rainbow Slides & Bridge & Mountain.\n\nPlease share available dates and whether group bookings receive any discount. Excited to experience this!`,
+    },
+    {
+      name: 'Gold', price: p('pricing.gold', 2500), tag: 'All-In', level: 4,
+      activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
+      bg: 'linear-gradient(160deg, rgba(120,70,10,0.85) 0%, rgba(80,40,5,0.90) 100%)',
+      border: '2px solid rgba(250,190,60,0.55)', accent: '#FBBF24', dot: '#FBBF24',
+      priceSize: 'clamp(1.3rem, 2.3vw, 2rem)', solid: false,
+      cta: 'Claim Gold Experience',
+      waMsg: `Hi CabHouse 👋 I'm interested in the *Gold All-In Package* at KES ${p('pricing.gold', 2500).toLocaleString()} per person — the full experience!\n\nThis covers: Every Activity, Unlimited Access & a Full Day Pass.\n\nI'd like to plan an unforgettable day out. Please confirm available dates, group size options, and anything I should know before arrival. Can't wait!`,
+    },
+  ]
 
   return (
-    <section
-      id="packages"
-      style={{ background: 'var(--canvas)' }}
-      className="px-3 md:px-5 pt-3"
-    >
+    <section id="packages" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="rounded-3xl overflow-hidden px-4 lg:px-10 flex flex-col" style={{ minHeight: 480, backgroundColor: '#D4B882' }}>
       <div className="max-w-7xl mx-auto w-full flex flex-col py-8 lg:py-10">
 
-        {/* Header row */}
-        <div
-          ref={ref as React.RefObject<HTMLDivElement>}
+        {/* Header */}
+        <div ref={ref as React.RefObject<HTMLDivElement>}
           className="flex items-center justify-between mb-5 flex-shrink-0"
-          style={{ opacity: inView ? 1 : 0, transition: 'all 0.5s ease' }}
-        >
+          style={{ opacity: inView ? 1 : 0, transition: 'all 0.5s ease' }}>
           <h2 className="font-display font-black text-brand-dark leading-none"
             style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.02em' }}>
             Packages & <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Pricing</em>
@@ -130,40 +120,32 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* Content */}
         <div>
-
-          {/* â"€â"€ Packages â"€â"€ */}
+          {/* ── Packages ── */}
           {tab === 'packages' && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {PACKAGES.map(pkg => (
-                <div key={pkg.name}
-                  className="rounded-xl flex flex-col relative overflow-hidden"
-                  style={{ background: pkg.bg, border: pkg.border }}
-                >
+                <div key={pkg.name} className="rounded-xl flex flex-col relative overflow-hidden"
+                  style={{ background: pkg.bg, border: pkg.border }}>
                   <div className="p-3 sm:p-4 pb-2 flex-shrink-0">
-                    {/* Tier level dots */}
                     <div className="flex items-center gap-1 mb-2.5">
                       {[1,2,3,4].map(n => (
                         <span key={n} className="w-1.5 h-1.5 rounded-full transition-all"
                           style={{ backgroundColor: n <= pkg.level ? pkg.accent : 'rgba(255,255,255,0.12)' }} />
                       ))}
-                      <span className="ml-1 font-body text-[8px] uppercase tracking-widest"
-                        style={{ color: `${pkg.accent}99` }}>
+                      <span className="ml-1 font-body text-[8px] uppercase tracking-widest" style={{ color: `${pkg.accent}99` }}>
                         {pkg.level === 1 ? 'Entry' : pkg.level === 2 ? 'Standard' : pkg.level === 3 ? 'Premium' : 'Elite'}
                       </span>
                     </div>
-
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-display font-black text-white leading-none"
-                        style={{ fontSize: 'clamp(0.9rem, 1.6vw, 1.25rem)' }}>
+                      <h3 className="font-display font-black text-white leading-none" style={{ fontSize: 'clamp(0.9rem, 1.6vw, 1.25rem)' }}>
                         {pkg.name}
                       </h3>
                       {pkg.tag && (
-                        <span
-                          className="text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
-                          style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}28`, color: pkg.accent }}
-                        >{pkg.tag}</span>
+                        <span className="text-[8px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
+                          style={{ background: pkg.solid ? 'rgba(255,255,255,0.25)' : `${pkg.accent}28`, color: pkg.accent }}>
+                          {pkg.tag}
+                        </span>
                       )}
                     </div>
                     <div className="flex items-baseline gap-1">
@@ -173,9 +155,7 @@ export default function Pricing() {
                       <span className="font-body text-[9px] uppercase tracking-wide text-white/35">KES/pax</span>
                     </div>
                   </div>
-
                   <div className="mx-3 sm:mx-4 h-px flex-shrink-0" style={{ backgroundColor: `${pkg.accent}28` }} />
-
                   <ul className="p-3 sm:p-4 space-y-2 flex-1">
                     {pkg.activities.map(a => (
                       <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px]"
@@ -185,18 +165,11 @@ export default function Pricing() {
                       </li>
                     ))}
                   </ul>
-
                   <div className="p-3 sm:p-4 pt-0 flex-shrink-0">
-                    <a
-                      href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(pkg.waMsg)}`}
+                    <a href={`https://wa.me/${wa}?text=${encodeURIComponent(pkg.waMsg)}`}
                       target="_blank" rel="noopener noreferrer"
                       className="block text-center font-body font-bold tracking-wide py-3.5 rounded-full transition-all duration-200 hover:opacity-90"
-                      style={{
-                        fontSize: 'clamp(11px, 1.3vw, 13px)',
-                        background: pkg.solid ? '#fff' : 'var(--color-gold)',
-                        color: pkg.solid ? 'var(--color-gold)' : '#fff',
-                        border: 'none',
-                      }}>
+                      style={{ fontSize: 'clamp(11px, 1.3vw, 13px)', background: pkg.solid ? '#fff' : 'var(--color-gold)', color: pkg.solid ? 'var(--color-gold)' : '#fff', border: 'none' }}>
                       {pkg.cta}
                     </a>
                   </div>
@@ -209,7 +182,6 @@ export default function Pricing() {
           {tab === 'activities' && (
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
-                {/* Individual Activities */}
                 <div className="bg-white/30 border border-brand-dark/10 rounded-xl p-4 sm:p-5 flex flex-col">
                   <h3 className="font-display font-bold text-brand-dark text-sm mb-3 flex-shrink-0">Individual Activities</h3>
                   <div className="flex flex-col flex-1">
@@ -221,8 +193,7 @@ export default function Pricing() {
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className="text-brand-gold font-display font-bold text-sm">KES {s.price.toLocaleString()}</span>
-                          <a
-                            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book the *${s.name}* activity (${s.note}) at KES ${s.price.toLocaleString()}.\n\nPlease confirm availability and let me know the best time to visit. Thank you!`)}`}
+                          <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book the *${s.name}* activity (${s.note}) at KES ${s.price.toLocaleString()}.\n\nPlease confirm availability and let me know the best time to visit. Thank you!`)}`}
                             target="_blank" rel="noopener noreferrer"
                             className="text-[11px] font-body font-bold uppercase tracking-wide px-3.5 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                             style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
@@ -233,7 +204,6 @@ export default function Pricing() {
                     ))}
                   </div>
                 </div>
-                {/* Cars & Go-Karts */}
                 <div className="bg-white/30 border border-brand-dark/10 rounded-xl p-4 sm:p-5 flex flex-col">
                   <h3 className="font-display font-bold text-brand-dark text-sm mb-3 flex-shrink-0">Cars & Go-Karts</h3>
                   <div className="flex flex-col flex-1">
@@ -245,8 +215,7 @@ export default function Pricing() {
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className="text-brand-gold font-display font-bold text-sm">KES {c.price.toLocaleString()}</span>
-                          <a
-                            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book a *${c.name}* session for *${c.note}* at KES ${c.price.toLocaleString()}.\n\nPlease let me know your available slots and how to confirm my reservation. Can't wait!`)}`}
+                          <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to book a *${c.name}* session for *${c.note}* at KES ${c.price.toLocaleString()}.\n\nPlease let me know your available slots and how to confirm my reservation. Can't wait!`)}`}
                             target="_blank" rel="noopener noreferrer"
                             className="text-[11px] font-body font-bold uppercase tracking-wide px-3.5 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                             style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
@@ -258,13 +227,11 @@ export default function Pricing() {
                   </div>
                 </div>
               </div>
-              {/* Upsell banner */}
               <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
                 <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
-                  <span className="text-brand-dark font-semibold">Save more with a package.</span> Bundles like Platinum (KES 1,400) give you multiple activities at a better rate.
+                  <span className="text-brand-dark font-semibold">Save more with a package.</span> Bundles like Platinum (KES {p('pricing.platinum', 1400).toLocaleString()}) give you multiple activities at a better rate.
                 </p>
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I was browsing your individual activities and I'm interested in getting more value. Could you help me pick the best package for my group and visit date? Thank you!`)}`}
+                <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I was browsing your individual activities and I'm interested in getting more value. Could you help me pick the best package for my group and visit date? Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
@@ -290,8 +257,7 @@ export default function Pricing() {
                         <span>+Breakfast 1 pax: <span className="text-brand-dark/60">{s.b1?.toLocaleString() ?? '—'}</span></span>
                         {s.b2 && <span>2 pax: <span className="text-brand-dark/60">{s.b2.toLocaleString()}</span></span>}
                       </div>
-                      <a
-                        href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to reserve a *${s.name}* at CabHouse Park.\n\nStarting from KES ${s.base.toLocaleString()} per night. Please let me know available dates, whether breakfast is available, and what I should bring or prepare for my stay. Looking forward to it!`)}`}
+                      <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to reserve a *${s.name}* at CabHouse Park.\n\nStarting from KES ${s.base.toLocaleString()} per night. Please let me know available dates, whether breakfast is available, and what I should bring or prepare for my stay. Looking forward to it!`)}`}
                         target="_blank" rel="noopener noreferrer"
                         className="text-[11px] font-body font-bold uppercase tracking-wide px-4 py-2 rounded-full border transition-all duration-200 hover:bg-brand-gold hover:text-white hover:border-transparent whitespace-nowrap"
                         style={{ color: 'var(--color-gold)', borderColor: 'rgba(200,135,58,0.35)' }}>
@@ -302,13 +268,11 @@ export default function Pricing() {
                 </div>
                 <p className="text-brand-dark/30 font-body text-[9px] mt-3 flex-shrink-0">+B = breakfast included · Prices per night in KES</p>
               </div>
-              {/* Upsell banner */}
               <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
                 <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
                   <span className="text-brand-dark font-semibold">Staying over?</span> Combine your accommodation with a day package and get the full CabHouse experience in one visit.
                 </p>
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to plan a stay at CabHouse Park and also enjoy the park activities while I'm there. Can you help me put together a combined stay + activities plan for my group? Please share available dates and any special offers. Thank you!`)}`}
+                <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I'd like to plan a stay at CabHouse Park and also enjoy the park activities while I'm there. Can you help me put together a combined stay + activities plan for my group? Please share available dates and any special offers. Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
@@ -341,8 +305,7 @@ export default function Pricing() {
                           <span className="text-brand-dark/30 font-body text-[9px] uppercase tracking-wide">KES / event</span>
                         </div>
                       </div>
-                      <a
-                        href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(msgs[i])}`}
+                      <a href={`https://wa.me/${wa}?text=${encodeURIComponent(msgs[i])}`}
                         target="_blank" rel="noopener noreferrer"
                         className="mt-4 block text-center font-body font-bold py-3.5 rounded-full transition-all duration-200 hover:brightness-110"
                         style={{ fontSize: 'clamp(11px, 1.2vw, 13px)', backgroundColor: 'var(--color-gold)', color: '#fff' }}>
@@ -352,13 +315,11 @@ export default function Pricing() {
                   )
                 })}
               </div>
-              {/* Bottom nudge */}
               <div className="flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/30 border border-brand-dark/10 rounded-xl px-5 py-3.5">
                 <p className="font-body text-xs text-brand-dark/55 text-center sm:text-left">
                   <span className="text-brand-dark font-semibold">Not sure which venue fits your event?</span> Tell us your headcount, date, and budget — we'll suggest the best option.
                 </p>
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi CabHouse 👋 I'm planning an event and would like help choosing the right venue.\n\nCould you help me based on my headcount, date, and budget? I'm open to Gardens, Indoor Hall, or the Premium Tent. Please get in touch so we can plan this together. Thank you!`)}`}
+                <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi CabHouse 👋 I'm planning an event and would like help choosing the right venue.\n\nCould you help me based on my headcount, date, and budget? I'm open to Gardens, Indoor Hall, or the Premium Tent. Please get in touch so we can plan this together. Thank you!`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="flex-shrink-0 text-sm font-body font-bold tracking-wide px-5 py-3 rounded-full transition-all duration-200 hover:brightness-110 whitespace-nowrap"
                   style={{ backgroundColor: 'var(--color-gold)', color: '#fff' }}>
@@ -367,7 +328,6 @@ export default function Pricing() {
               </div>
             </div>
           )}
-
         </div>
       </div>
       </div>
