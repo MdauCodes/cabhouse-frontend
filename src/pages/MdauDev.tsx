@@ -5,7 +5,7 @@ import {
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, AlertCircle, ArrowUpRight,
-  Pencil, ToggleLeft, ToggleRight,
+  Pencil, ToggleLeft, ToggleRight, CalendarDays,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
@@ -80,22 +80,23 @@ function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
   )
 }
 
-function Card({ children, className = '', padding = true }: { children: React.ReactNode; className?: string; padding?: boolean }) {
+function Card({ children, className = '', padding = true, onClick }: { children: React.ReactNode; className?: string; padding?: boolean; onClick?: () => void }) {
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${padding ? 'p-5' : ''} ${className}`}>
+    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${padding ? 'p-5' : ''} ${className}`} onClick={onClick}>
       {children}
     </div>
   )
 }
 
-function StatCard({ label, value, sub, icon: Icon, trend, color = 'blue' }: {
+function StatCard({ label, value, sub, icon: Icon, trend, color = 'blue', onClick }: {
   label: string; value: string | number; sub?: string
   icon: any; trend?: { value: string; up: boolean }
   color?: 'blue' | 'green' | 'amber' | 'purple'
+  onClick?: () => void
 }) {
   const iconBg = { blue: 'bg-blue-50 text-blue-600', green: 'bg-emerald-50 text-emerald-600', amber: 'bg-amber-50 text-amber-600', purple: 'bg-violet-50 text-violet-600' }[color]
   return (
-    <Card className="flex items-start gap-4">
+    <Card className={`flex items-start gap-4 ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`} onClick={onClick}>
       <div className={`p-2.5 rounded-xl ${iconBg}`}><Icon size={18} /></div>
       <div className="flex-1 min-w-0">
         <p className="text-slate-500 text-xs font-medium mb-0.5">{label}</p>
@@ -273,12 +274,13 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'services' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'services' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',   Icon: LayoutGrid,    group: 'main' },
   { id: 'patrons',   label: 'Patrons',    Icon: Users,         group: 'main' },
   { id: 'coupons',   label: 'Coupons',    Icon: TicketPercent, group: 'main' },
+  { id: 'bookings',  label: 'Bookings',   Icon: CalendarDays,  group: 'main' },
   { id: 'media',     label: 'Media',      Icon: Image,         group: 'content' },
   { id: 'services',  label: 'Services',   Icon: FileText,      group: 'content' },
   { id: 'content',   label: 'Content',    Icon: Pencil,        group: 'content' },
@@ -288,7 +290,7 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', services: 'Services', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
+  coupons: 'Coupons', bookings: 'Bookings', services: 'Services', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -402,6 +404,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'media'     && <MediaTab     token={token} />}
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
+          {tab === 'bookings'  && <BookingsTab  token={token} />}
           {tab === 'services'  && <ServicesTab  token={token} />}
           {tab === 'content'   && <ContentTab   token={token} />}
           {tab === 'users'     && <UsersTab     token={token} />}
@@ -416,7 +419,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
 // OVERVIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void }) {
-  const [stats, setStats] = useState<{ totalPatrons: number; activePatrons: number; totalCouponsIssued: number; totalCouponsRedeemed: number } | null>(null)
+  const [stats, setStats] = useState<{ totalPatrons: number; activePatrons: number; totalCouponsIssued: number; totalCouponsRedeemed: number; pendingBookings: number } | null>(null)
   const [settings, setSettings] = useState<{ baseAmount: string; couponValue: string } | null>(null)
   const [recentActivity, setRecentActivity] = useState<any[]>([])
 
@@ -433,11 +436,13 @@ function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void 
         <p className="text-slate-500 text-sm">Here's what's happening at CabHouse.</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard label="Total Patrons" value={stats?.totalPatrons ?? '—'} sub="enrolled members" icon={Users} color="blue" />
         <StatCard label="Active Patrons" value={stats?.activePatrons ?? '—'} sub="verified accounts" icon={ShieldCheck} color="green" />
         <StatCard label="Coupons Issued" value={stats?.totalCouponsIssued ?? '—'} sub="all time" icon={TicketPercent} color="amber" />
         <StatCard label="Coupons Redeemed" value={stats?.totalCouponsRedeemed ?? '—'} sub="all time" icon={TrendingUp} color="purple" />
+        <StatCard label="Pending Bookings" value={stats?.pendingBookings ?? '—'} sub="awaiting response" icon={CalendarDays} color="blue"
+          onClick={() => onNav('bookings')} />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
@@ -1474,6 +1479,189 @@ function ActivityTab({ token }: { token: string }) {
           </div>
         )}
       </Card>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOKINGS TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
+type BookingServiceType = 'PARK' | 'APARTMENTS' | 'WATER' | 'EVENTS' | 'RESTAURANT' | 'OTHER'
+
+interface BookingRow {
+  id: string; name: string; phone: string; email: string
+  service: BookingServiceType; visitDate: string | null; guests: number
+  message: string | null; status: BookingStatus; adminNote: string | null; createdAt: string
+}
+
+const STATUS_FILTERS: { id: BookingStatus | 'ALL'; label: string }[] = [
+  { id: 'ALL',       label: 'All' },
+  { id: 'PENDING',   label: 'Pending' },
+  { id: 'CONFIRMED', label: 'Confirmed' },
+  { id: 'CANCELLED', label: 'Cancelled' },
+  { id: 'COMPLETED', label: 'Completed' },
+]
+
+const bookingStatusVariant: Record<BookingStatus, 'amber' | 'green' | 'gray' | 'blue'> = {
+  PENDING: 'amber', CONFIRMED: 'green', CANCELLED: 'gray', COMPLETED: 'blue',
+}
+
+function BookingsTab({ token }: { token: string }) {
+  const [bookings, setBookings] = useState<BookingRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const [statusFilter, setStatusFilter] = useState<BookingStatus | 'ALL'>('ALL')
+  const [selected, setSelected] = useState<BookingRow | null>(null)
+  const [newStatus, setNewStatus] = useState<BookingStatus>('PENDING')
+  const [note, setNote] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [page, setPage] = useState(0)
+  const [total, setTotal] = useState(0)
+
+  function load(p = 0) {
+    setLoading(true)
+    const q = statusFilter !== 'ALL' ? `&status=${statusFilter}` : ''
+    api.get<{ content: BookingRow[]; totalElements: number }>(`/bookings?page=${p}&size=20${q}`, token)
+      .then(d => { setBookings(d.content); setTotal(d.totalElements) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { setPage(0); load(0) }, [statusFilter, token])
+
+  function openDetail(b: BookingRow) {
+    setSelected(b); setNewStatus(b.status); setNote(b.adminNote ?? '')
+  }
+
+  async function saveStatus() {
+    if (!selected) return
+    setSaving(true)
+    try {
+      const updated = await api.patch<BookingRow>(`/bookings/${selected.id}/status`, { status: newStatus, note }, token)
+      setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))
+      setSelected(updated)
+    } catch {} finally { setSaving(false) }
+  }
+
+  const fmt = (iso: string | null) => iso
+    ? new Date(iso).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })
+    : '—'
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-slate-900 font-bold text-lg">Bookings</h2>
+          <p className="text-slate-500 text-sm">Manage visitor booking requests from the website.</p>
+        </div>
+      </div>
+
+      {/* Status filter pills */}
+      <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-5 w-fit flex-wrap">
+        {STATUS_FILTERS.map(f => (
+          <button key={f.id} onClick={() => setStatusFilter(f.id)}
+            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${statusFilter === f.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-5 gap-5">
+        {/* List */}
+        <div className="lg:col-span-3">
+          {loading ? (
+            <div className="flex justify-center py-16"><Loader2 size={20} className="animate-spin text-slate-400" /></div>
+          ) : bookings.length === 0 ? (
+            <EmptyState icon={CalendarDays} title="No bookings yet" sub="Booking requests from the website will appear here" />
+          ) : (
+            <div className="space-y-2">
+              {bookings.map(b => (
+                <button key={b.id} onClick={() => openDetail(b)}
+                  className={`w-full text-left p-4 rounded-xl border transition-all ${selected?.id === b.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'}`}>
+                  <div className="flex items-start justify-between gap-3 mb-1">
+                    <div className="min-w-0">
+                      <p className="text-slate-800 font-semibold text-sm truncate">{b.name}</p>
+                      <p className="text-slate-400 text-xs">{b.phone} · {b.service} · {b.guests} guest{b.guests !== 1 ? 's' : ''}</p>
+                    </div>
+                    <Badge variant={bookingStatusVariant[b.status]}>{b.status}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-slate-500 text-xs">Visit: {fmt(b.visitDate)}</p>
+                    <p className="text-slate-400 text-[10px]">{fmt(b.createdAt)}</p>
+                  </div>
+                  {b.message && <p className="text-slate-400 text-xs mt-1 truncate">{b.message}</p>}
+                </button>
+              ))}
+              <div className="flex justify-between items-center pt-2">
+                <p className="text-slate-400 text-xs">{total} total</p>
+                <div className="flex gap-2">
+                  <Btn size="sm" variant="secondary" disabled={page === 0} onClick={() => { setPage(p => p - 1); load(page - 1) }}>Previous</Btn>
+                  <Btn size="sm" variant="secondary" disabled={(page + 1) * 20 >= total} onClick={() => { setPage(p => p + 1); load(page + 1) }}>Next</Btn>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Detail panel */}
+        <div className="lg:col-span-2">
+          {selected ? (
+            <Card>
+              <h3 className="text-slate-900 font-semibold mb-1">{selected.name}</h3>
+              <p className="text-slate-400 text-xs font-mono mb-4">{selected.id.slice(0, 8)}…</p>
+
+              <div className="space-y-2 mb-5 text-sm">
+                {[
+                  ['Phone', selected.phone],
+                  ['Email', selected.email || '—'],
+                  ['Service', selected.service],
+                  ['Visit Date', fmt(selected.visitDate)],
+                  ['Guests', String(selected.guests)],
+                  ['Submitted', fmt(selected.createdAt)],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-3">
+                    <span className="text-slate-400 text-xs flex-shrink-0">{k}</span>
+                    <span className="text-slate-700 text-xs text-right font-medium">{v}</span>
+                  </div>
+                ))}
+              </div>
+
+              {selected.message && (
+                <div className="bg-slate-50 rounded-lg p-3 mb-5">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wide font-semibold mb-1">Message</p>
+                  <p className="text-slate-700 text-xs leading-relaxed">{selected.message}</p>
+                </div>
+              )}
+
+              <div className="border-t border-slate-100 pt-4 space-y-3">
+                <FieldGroup label="Update Status">
+                  <select value={newStatus} onChange={e => setNewStatus(e.target.value as BookingStatus)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="PENDING">Pending</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                    <option value="COMPLETED">Completed</option>
+                  </select>
+                </FieldGroup>
+                <FieldGroup label="Admin Note (optional)">
+                  <Textarea rows={2} value={note} onChange={e => setNote(e.target.value)} placeholder="e.g. Called client, confirmed for Saturday" />
+                </FieldGroup>
+                <div className="flex gap-2">
+                  <Btn onClick={saveStatus} disabled={saving || newStatus === selected.status && note === (selected.adminNote ?? '')}>
+                    {saving ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                    {saving ? 'Saving…' : 'Save'}
+                  </Btn>
+                  <Btn variant="ghost" onClick={() => setSelected(null)}>Close</Btn>
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <EmptyState icon={CalendarDays} title="Select a booking" sub="Click any booking to view details and update status" />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
