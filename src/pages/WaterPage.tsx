@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
+import { useServiceItems } from '../hooks/useServiceItems'
 
 const USES = [
   {
@@ -231,6 +232,18 @@ function HeroSection() {
 
 export default function WaterPage() {
   const { ref, inView } = useInView(0.1)
+  const dbUses = useServiceItems('WATER_USE')
+  const uses = dbUses.length > 0
+    ? dbUses.map(it => ({
+        title: it.title,
+        desc: it.description,
+        wa: `Hi, I'd like to enquire about CabHouse Water — ${it.title}`,
+      }))
+    : USES
+  const dbFormats = useServiceItems('WATER_FORMAT')
+  const formats = dbFormats.length > 0
+    ? dbFormats.map(it => ({ size: it.title, use: it.description, tag: it.tag ?? '' }))
+    : FORMATS
 
   return (
     <Layout>
@@ -271,7 +284,7 @@ export default function WaterPage() {
 
             {/* Use cases */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-              {USES.map((u, i) => (
+              {uses.map((u, i) => (
                 <a key={i}
                   href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
                   target="_blank" rel="noopener noreferrer"
@@ -292,7 +305,7 @@ export default function WaterPage() {
               Available <em className="not-italic" style={{ color: '#7a5a2a' }}>Formats</em>
             </h3>
             <div className="flex flex-wrap gap-3">
-              {FORMATS.map((f, i) => (
+              {formats.map((f, i) => (
                 <div key={i} className="flex items-center gap-3 bg-white/30 border border-black/10 rounded-xl px-4 py-3">
                   <div>
                     <p className="font-display font-bold text-brand-dark text-base leading-none">{f.size}</p>

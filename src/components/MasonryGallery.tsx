@@ -8,13 +8,15 @@ export interface GalleryPhoto {
 
 interface Props {
   photos: GalleryPhoto[]
+  dbPhotos?: GalleryPhoto[]
   title?: string
   subtitle?: string
 }
 
 const STAR_CLIP = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
 
-export default function MasonryGallery({ photos, title, subtitle }: Props) {
+export default function MasonryGallery({ photos, dbPhotos, title, subtitle }: Props) {
+  const resolved = (dbPhotos && dbPhotos.length > 0) ? dbPhotos : photos
   const [lightbox, setLightbox] = useState<{ idx: number } | null>(null)
 
   const close = useCallback(() => {
@@ -23,12 +25,12 @@ export default function MasonryGallery({ photos, title, subtitle }: Props) {
   }, [])
 
   const prev = useCallback(() => {
-    setLightbox(l => l ? { idx: (l.idx - 1 + photos.length) % photos.length } : null)
-  }, [photos.length])
+    setLightbox(l => l ? { idx: (l.idx - 1 + resolved.length) % resolved.length } : null)
+  }, [resolved.length])
 
   const next = useCallback(() => {
-    setLightbox(l => l ? { idx: (l.idx + 1) % photos.length } : null)
-  }, [photos.length])
+    setLightbox(l => l ? { idx: (l.idx + 1) % resolved.length } : null)
+  }, [resolved.length])
 
   const open = useCallback((idx: number) => {
     setLightbox({ idx })
@@ -46,7 +48,7 @@ export default function MasonryGallery({ photos, title, subtitle }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [lightbox, close, prev, next])
 
-  const active = lightbox !== null ? photos[lightbox.idx] : null
+  const active = lightbox !== null ? resolved[lightbox.idx] : null
 
   return (
     <>
@@ -67,7 +69,7 @@ export default function MasonryGallery({ photos, title, subtitle }: Props) {
           )}
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {photos.map((p, i) => (
+            {resolved.map((p, i) => (
               <button
                 key={i}
                 type="button"
@@ -128,7 +130,7 @@ export default function MasonryGallery({ photos, title, subtitle }: Props) {
 
           {/* Counter */}
           <div className="absolute top-4 left-4 z-10 bg-black/50 text-white/70 font-body text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
-            {(lightbox?.idx ?? 0) + 1} / {photos.length}
+            {(lightbox?.idx ?? 0) + 1} / {resolved.length}
           </div>
 
           {/* Prev */}

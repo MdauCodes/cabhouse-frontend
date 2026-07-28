@@ -3,6 +3,8 @@ import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
+import { useServiceItems } from '../hooks/useServiceItems'
+import { useGalleryImages } from '../hooks/useGalleryImages'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500' },
@@ -146,6 +148,10 @@ function HeroSection() {
 
 function ActivitiesSection() {
   const { ref, inView } = useInView()
+  const dbActivities = useServiceItems('PARK_ACTIVITY')
+  const activities = dbActivities.length > 0
+    ? dbActivities.map(it => ({ title: it.title, desc: it.description, price: it.price ?? '' }))
+    : ACTIVITIES
 
   return (
     <section id="games" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
@@ -165,7 +171,7 @@ function ActivitiesSection() {
         </div>
 
         <div className="divide-y divide-brand-dark/[0.08]">
-          {ACTIVITIES.map((a, i) => (
+          {activities.map((a, i) => (
             <ActivityRow key={i} a={a} idx={i} />
           ))}
         </div>
@@ -174,7 +180,7 @@ function ActivitiesSection() {
   )
 }
 
-function ActivityRow({ a, idx }: { a: typeof ACTIVITIES[0]; idx: number }) {
+function ActivityRow({ a, idx }: { a: { title: string; desc: string; price: string }; idx: number }) {
   const { ref, inView } = useInView(0.1)
 
   return (
@@ -451,6 +457,11 @@ function DiningSection() {
 
 function StaySection() {
   const { ref, inView } = useInView(0.08)
+  const dbStays = useServiceItems('PARK_STAY')
+  const stays = dbStays.length > 0
+    ? dbStays.map(it => ({ name: it.title, price: it.price ?? '' }))
+    : STAYS.map(s => ({ name: s.name, price: `KES ${s.base.toLocaleString()}` }))
+  const campingDbPhotos = useGalleryImages('CAMPING').map(img => ({ src: img.cloudinaryUrl, label: img.label }))
 
   return (
     <>
@@ -473,10 +484,10 @@ function StaySection() {
           </div>
           <div className="flex flex-col gap-2 lg:items-end">
             <div className="flex flex-wrap gap-2">
-              {STAYS.map((s, i) => (
+              {stays.map((s, i) => (
                 <span key={i} className="flex items-center gap-2 border border-white/15 rounded-lg px-3 py-1.5">
                   <span className="font-body text-xs text-white/60">{s.name}</span>
-                  <span className="text-brand-gold font-display font-bold text-xs">KES {s.base.toLocaleString()}<span className="text-white/35 font-body text-[9px] font-normal">/night</span></span>
+                  <span className="text-brand-gold font-display font-bold text-xs">{s.price}</span>
                 </span>
               ))}
             </div>
@@ -497,6 +508,7 @@ function StaySection() {
 
     <MasonryGallery
       photos={CAMPING_PHOTOS}
+      dbPhotos={campingDbPhotos}
       title='Stay the Night <em class="not-italic" style="color:var(--color-gold)">Gallery</em>'
       subtitle="Tap any photo to view full size"
     />
@@ -505,12 +517,15 @@ function StaySection() {
 }
 
 export default function ParkPage() {
+  const parkDbPhotos = useGalleryImages('PARK').map(img => ({ src: img.cloudinaryUrl, label: img.label }))
+
   return (
     <Layout>
       <HeroSection />
       <ActivitiesSection />
       <MasonryGallery
         photos={PARK_PHOTOS}
+        dbPhotos={parkDbPhotos}
         title='The Park <em class="not-italic" style="color:var(--color-gold)">In Pictures</em>'
         subtitle="Tap any photo to view full size"
       />

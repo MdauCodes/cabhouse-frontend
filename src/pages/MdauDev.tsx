@@ -9,7 +9,8 @@ import {
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
-import { invalidateContentCache } from '../hooks/useContentBlocks'
+import { useContentBlocks, invalidateContentCache } from '../hooks/useContentBlocks'
+import { invalidateGalleryCache } from '../hooks/useGalleryImages'
 import { api, staffAuth } from '../lib/api'
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -274,23 +275,26 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'services' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
-  { id: 'overview',  label: 'Overview',   Icon: LayoutGrid,    group: 'main' },
-  { id: 'patrons',   label: 'Patrons',    Icon: Users,         group: 'main' },
-  { id: 'coupons',   label: 'Coupons',    Icon: TicketPercent, group: 'main' },
-  { id: 'bookings',  label: 'Bookings',   Icon: CalendarDays,  group: 'main' },
-  { id: 'media',     label: 'Media',      Icon: Image,         group: 'content' },
-  { id: 'services',  label: 'Services',   Icon: FileText,      group: 'content' },
-  { id: 'content',   label: 'Content',    Icon: Pencil,        group: 'content' },
-  { id: 'users',     label: 'Users',      Icon: ShieldCheck,   group: 'system' },
-  { id: 'activity',  label: 'Activity',   Icon: Activity,      group: 'system' },
+  { id: 'overview',  label: 'Overview',     Icon: LayoutGrid,    group: 'main' },
+  { id: 'patrons',   label: 'Patrons',      Icon: Users,         group: 'main' },
+  { id: 'coupons',   label: 'Coupons',      Icon: TicketPercent, group: 'main' },
+  { id: 'bookings',  label: 'Bookings',     Icon: CalendarDays,  group: 'main' },
+  { id: 'media',     label: 'Media',        Icon: Image,         group: 'content' },
+  { id: 'services',  label: 'Services',     Icon: FileText,      group: 'content' },
+  { id: 'sitems',    label: 'Service Items', Icon: LayoutGrid,   group: 'content' },
+  { id: 'gallery',   label: 'Gallery',      Icon: Image,         group: 'content' },
+  { id: 'content',   label: 'Content',      Icon: Pencil,        group: 'content' },
+  { id: 'users',     label: 'Users',        Icon: ShieldCheck,   group: 'system' },
+  { id: 'activity',  label: 'Activity',     Icon: Activity,      group: 'system' },
 ]
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', bookings: 'Bookings', services: 'Services', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
+  coupons: 'Coupons', bookings: 'Bookings', services: 'Services', sitems: 'Service Items',
+  gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -406,6 +410,8 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'coupons'   && <CouponsTab   token={token} />}
           {tab === 'bookings'  && <BookingsTab  token={token} />}
           {tab === 'services'  && <ServicesTab  token={token} />}
+          {tab === 'sitems'    && <ServiceItemsTab token={token} />}
+          {tab === 'gallery'   && <GalleryTab   token={token} />}
           {tab === 'content'   && <ContentTab   token={token} />}
           {tab === 'users'     && <UsersTab     token={token} />}
           {tab === 'activity'  && <ActivityTab  token={token} />}
@@ -1780,6 +1786,300 @@ function ContentTab({ token }: { token: string }) {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SERVICE ITEMS TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+const SERVICE_CATEGORIES = [
+  { value: 'PARK_ACTIVITY', label: 'Park Activities' },
+  { value: 'PARK_PACKAGE',  label: 'Park Packages' },
+  { value: 'PARK_STAY',     label: 'Park Stays' },
+  { value: 'PARK_DINING',   label: 'Park Dining' },
+  { value: 'APT_UNIT',      label: 'Apartments' },
+  { value: 'WATER_USE',     label: 'Water Uses' },
+  { value: 'WATER_FORMAT',  label: 'Water Formats' },
+]
+
+interface SItem {
+  id: string; category: string; slug: string; title: string; description: string
+  price: string | null; tag: string | null; displayOrder: number; visible: boolean
+  images: { id: string; cloudinaryUrl: string; label: string; displayOrder: number }[]
+}
+
+function ServiceItemsTab({ token }: { token: string }) {
+  const { get: getBlock } = useContentBlocks()
+  const [category, setCategory] = useState('PARK_ACTIVITY')
+  const [items, setItems] = useState<SItem[]>([])
+  const [editing, setEditing] = useState<SItem | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setEditing(null)
+    api.get<SItem[]>(`/service-items?category=${category}`, token).then(setItems).catch(() => {})
+  }, [category, token])
+
+  async function save() {
+    if (!editing) return; setSaving(true)
+    try {
+      const updated = await api.put<SItem>(`/service-items/${editing.id}`, {
+        title: editing.title, description: editing.description, price: editing.price,
+        tag: editing.tag, displayOrder: editing.displayOrder, visible: editing.visible,
+      }, token)
+      setItems(prev => prev.map(s => s.id === updated.id ? updated : s))
+      setEditing(updated); setSaved(true); setTimeout(() => setSaved(false), 2000)
+    } catch {} finally { setSaving(false) }
+  }
+
+  async function uploadImage(file: File) {
+    if (!editing) return
+    const cloudName = getBlock('cloudinary.cloud_name', '')
+    const uploadPreset = getBlock('cloudinary.upload_preset', '')
+    if (!cloudName || !uploadPreset) { alert('Cloudinary credentials not configured in Content tab'); return }
+    setUploading(true)
+    try {
+      const { uploadToCloudinary } = await import('../config/cloudinary')
+      const url = await uploadToCloudinary(file, cloudName, uploadPreset, 'service-items')
+      const updated = await api.post<SItem>(`/service-items/${editing.id}/images`, { cloudinaryUrl: url, label: file.name.replace(/\.[^.]+$/, '') }, token)
+      setItems(prev => prev.map(s => s.id === updated.id ? updated : s))
+      setEditing(updated)
+    } catch (e: any) { alert(e.message ?? 'Upload failed') } finally { setUploading(false) }
+  }
+
+  async function deleteImage(imageId: string) {
+    if (!editing || !confirm('Delete this image?')) return
+    try {
+      const updated = await api.del<SItem>(`/service-items/${editing.id}/images/${imageId}`, token)
+      setItems(prev => prev.map(s => s.id === updated.id ? updated : s))
+      setEditing(updated)
+    } catch {}
+  }
+
+  return (
+    <div>
+      <div className="mb-5">
+        <h2 className="text-slate-900 font-bold text-lg">Service Items</h2>
+        <p className="text-slate-500 text-sm">Edit service item details and manage their Cloudinary images.</p>
+      </div>
+      <div className="flex flex-wrap gap-2 mb-5">
+        {SERVICE_CATEGORIES.map(c => (
+          <button key={c.value} onClick={() => setCategory(c.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              category === c.value ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+            }`}>
+            {c.label}
+          </button>
+        ))}
+      </div>
+      <div className="grid lg:grid-cols-5 gap-5">
+        <div className="lg:col-span-2 space-y-2">
+          {items.map(s => (
+            <button key={s.id} onClick={() => { setEditing({ ...s }); setSaved(false) }}
+              className={`w-full text-left p-4 rounded-xl border transition-all ${
+                editing?.id === s.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+              }`}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-slate-800 font-semibold text-sm">{s.title}</span>
+                <div className="flex items-center gap-2">
+                  {s.price && <span className="text-xs text-slate-500">{s.price}</span>}
+                  <Badge variant={s.visible ? 'green' : 'gray'}>{s.visible ? 'On' : 'Off'}</Badge>
+                </div>
+              </div>
+              <p className="text-slate-400 text-xs line-clamp-1">{s.description}</p>
+              {s.images.length > 0 && <p className="text-slate-300 text-[10px] mt-1">{s.images.length} image{s.images.length > 1 ? 's' : ''}</p>}
+            </button>
+          ))}
+          {items.length === 0 && <EmptyState icon={FileText} title="No items" sub="No service items in this category" />}
+        </div>
+        <div className="lg:col-span-3">
+          {editing ? (
+            <Card>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h3 className="text-slate-900 font-semibold">Edit Item</h3>
+                  <p className="text-slate-400 text-xs font-mono">{editing.slug}</p>
+                </div>
+                {saved && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
+              </div>
+              <div className="space-y-4">
+                <FieldGroup label="Title">
+                  <Input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+                </FieldGroup>
+                <FieldGroup label="Description">
+                  <Textarea rows={3} value={editing.description ?? ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+                </FieldGroup>
+                <div className="grid grid-cols-2 gap-4">
+                  <FieldGroup label="Price">
+                    <Input value={editing.price ?? ''} onChange={e => setEditing({ ...editing, price: e.target.value })} placeholder="e.g. KES 500" />
+                  </FieldGroup>
+                  <FieldGroup label="Tag">
+                    <Input value={editing.tag ?? ''} onChange={e => setEditing({ ...editing, tag: e.target.value })} placeholder="e.g. Popular" />
+                  </FieldGroup>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FieldGroup label="Display Order">
+                    <Input type="number" min="0" value={editing.displayOrder}
+                      onChange={e => setEditing({ ...editing, displayOrder: parseInt(e.target.value) || 0 })} />
+                  </FieldGroup>
+                  <FieldGroup label="Visible">
+                    <button onClick={() => setEditing({ ...editing, visible: !editing.visible })}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                        editing.visible ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-500'
+                      }`}>
+                      {editing.visible ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                      {editing.visible ? 'Visible' : 'Hidden'}
+                    </button>
+                  </FieldGroup>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <Btn onClick={save} disabled={saving}>{saving ? <><Spinner size={13} /> Saving…</> : 'Save Changes'}</Btn>
+                  <Btn variant="ghost" onClick={() => setEditing(null)}>Cancel</Btn>
+                </div>
+
+                {/* Images */}
+                <div className="border-t border-slate-100 pt-4 mt-2">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-slate-700 font-semibold text-sm">Images</h4>
+                    <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                      onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0])} />
+                    <Btn variant="secondary" onClick={() => fileRef.current?.click()} disabled={uploading}>
+                      {uploading ? <><Spinner size={12} /> Uploading…</> : 'Upload Image'}
+                    </Btn>
+                  </div>
+                  {editing.images.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                      {editing.images.map(img => (
+                        <div key={img.id} className="relative group rounded-lg overflow-hidden aspect-square bg-slate-100">
+                          <img src={img.cloudinaryUrl} alt={img.label} className="w-full h-full object-cover" />
+                          <button onClick={() => deleteImage(img.id)}
+                            className="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-semibold">
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-400 text-xs">No images yet — upload one above.</p>
+                  )}
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <EmptyState icon={FileText} title="Select an item to edit" sub="Click any service item on the left" />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GALLERY TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+const GALLERY_SECTIONS = [
+  { value: 'PARK',       label: 'Park' },
+  { value: 'CAMPING',    label: 'Camping' },
+  { value: 'APARTMENTS', label: 'Apartments' },
+  { value: 'WATER',      label: 'Water' },
+  { value: 'EVENTS',     label: 'Events' },
+]
+
+interface GalleryImg { id: string; section: string; cloudinaryUrl: string; label: string; displayOrder: number }
+
+function GalleryTab({ token }: { token: string }) {
+  const { get: getBlock } = useContentBlocks()
+  const [section, setSection] = useState('PARK')
+  const [images, setImages] = useState<GalleryImg[]>([])
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    api.get<GalleryImg[]>(`/gallery?section=${section}`, token).then(setImages).catch(() => {})
+  }, [section, token])
+
+  async function uploadImage(file: File) {
+    const cloudName = getBlock('cloudinary.cloud_name', '')
+    const uploadPreset = getBlock('cloudinary.upload_preset', '')
+    if (!cloudName || !uploadPreset) { alert('Cloudinary credentials not configured in Content tab'); return }
+    setUploading(true)
+    try {
+      const { uploadToCloudinary } = await import('../config/cloudinary')
+      const url = await uploadToCloudinary(file, cloudName, uploadPreset, `gallery/${section.toLowerCase()}`)
+      const added = await api.post<GalleryImg>('/gallery', {
+        section, cloudinaryUrl: url, label: file.name.replace(/\.[^.]+$/, ''), displayOrder: images.length,
+      }, token)
+      setImages(prev => [...prev, added])
+      invalidateGalleryCache()
+    } catch (e: any) { alert(e.message ?? 'Upload failed') } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  async function deleteImage(id: string) {
+    if (!confirm('Delete this gallery image?')) return
+    try {
+      await api.del<void>(`/gallery/${id}`, token)
+      setImages(prev => prev.filter(img => img.id !== id))
+      invalidateGalleryCache()
+    } catch {}
+  }
+
+  return (
+    <div>
+      <div className="mb-5">
+        <h2 className="text-slate-900 font-bold text-lg">Gallery</h2>
+        <p className="text-slate-500 text-sm">Upload and manage gallery images by section. Upload images to replace the static assets on the public site.</p>
+      </div>
+      <div className="flex flex-wrap gap-2 mb-5">
+        {GALLERY_SECTIONS.map(s => (
+          <button key={s.value} onClick={() => setSection(s.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              section === s.value ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+            }`}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-slate-500 text-sm">{images.length} image{images.length !== 1 ? 's' : ''} in {GALLERY_SECTIONS.find(s => s.value === section)?.label}</p>
+        <div>
+          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
+            onChange={e => { Array.from(e.target.files ?? []).forEach(f => uploadImage(f)) }} />
+          <Btn onClick={() => fileRef.current?.click()} disabled={uploading}>
+            {uploading ? <><Spinner size={13} /> Uploading…</> : 'Upload Images'}
+          </Btn>
+        </div>
+      </div>
+      {images.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {images.map(img => (
+            <div key={img.id} className="relative group rounded-xl overflow-hidden aspect-square bg-slate-100">
+              <img src={img.cloudinaryUrl} alt={img.label} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all">
+                <button onClick={() => deleteImage(img.id)}
+                  className="absolute inset-0 flex items-center justify-center text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  Delete
+                </button>
+              </div>
+              {img.label && (
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5">
+                  <p className="text-white text-[10px] truncate">{img.label}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState icon={Image} title="No images yet" sub="Upload images to populate this gallery section" />
+      )}
     </div>
   )
 }

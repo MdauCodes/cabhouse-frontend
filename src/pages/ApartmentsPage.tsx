@@ -3,6 +3,8 @@ import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
+import { useServiceItems } from '../hooks/useServiceItems'
+import { useGalleryImages } from '../hooks/useGalleryImages'
 
 const UNITS = [
   {
@@ -270,6 +272,17 @@ const APT_PHOTOS = [
 
 export default function ApartmentsPage() {
   const { ref, inView } = useInView(0.1)
+  const dbUnits = useServiceItems('APT_UNIT')
+  const units = dbUnits.length > 0
+    ? dbUnits.map(it => ({
+        name: it.title,
+        tag: it.tag ?? '',
+        beds: it.title.startsWith('2') ? 4 : 2,
+        desc: it.description,
+        wa: `Hi, I'd like to enquire about the ${it.title} at CabHouse Apartments`,
+      }))
+    : UNITS
+  const aptDbPhotos = useGalleryImages('APARTMENTS').map(img => ({ src: img.cloudinaryUrl, label: img.label }))
 
   return (
     <Layout>
@@ -294,7 +307,7 @@ export default function ApartmentsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
-              {UNITS.map((u, i) => (
+              {units.map((u, i) => (
                 <div key={i} className="bg-white/30 border border-black/10 rounded-2xl p-6 hover:bg-white/50 transition-all duration-200">
                   <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-brand-dark/70 bg-black/10 px-2.5 py-1 rounded-full">
                     {u.tag}
@@ -332,6 +345,7 @@ export default function ApartmentsPage() {
 
       <MasonryGallery
         photos={APT_PHOTOS}
+        dbPhotos={aptDbPhotos}
         title='Inside Your <em class="not-italic" style="color:var(--color-gold)">Home Away</em>'
         subtitle="Tap any photo to view full size"
       />
