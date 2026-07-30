@@ -5,7 +5,7 @@ import {
   ChevronDown, Users, TicketPercent, FileText, Activity,
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
   TrendingUp, ShieldCheck, LayoutGrid,
-  ChevronRight, AlertCircle, ArrowUpRight,
+  ChevronRight, ArrowUpRight,
   Pencil, ToggleLeft, ToggleRight, CalendarDays, Megaphone, Tag, Trash2,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
@@ -185,90 +185,6 @@ function Modal({ title, onClose, children, width = 'max-w-md' }: {
           </button>
         </div>
         <div className="px-6 py-5">{children}</div>
-      </div>
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// LOGIN
-// ═══════════════════════════════════════════════════════════════════════════════
-function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPw, setShowPw] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault(); setError(''); setLoading(true)
-    try {
-      const data = await api.post<{ accessToken: string; username: string; role: string }>('/auth/login', { username, password })
-      if (data.role === 'STAFF') throw new Error('Staff accounts use the POS terminal — not the admin panel')
-      saveSession(data); onLogin(data)
-    } catch (err: any) { setError(err.message ?? 'Invalid credentials') } finally { setLoading(false) }
-  }
-
-  return (
-    <div className="min-h-screen bg-slate-50 flex">
-      {/* Left panel */}
-      <div className="hidden lg:flex lg:w-[420px] bg-slate-900 flex-col justify-between p-12">
-        <div>
-          <div className="flex items-center gap-2 mb-12">
-            <div className="w-8 h-8 bg-amber-500 rounded-lg" />
-            <span className="text-white font-bold text-lg tracking-tight">CabHouse</span>
-          </div>
-          <h1 className="text-white text-3xl font-bold leading-tight mb-4" style={{ letterSpacing: '-0.03em' }}>
-            Manage everything<br />from one place.
-          </h1>
-          <p className="text-slate-400 text-sm leading-relaxed">
-            Media, patron accounts, coupon settings, staff users, and the full activity log — all wired to your live backend.
-          </p>
-        </div>
-        <div className="space-y-3">
-          {['Media slots synced to backend','Real-time patron balances','Coupon earning rate control','Staff user management'].map(f => (
-            <div key={f} className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                <Check size={10} className="text-emerald-400" />
-              </div>
-              <span className="text-slate-400 text-sm">{f}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-sm">
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-7 h-7 bg-amber-500 rounded-lg" />
-            <span className="text-slate-900 font-bold">CabHouse</span>
-          </div>
-          <h2 className="text-slate-900 text-2xl font-bold mb-1" style={{ letterSpacing: '-0.02em' }}>Sign in</h2>
-          <p className="text-slate-500 text-sm mb-8">Admin and manager accounts only</p>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <FieldGroup label="Username">
-              <Input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="your username" required autoFocus />
-            </FieldGroup>
-            <FieldGroup label="Password">
-              <div className="relative">
-                <Input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required className="pr-10" />
-                <button type="button" onClick={() => setShowPw(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-            </FieldGroup>
-            {error && (
-              <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
-                <AlertCircle size={14} className="text-red-500 mt-0.5 flex-shrink-0" />
-                <p className="text-red-700 text-xs">{error}</p>
-              </div>
-            )}
-            <Btn type="submit" disabled={loading} className="w-full justify-center mt-2 py-2.5">
-              {loading ? <><Spinner size={14} /> Signing in…</> : 'Continue'}
-            </Btn>
-          </form>
-        </div>
       </div>
     </div>
   )
