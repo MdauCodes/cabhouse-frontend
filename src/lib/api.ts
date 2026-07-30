@@ -1,5 +1,5 @@
 const PROD_API = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
-const BASE = import.meta.env.DEV ? 'http://localhost:8081/api' : PROD_API
+const BASE = import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? PROD_API : PROD_API)
 
 async function request<T>(
   path: string,
@@ -39,13 +39,36 @@ export const api = {
 }
 
 // ── Auth token helpers ───────────────────────────────────────────────────────
-const STAFF_TOKEN_KEY = 'cabhouse_staff_token'
+const STAFF_TOKEN_KEY   = 'cabhouse_staff_token'
+const ADMIN_TOKEN_KEY   = 'cabhouse_admin_token'
+const ADMIN_USER_KEY    = 'cabhouse_admin_user'
+const PATRON_TOKEN_KEY  = 'cabhouse_patron_token'
 const PATRON_SESSION_KEY = 'cabhouse_patron_session'
 
 export const staffAuth = {
   getToken: () => localStorage.getItem(STAFF_TOKEN_KEY),
   setToken: (t: string) => localStorage.setItem(STAFF_TOKEN_KEY, t),
   clear: () => localStorage.removeItem(STAFF_TOKEN_KEY),
+}
+
+export const adminAuth = {
+  getToken: () => localStorage.getItem(ADMIN_TOKEN_KEY),
+  setSession: (accessToken: string, username: string, role: string) => {
+    localStorage.setItem(ADMIN_TOKEN_KEY, accessToken)
+    localStorage.setItem(ADMIN_USER_KEY, JSON.stringify({ username, role }))
+    staffAuth.setToken(accessToken)
+  },
+  clear: () => {
+    localStorage.removeItem(ADMIN_TOKEN_KEY)
+    localStorage.removeItem(ADMIN_USER_KEY)
+    staffAuth.clear()
+  },
+}
+
+export const patronAuth = {
+  getToken: () => localStorage.getItem(PATRON_TOKEN_KEY),
+  setToken: (t: string) => localStorage.setItem(PATRON_TOKEN_KEY, t),
+  clear: () => localStorage.removeItem(PATRON_TOKEN_KEY),
 }
 
 export const patronSession = {

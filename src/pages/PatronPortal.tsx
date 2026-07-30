@@ -1,10 +1,12 @@
-import { useState } from 'react'
-import { api, patronSession } from '../lib/api'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { api, patronAuth } from '../lib/api'
 import { SITE } from '../config/site'
 
 interface PatronData {
   id: string
   name: string
+  email: string | null
   phone: string
   couponBalance: number
   createdAt: string
@@ -26,143 +28,6 @@ interface Redemption {
   createdAt: string
 }
 
-// ── PIN pad ──────────────────────────────────────────────────────────────────
-function PinPad({ pin, onChange }: { pin: string; onChange: (p: string) => void }) {
-  const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫']
-  return (
-    <div className="grid grid-cols-3 gap-3 max-w-[280px] mx-auto mt-4">
-      {keys.map((k, i) => {
-        if (k === '') return <div key={i} />
-        return (
-          <button
-            key={i}
-            type="button"
-            onClick={() => {
-              if (k === '⌫') onChange(pin.slice(0, -1))
-              else if (pin.length < 4) onChange(pin + k)
-            }}
-            className="h-14 rounded-2xl font-display font-bold text-xl transition-all duration-100 active:scale-95"
-            style={{
-              background: k === '⌫' ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.08)',
-              color: k === '⌫' ? 'rgba(255,255,255,0.5)' : '#fff',
-              border: '1px solid rgba(255,255,255,0.1)',
-            }}
-          >
-            {k}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
-// ── Login screen ─────────────────────────────────────────────────────────────
-function LoginScreen({ onLogin }: { onLogin: (data: PatronData) => void }) {
-  const [phone, setPhone] = useState('')
-  const [pin, setPin] = useState('')
-  const [step, setStep] = useState<'phone' | 'pin'>('phone')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleLogin() {
-    if (pin.length !== 4) return
-    setError('')
-    setLoading(true)
-    try {
-      const data = await api.post<PatronData>('/patrons/login', { phone, pin })
-      patronSession.set(data)
-      onLogin(data)
-    } catch (e: any) {
-      setError(e.message ?? 'Login failed')
-      setPin('')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0a0f0a' }}>
-      {/* Header */}
-      <div className="px-6 pt-10 pb-6 text-center">
-        <p className="font-body text-[10px] font-bold uppercase tracking-[0.3em] mb-2" style={{ color: '#C8873A' }}>
-          CabHouse Agencies
-        </p>
-        <h1 className="font-display font-black text-white text-2xl mb-1" style={{ letterSpacing: '-0.03em' }}>
-          Patron Portal
-        </h1>
-        <p className="text-white/40 text-sm font-body">Your coupons and rewards</p>
-      </div>
-
-      <div className="flex-1 flex flex-col px-6 max-w-sm mx-auto w-full">
-        {step === 'phone' ? (
-          <>
-            <label className="text-white/60 text-xs font-body uppercase tracking-widest mb-2">Phone number</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              placeholder="+254 700 000 000"
-              className="w-full px-4 py-4 rounded-2xl font-body text-white text-lg bg-white/8 border border-white/10 focus:outline-none focus:border-white/30 placeholder:text-white/20 mb-4"
-              style={{ background: 'rgba(255,255,255,0.06)' }}
-            />
-            <button
-              onClick={() => { if (phone.trim()) { setError(''); setStep('pin') } }}
-              disabled={!phone.trim()}
-              className="w-full py-4 rounded-2xl font-body font-bold text-sm uppercase tracking-wide transition-all"
-              style={{ backgroundColor: phone.trim() ? '#C8873A' : 'rgba(200,135,58,0.3)', color: '#fff' }}
-            >
-              Continue
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="flex items-center gap-3 mb-6">
-              <button onClick={() => { setStep('phone'); setPin(''); setError('') }}
-                className="text-white/40 hover:text-white transition-colors text-sm font-body flex items-center gap-1">
-                ← Back
-              </button>
-              <p className="text-white/60 text-sm font-body">{phone}</p>
-            </div>
-
-            <p className="text-white/60 text-xs font-body uppercase tracking-widest mb-2 text-center">Enter your 4-digit PIN</p>
-
-            {/* PIN dots */}
-            <div className="flex justify-center gap-4 my-4">
-              {[0,1,2,3].map(i => (
-                <div key={i} className="w-4 h-4 rounded-full transition-all duration-150"
-                  style={{ background: i < pin.length ? '#C8873A' : 'rgba(255,255,255,0.15)' }} />
-              ))}
-            </div>
-
-            <PinPad pin={pin} onChange={p => { setPin(p); setError('') }} />
-
-            {error && (
-              <p className="text-red-400 text-sm font-body text-center mt-4">{error}</p>
-            )}
-
-            <button
-              onClick={handleLogin}
-              disabled={pin.length !== 4 || loading}
-              className="w-full py-4 rounded-2xl font-body font-bold text-sm uppercase tracking-wide transition-all mt-6"
-              style={{ backgroundColor: pin.length === 4 ? '#C8873A' : 'rgba(200,135,58,0.3)', color: '#fff' }}
-            >
-              {loading ? 'Signing in…' : 'Sign In'}
-            </button>
-          </>
-        )}
-
-        {error && step === 'phone' && (
-          <p className="text-red-400 text-sm font-body text-center mt-3">{error}</p>
-        )}
-
-        <p className="text-white/20 text-xs text-center font-body mt-8">
-          Not a patron yet? Ask staff at CabHouse to enroll you — it's free.
-        </p>
-      </div>
-    </div>
-  )
-}
-
 // ── Dashboard ────────────────────────────────────────────────────────────────
 function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => void }) {
   const [tab, setTab] = useState<'overview' | 'history'>('overview')
@@ -171,12 +36,14 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
   const [loaded, setLoaded] = useState(false)
   const [historyTab, setHistoryTab] = useState<'spends' | 'redemptions'>('spends')
 
+  const token = patronAuth.getToken()
+
   async function loadHistory() {
     if (loaded) return
     try {
       const [tx, rd] = await Promise.all([
-        api.get<{ content: Transaction[] }>(`/coupons/patrons/${patron.id}/transactions?size=50`),
-        api.get<{ content: Redemption[] }>(`/coupons/patrons/${patron.id}/redemptions?size=50`),
+        api.get<{ content: Transaction[] }>('/coupons/me/transactions?size=50', token),
+        api.get<{ content: Redemption[] }>('/coupons/me/redemptions?size=50', token),
       ])
       setTransactions(tx.content)
       setRedemptions(rd.content)
@@ -263,7 +130,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                   'Redeem coupons for discounts on future visits',
                 ].map((s, i) => (
                   <li key={i} className="flex items-start gap-2.5">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5" style={{ background: '#C8873A', color: '#fff' }}>{i+1}</span>
+                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5" style={{ background: '#C8873A', color: '#fff' }}>{i + 1}</span>
                     <span className="text-white/60 text-sm font-body">{s}</span>
                   </li>
                 ))}
@@ -349,15 +216,38 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
 
 // ── Page entry ───────────────────────────────────────────────────────────────
 export default function PatronPortal() {
-  const saved = patronSession.get() as PatronData | null
-  const [patron, setPatron] = useState<PatronData | null>(saved)
+  const navigate = useNavigate()
+  const [patron, setPatron] = useState<PatronData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = patronAuth.getToken()
+    if (!token) {
+      navigate('/login?next=/patrons', { replace: true })
+      return
+    }
+    api.get<PatronData>('/patrons/me', token)
+      .then(data => setPatron(data))
+      .catch(() => {
+        // Token invalid or expired
+        patronAuth.clear()
+        navigate('/login?next=/patrons', { replace: true })
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   function handleLogout() {
-    patronSession.clear()
-    setPatron(null)
+    patronAuth.clear()
+    navigate('/login', { replace: true })
   }
 
-  return patron
-    ? <Dashboard patron={patron} onLogout={handleLogout} />
-    : <LoginScreen onLogin={setPatron} />
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0a0f0a' }}>
+        <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-amber-500 animate-spin" />
+      </div>
+    )
+  }
+
+  return patron ? <Dashboard patron={patron} onLogout={handleLogout} /> : null
 }

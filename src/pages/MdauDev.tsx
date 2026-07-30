@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Upload, Check, Image, RefreshCw, Copy,
   ChevronDown, Users, TicketPercent, FileText, Activity,
@@ -1160,6 +1161,9 @@ function PromotionsTab({ token }: { token: string }) {
   const [isNew, setIsNew] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const promoImgRef = useRef<HTMLInputElement>(null)
+  const { get: getBlock } = useContentBlocks()
 
   useEffect(() => {
     api.get<PromotionData[]>('/promotions', token).then(setPromos).catch(() => {})
@@ -1191,6 +1195,19 @@ function PromotionsTab({ token }: { token: string }) {
       invalidatePromotionsCache()
       setSaved(true); setTimeout(() => { setSaved(false); cancel() }, 1200)
     } catch (e: any) { alert(e.message ?? 'Save failed') } finally { setSaving(false) }
+  }
+
+  async function uploadPromoImage(file: File) {
+    if (!editing) return
+    const cloudName = getBlock('cloudinary.cloud_name', '')
+    const uploadPreset = getBlock('cloudinary.upload_preset', '')
+    if (!cloudName || !uploadPreset) { alert('Cloudinary credentials not configured in Content tab'); return }
+    setUploading(true)
+    try {
+      const { uploadToCloudinary } = await import('../config/cloudinary')
+      const url = await uploadToCloudinary(file, cloudName, uploadPreset, 'promotions')
+      setEditing(prev => prev ? { ...prev, imageUrl: url } : prev)
+    } catch { alert('Image upload failed') } finally { setUploading(false) }
   }
 
   async function toggle(p: PromotionData) {
@@ -1321,8 +1338,45 @@ function PromotionsTab({ token }: { token: string }) {
                   </FieldGroup>
                 </div>
 
-                <FieldGroup label="Banner Image URL" hint="Optional Cloudinary image shown on the right side of the strip">
-                  <Input value={editing.imageUrl ?? ''} onChange={e => setEditing({ ...editing, imageUrl: e.target.value })} placeholder="https://res.cloudinary.com/..." />
+                <FieldGroup label="Banner Image" hint="Upload from device or paste a Cloudinary URL">
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        value={editing.imageUrl ?? ''}
+                        onChange={e => setEditing({ ...editing, imageUrl: e.target.value })}
+                        placeholder="https://res.cloudinary.com/…"
+                        className="flex-1"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => promoImgRef.current?.click()}
+                        disabled={uploading}
+                        className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-xs font-semibold transition-all disabled:opacity-40"
+                      >
+                        {uploading ? <Spinner size={12} /> : <Upload size={12} />}
+                        {uploading ? 'Uploading…' : 'Upload'}
+                      </button>
+                      <input
+                        ref={promoImgRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={e => { const f = e.target.files?.[0]; if (f) uploadPromoImage(f); e.target.value = '' }}
+                      />
+                    </div>
+                    {editing.imageUrl && (
+                      <div className="relative rounded-lg overflow-hidden h-24 bg-slate-100">
+                        <img src={editing.imageUrl} alt="preview" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setEditing({ ...editing, imageUrl: '' })}
+                          className="absolute top-1.5 right-1.5 bg-black/60 text-white rounded-md px-2 py-0.5 text-[10px] font-semibold hover:bg-black/80 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </FieldGroup>
 
                 <div className="flex items-center gap-3 pt-1">
@@ -2334,9 +2388,17 @@ function GalleryTab({ token }: { token: string }) {
 // ENTRY
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function MdauDev() {
+  const navigate = useNavigate()
   const [session, setSession] = useState<AdminSession | null>(getSession)
+
+  useEffect(() => {
+    if (!session) {
+      navigate('/login?next=/mdau/dev', { replace: true })
+    }
+  }, [session])
+
   function handleLogout() { clearSession(); setSession(null) }
-  return session
-    ? <AdminDashboard session={session} onLogout={handleLogout} />
-    : <AdminLogin onLogin={setSession} />
+
+  if (!session) return null
+  return <AdminDashboard session={session} onLogout={handleLogout} />
 }
