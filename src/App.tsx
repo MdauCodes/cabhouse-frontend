@@ -65,8 +65,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/mdau/dev" element={<MdauDev />} />
-          <Route path="/mdau/pos" element={<StaffPOS />} />
+          <Route path="/ch/admin" element={<MdauDev />} />
+          <Route path="/ch/pos" element={<StaffPOS />} />
           <Route path="/patrons" element={<PatronPortal />} />
           <Route path="/promotions" element={<PromotionsPage />} />
         </Routes>

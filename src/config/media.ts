@@ -1,6 +1,6 @@
 // ─── Media Configuration ────────────────────────────────────────────────────
 // Each slot: localPath = public/assets/ fallback, cloudinaryUrl = production URL.
-// /mdau/dev admin panel manages uploads and applies overrides via localStorage.
+// /ch/admin panel manages uploads and applies overrides via localStorage.
 // raw-N.jpeg/jpg = original cabhouse files copied from desktop.
 // ────────────────────────────────────────────────────────────────────────────
 

@@ -2304,7 +2304,7 @@ export default function MdauDev() {
 
   useEffect(() => {
     if (!session) {
-      navigate('/login?next=/mdau/dev', { replace: true })
+      navigate('/login?next=/ch/admin', { replace: true })
     }
   }, [session])
 

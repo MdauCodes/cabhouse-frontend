@@ -34,7 +34,7 @@ export default function Login() {
   useEffect(() => {
     const adminToken = adminAuth.getToken()
     const patronToken = patronAuth.getToken()
-    if (adminToken) { navigate(next ?? '/mdau/dev', { replace: true }); return }
+    if (adminToken) { navigate(next ?? '/ch/admin', { replace: true }); return }
     if (patronToken) { navigate(next ?? '/patrons', { replace: true }); return }
   }, [])
 
@@ -89,11 +89,11 @@ export default function Login() {
         navigate(next ?? '/patrons', { replace: true })
       } else if (role === 'STAFF') {
         staffAuth.setToken(data.accessToken)
-        navigate(next ?? '/mdau/pos', { replace: true })
+        navigate(next ?? '/ch/pos', { replace: true })
       } else {
         // ADMIN or SUPERADMIN
         adminAuth.setSession(data.accessToken, data.username, data.role)
-        navigate(next ?? '/mdau/dev', { replace: true })
+        navigate(next ?? '/ch/admin', { replace: true })
       }
     } catch {
       setPwError('Unable to reach server. Check your connection and try again.')
