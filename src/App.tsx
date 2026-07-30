@@ -17,16 +17,42 @@ import ResetPassword from './pages/ResetPassword'
 import LoadingScreen from './components/LoadingScreen'
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(true)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 2450)
-    return () => clearTimeout(t)
+    let minDone = false
+    let imgDone = false
+
+    function tryReady() {
+      if (minDone && imgDone) setReady(true)
+    }
+
+    // Minimum display: 2 seconds so the animation plays through
+    const minTimer = setTimeout(() => { minDone = true; tryReady() }, 2000)
+
+    // Hard cap: 5 seconds regardless of image state
+    const capTimer = setTimeout(() => setReady(true), 5000)
+
+    // Preload the first hero slide
+    const img = new window.Image()
+    img.onload = () => { imgDone = true; tryReady() }
+    img.onerror = () => { imgDone = true; tryReady() }
+    img.src = '/assets/hero-5.webp'
+
+    return () => { clearTimeout(minTimer); clearTimeout(capTimer) }
   }, [])
+
+  // Unmount LoadingScreen after it has faded out (550ms transition + small buffer)
+  useEffect(() => {
+    if (!ready) return
+    const t = setTimeout(() => setMounted(false), 700)
+    return () => clearTimeout(t)
+  }, [ready])
 
   return (
     <>
-      {loading && <LoadingScreen />}
+      {mounted && <LoadingScreen ready={ready} />}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

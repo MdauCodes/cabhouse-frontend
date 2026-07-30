@@ -19,6 +19,12 @@ export default function PromotionsStrip() {
   const navigate = useNavigate()
   const [active, setActive] = useState(0)
   const [vis, setVis] = useState(true)
+  const [entered, setEntered] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), 1000)
+    return () => clearTimeout(t)
+  }, [])
 
   const count = promotions.length
 
@@ -57,7 +63,15 @@ export default function PromotionsStrip() {
   const waFallback = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I saw your promotion: ${promo.title}`)}`
 
   return (
-    <div style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
+    <div
+      style={{
+        background: 'var(--canvas)',
+        opacity: entered ? 1 : 0,
+        transform: entered ? 'translateY(0)' : 'translateY(-10px)',
+        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+      }}
+      className="px-3 md:px-5 pt-3"
+    >
       <div
         className="max-w-7xl mx-auto rounded-2xl overflow-hidden cursor-pointer group relative"
         style={{

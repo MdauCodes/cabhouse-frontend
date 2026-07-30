@@ -58,7 +58,7 @@ export default function HeroCarousel() {
 
         {/* Apartments + Water row — mobile */}
         <div className="flex gap-2" style={{ height: '48vw', minHeight: 200 }}>
-          <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block">
+          <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ backgroundColor: '#141210' }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/apartment-top2.png')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
@@ -70,7 +70,7 @@ export default function HeroCarousel() {
             </div>
           </a>
           <a href={waWater} target="_blank" rel="noopener noreferrer"
-            className="relative overflow-hidden rounded-3xl flex-1 group block">
+            className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ backgroundColor: '#0d1215' }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
@@ -123,7 +123,7 @@ export default function HeroCarousel() {
 
         {/* RIGHT: Apartments + Water stacked */}
         <div className="flex flex-col gap-2" style={{ width: '34%', flexShrink: 0 }}>
-          <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
+          <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0, backgroundColor: '#141210' }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
               style={{ backgroundImage: "url('/assets/apartment-top2.png')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }} />
@@ -142,7 +142,7 @@ export default function HeroCarousel() {
           </a>
 
           <a href={waWater} target="_blank" rel="noopener noreferrer"
-            className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
+            className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0, backgroundColor: '#0d1215' }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
               style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }} />
