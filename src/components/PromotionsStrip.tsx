@@ -4,12 +4,12 @@ import { usePromotions, type PromotionTag } from '../hooks/usePromotions'
 import { SITE } from '../config/site'
 
 const TAG_CONFIG: Record<PromotionTag, { label: string; color: string; bg: string }> = {
-  DEAL:       { label: 'Deal',        color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-  DISCOUNT:   { label: 'Discount',    color: '#EF4444', bg: 'rgba(239,68,68,0.15)'  },
-  NEW:        { label: 'New',         color: '#38BDF8', bg: 'rgba(56,189,248,0.15)' },
-  EXPERIENCE: { label: 'Experience',  color: '#A78BFA', bg: 'rgba(167,139,250,0.15)'},
-  EVENT:      { label: 'Event',       color: '#34D399', bg: 'rgba(52,211,153,0.15)' },
-  SEASONAL:   { label: 'Seasonal',    color: '#FB923C', bg: 'rgba(251,146,60,0.15)' },
+  DEAL:       { label: 'Deal',        color: '#F59E0B', bg: 'rgba(245,158,11,0.18)' },
+  DISCOUNT:   { label: 'Discount',    color: '#EF4444', bg: 'rgba(239,68,68,0.18)'  },
+  NEW:        { label: 'New',         color: '#38BDF8', bg: 'rgba(56,189,248,0.18)' },
+  EXPERIENCE: { label: 'Experience',  color: '#A78BFA', bg: 'rgba(167,139,250,0.18)'},
+  EVENT:      { label: 'Event',       color: '#34D399', bg: 'rgba(52,211,153,0.18)' },
+  SEASONAL:   { label: 'Seasonal',    color: '#FB923C', bg: 'rgba(251,146,60,0.18)' },
 }
 
 const wa = SITE.contact.whatsapp.replace('+', '')
@@ -46,21 +46,14 @@ export default function PromotionsStrip() {
 
   const promo = promotions[active]
   const tag = TAG_CONFIG[promo.tag]
+  const waFallback = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I saw your promotion: ${promo.title}`)}`
+  const hasImage = !!promo.imageUrl
 
   function handleCta(e: React.MouseEvent) {
-    e.preventDefault()
-    if (promo.ctaUrl) {
-      window.open(promo.ctaUrl, '_blank', 'noopener,noreferrer')
-    } else {
-      navigate('/promotions')
-    }
+    e.stopPropagation()
+    if (promo.ctaUrl) window.open(promo.ctaUrl, '_blank', 'noopener,noreferrer')
+    else navigate('/promotions')
   }
-
-  function handleBannerClick() {
-    navigate('/promotions')
-  }
-
-  const waFallback = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I saw your promotion: ${promo.title}`)}`
 
   return (
     <div
@@ -77,55 +70,84 @@ export default function PromotionsStrip() {
         style={{
           background: '#0d0d0d',
           border: '1px solid rgba(255,255,255,0.07)',
-          minHeight: 0,
+          minHeight: 96,
         }}
-        onClick={handleBannerClick}
+        onClick={() => navigate('/promotions')}
         role="banner"
         aria-label={`Promotion: ${promo.title}`}
       >
+        {/* ── Image panel (left, desktop) / background (mobile) ── */}
+        {hasImage && (
+          <>
+            {/* Desktop: left panel — ~32% width, fades right */}
+            <div
+              className="absolute hidden md:block top-0 left-0 bottom-0"
+              style={{
+                width: '32%',
+                backgroundImage: `url(${promo.imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: vis ? 1 : 0,
+                transition: 'opacity 0.28s ease',
+              }}
+            >
+              {/* Fade right into text area */}
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 30%, #0d0d0d 95%)' }} />
+              {/* Subtle colour cast from tag */}
+              <div className="absolute inset-0" style={{ background: tag.bg, mixBlendMode: 'multiply' }} />
+            </div>
+
+            {/* Mobile: full-width background, muted */}
+            <div
+              className="absolute md:hidden inset-0"
+              style={{
+                backgroundImage: `url(${promo.imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: vis ? 0.18 : 0,
+                transition: 'opacity 0.28s ease',
+              }}
+            />
+          </>
+        )}
+
         {/* Accent left border */}
         <div
           className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
           style={{ background: tag.color }}
         />
 
-        {/* Optional background image — very subtle */}
-        {promo.imageUrl && (
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url(${promo.imageUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              opacity: 0.06,
-            }}
-          />
-        )}
-
-        {/* Subtle glow */}
+        {/* Glow behind text (desktop only — right side) */}
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: `radial-gradient(ellipse at 0% 50%, ${tag.bg} 0%, transparent 55%)` }}
+          className="absolute hidden md:block inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at 70% 50%, ${tag.bg} 0%, transparent 55%)` }}
+        />
+        {/* Glow (mobile) */}
+        <div
+          className="absolute md:hidden inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at 0% 50%, ${tag.bg} 0%, transparent 60%)` }}
         />
 
-        {/* Content */}
+        {/* ── Content row ── */}
         <div
-          className="relative flex items-center gap-3 md:gap-5 pl-5 pr-4 md:pl-7 md:pr-5"
+          className="relative flex items-center gap-3 pl-5 pr-4 md:pr-5 h-full"
           style={{
-            minHeight: 72,
+            minHeight: 96,
+            /* On desktop, push content right of the image panel */
+            paddingLeft: hasImage ? undefined : undefined,
             opacity: vis ? 1 : 0,
             transition: 'opacity 0.26s ease',
           }}
         >
+          {/* Desktop: spacer that clears the image panel */}
+          {hasImage && <div className="hidden md:block shrink-0" style={{ width: '28%' }} />}
+
           {/* Tag chip */}
           <span
             className="shrink-0 inline-flex items-center gap-1.5 text-[9px] font-body font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-full"
             style={{ backgroundColor: tag.color, color: '#fff' }}
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse"
-              style={{ animationDuration: '1.8s' }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse" style={{ animationDuration: '1.8s' }} />
             {tag.label}
           </span>
 
@@ -133,7 +155,7 @@ export default function PromotionsStrip() {
           <div className="flex-1 min-w-0">
             <p
               className="font-display font-black text-white leading-tight truncate group-hover:text-white/90 transition-colors"
-              style={{ fontSize: 'clamp(0.85rem, 2.2vw, 1.05rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'clamp(0.85rem, 2vw, 1.05rem)', letterSpacing: '-0.02em' }}
             >
               {promo.title}
             </p>
@@ -144,7 +166,7 @@ export default function PromotionsStrip() {
             )}
           </div>
 
-          {/* Right: CTA + dots */}
+          {/* Right controls */}
           <div className="shrink-0 flex items-center gap-3">
             {count > 1 && (
               <div className="hidden sm:flex gap-1.5 items-center">
@@ -172,7 +194,6 @@ export default function PromotionsStrip() {
               </svg>
             </a>
 
-            {/* View all → */}
             <button
               onClick={e => { e.stopPropagation(); navigate('/promotions') }}
               className="hidden md:inline-flex items-center gap-1 font-body text-[10px] uppercase tracking-widest transition-colors"
