@@ -60,7 +60,7 @@ export default function HeroCarousel() {
         <div className="flex gap-2" style={{ height: '48vw', minHeight: 200 }}>
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block">
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/apartment-top2.png')" }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,5,30,0.94) 0%, rgba(10,5,30,0.5) 45%, rgba(0,0,0,0.1) 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
               <p className="font-body text-[11px] font-black uppercase tracking-[0.14em] mb-1" style={{ color: '#C4B5FD' }}>CabHouse Apartments</p>
               <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>{aptsHeading}</h2>
@@ -72,7 +72,7 @@ export default function HeroCarousel() {
           <a href={waWater} target="_blank" rel="noopener noreferrer"
             className="relative overflow-hidden rounded-3xl flex-1 group block">
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]" style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(2,20,40,0.94) 0%, rgba(2,20,40,0.5) 45%, rgba(0,0,0,0.1) 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-4">
               <p className="font-body text-[11px] font-black uppercase tracking-[0.14em] mb-1" style={{ color: '#7DD3FC' }}>CabHouse Water</p>
               <h2 className="font-display font-black text-white text-sm leading-tight mb-2" style={{ letterSpacing: '-0.02em' }}>{waterHeading}</h2>
@@ -126,7 +126,7 @@ export default function HeroCarousel() {
           <a href="/apartments" className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
               style={{ backgroundImage: "url('/assets/apartment-top2.png')" }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,5,30,0.95) 0%, rgba(10,5,30,0.55) 45%, rgba(0,0,0,0.1) 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
               <p className="font-body text-sm font-black uppercase tracking-[0.16em] mb-1.5" style={{ color: '#C4B5FD' }}>
                 CabHouse Apartments
@@ -145,7 +145,7 @@ export default function HeroCarousel() {
             className="relative overflow-hidden rounded-3xl flex-1 group block" style={{ minHeight: 0 }}>
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
               style={{ backgroundImage: "url('/assets/cabhouse-water-25.jpeg')" }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(2,20,40,0.95) 0%, rgba(2,20,40,0.55) 45%, rgba(0,0,0,0.1) 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 100%)' }} />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
               <p className="font-body text-sm font-black uppercase tracking-[0.16em] mb-1.5" style={{ color: '#7DD3FC' }}>
                 CabHouse Water
