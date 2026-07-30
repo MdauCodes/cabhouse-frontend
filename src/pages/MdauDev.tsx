@@ -5,12 +5,13 @@ import {
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, AlertCircle, ArrowUpRight,
-  Pencil, ToggleLeft, ToggleRight, CalendarDays,
+  Pencil, ToggleLeft, ToggleRight, CalendarDays, Megaphone, Tag, Trash2,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
 import { useContentBlocks, invalidateContentCache } from '../hooks/useContentBlocks'
 import { invalidateGalleryCache } from '../hooks/useGalleryImages'
+import { invalidatePromotionsCache, type PromotionTag, type PromotionData } from '../hooks/usePromotions'
 import { api, staffAuth } from '../lib/api'
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -275,13 +276,14 @@ function AdminLogin({ onLogin }: { onLogin: (s: AdminSession) => void }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'promotions' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',     Icon: LayoutGrid,    group: 'main' },
   { id: 'patrons',   label: 'Patrons',      Icon: Users,         group: 'main' },
   { id: 'coupons',   label: 'Coupons',      Icon: TicketPercent, group: 'main' },
-  { id: 'bookings',  label: 'Bookings',     Icon: CalendarDays,  group: 'main' },
+  { id: 'bookings',   label: 'Bookings',     Icon: CalendarDays,  group: 'main' },
+  { id: 'promotions',label: 'Promotions',   Icon: Megaphone,     group: 'main' },
   { id: 'media',     label: 'Media',        Icon: Image,         group: 'content' },
   { id: 'services',  label: 'Services',     Icon: FileText,      group: 'content' },
   { id: 'sitems',    label: 'Service Items', Icon: LayoutGrid,   group: 'content' },
@@ -293,8 +295,8 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', bookings: 'Bookings', services: 'Services', sitems: 'Service Items',
-  gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
+  coupons: 'Coupons', bookings: 'Bookings', promotions: 'Promotions', services: 'Services',
+  sitems: 'Service Items', gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -408,8 +410,9 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'media'     && <MediaTab     token={token} />}
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
-          {tab === 'bookings'  && <BookingsTab  token={token} />}
-          {tab === 'services'  && <ServicesTab  token={token} />}
+          {tab === 'bookings'   && <BookingsTab    token={token} />}
+          {tab === 'promotions' && <PromotionsTab  token={token} />}
+          {tab === 'services'   && <ServicesTab    token={token} />}
           {tab === 'sitems'    && <ServiceItemsTab token={token} />}
           {tab === 'gallery'   && <GalleryTab   token={token} />}
           {tab === 'content'   && <ContentTab   token={token} />}
@@ -1130,6 +1133,249 @@ function CouponsTab({ token }: { token: string }) {
           </table>
         </Card>
       )}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROMOTIONS TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+const PROMO_TAG_CONFIG: Record<PromotionTag, { label: string; color: string; bg: string }> = {
+  DEAL:       { label: 'Deal',        color: '#92400e', bg: '#fef3c7' },
+  DISCOUNT:   { label: 'Discount',    color: '#991b1b', bg: '#fee2e2' },
+  NEW:        { label: 'New',         color: '#075985', bg: '#e0f2fe' },
+  EXPERIENCE: { label: 'Experience',  color: '#5b21b6', bg: '#ede9fe' },
+  EVENT:      { label: 'Event',       color: '#065f46', bg: '#d1fae5' },
+  SEASONAL:   { label: 'Seasonal',    color: '#9a3412', bg: '#ffedd5' },
+}
+
+const BLANK_PROMO = (): Partial<PromotionData> & { tag: PromotionTag } => ({
+  title: '', subtitle: '', tag: 'DEAL', ctaLabel: '', ctaUrl: '',
+  imageUrl: '', active: true, expiresAt: null, displayOrder: 0,
+})
+
+function PromotionsTab({ token }: { token: string }) {
+  const [promos, setPromos] = useState<PromotionData[]>([])
+  const [editing, setEditing] = useState<Partial<PromotionData> & { tag: PromotionTag } | null>(null)
+  const [isNew, setIsNew] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    api.get<PromotionData[]>('/promotions', token).then(setPromos).catch(() => {})
+  }, [token])
+
+  function startNew() { setEditing(BLANK_PROMO()); setIsNew(true); setSaved(false) }
+  function startEdit(p: PromotionData) { setEditing({ ...p }); setIsNew(false); setSaved(false) }
+  function cancel() { setEditing(null); setIsNew(false) }
+
+  async function save() {
+    if (!editing || !editing.title?.trim()) return
+    setSaving(true)
+    try {
+      const body = {
+        title: editing.title, subtitle: editing.subtitle || null,
+        tag: editing.tag, ctaLabel: editing.ctaLabel || null,
+        ctaUrl: editing.ctaUrl || null, imageUrl: editing.imageUrl || null,
+        active: editing.active ?? true,
+        expiresAt: editing.expiresAt || null,
+        displayOrder: editing.displayOrder ?? 0,
+      }
+      if (isNew) {
+        const created = await api.post<PromotionData>('/promotions', body, token)
+        setPromos(prev => [created, ...prev])
+      } else {
+        const updated = await api.put<PromotionData>(`/promotions/${editing.id}`, body, token)
+        setPromos(prev => prev.map(p => p.id === updated.id ? updated : p))
+      }
+      invalidatePromotionsCache()
+      setSaved(true); setTimeout(() => { setSaved(false); cancel() }, 1200)
+    } catch (e: any) { alert(e.message ?? 'Save failed') } finally { setSaving(false) }
+  }
+
+  async function toggle(p: PromotionData) {
+    try {
+      const updated = await api.patch<PromotionData>(`/promotions/${p.id}/toggle`, {}, token)
+      setPromos(prev => prev.map(x => x.id === updated.id ? updated : x))
+      invalidatePromotionsCache()
+    } catch {}
+  }
+
+  async function remove(p: PromotionData) {
+    if (!confirm(`Delete "${p.title}"?`)) return
+    try {
+      await api.del<void>(`/promotions/${p.id}`, token)
+      setPromos(prev => prev.filter(x => x.id !== p.id))
+      if (editing?.id === p.id) cancel()
+      invalidatePromotionsCache()
+    } catch {}
+  }
+
+  const tc = editing ? PROMO_TAG_CONFIG[editing.tag] : null
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-slate-900 font-bold text-lg">Promotions</h2>
+          <p className="text-slate-500 text-sm">Deals, discounts, and experiences shown on the website before the hero.</p>
+        </div>
+        {!editing && (
+          <Btn onClick={startNew}><Plus size={14} className="mr-1.5" />New Promotion</Btn>
+        )}
+      </div>
+
+      <div className="grid lg:grid-cols-5 gap-5">
+        {/* List */}
+        <div className="lg:col-span-2 space-y-2">
+          {promos.length === 0 && !editing && (
+            <EmptyState icon={Megaphone} title="No promotions yet" sub="Click New Promotion to add your first deal or announcement" />
+          )}
+          {promos.map(p => {
+            const tc = PROMO_TAG_CONFIG[p.tag]
+            return (
+              <div key={p.id}
+                className={`rounded-xl border p-4 transition-all cursor-pointer ${
+                  editing?.id === p.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                }`}
+                onClick={() => startEdit(p)}
+              >
+                <div className="flex items-start justify-between gap-2 mb-1.5">
+                  <span className="text-slate-800 font-semibold text-sm leading-snug flex-1">{p.title}</span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ color: tc.color, backgroundColor: tc.bg }}>{tc.label}</span>
+                    <Badge variant={p.active ? 'green' : 'gray'}>{p.active ? 'Live' : 'Off'}</Badge>
+                  </div>
+                </div>
+                {p.subtitle && <p className="text-slate-400 text-xs line-clamp-2">{p.subtitle}</p>}
+                <div className="flex items-center justify-between mt-2">
+                  {p.expiresAt && <span className="text-slate-400 text-[10px]">Expires {p.expiresAt}</span>}
+                  <div className="flex items-center gap-1 ml-auto" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => toggle(p)}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                      title={p.active ? 'Deactivate' : 'Activate'}>
+                      {p.active ? <EyeOff size={12} /> : <Eye size={12} />}
+                    </button>
+                    <button onClick={() => remove(p)}
+                      className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                      title="Delete">
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Editor */}
+        <div className="lg:col-span-3">
+          {editing ? (
+            <Card>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-slate-900 font-semibold">{isNew ? 'New Promotion' : 'Edit Promotion'}</h3>
+                {saved && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
+              </div>
+              <div className="space-y-4">
+                <FieldGroup label="Tag / Type">
+                  <div className="flex flex-wrap gap-2">
+                    {(Object.keys(PROMO_TAG_CONFIG) as PromotionTag[]).map(t => {
+                      const c = PROMO_TAG_CONFIG[t]
+                      return (
+                        <button key={t} onClick={() => setEditing({ ...editing, tag: t })}
+                          className="px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-all"
+                          style={editing.tag === t
+                            ? { color: c.color, backgroundColor: c.bg, borderColor: c.color }
+                            : { color: '#94a3b8', backgroundColor: '#f8fafc', borderColor: '#e2e8f0' }
+                          }>
+                          {c.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </FieldGroup>
+
+                <FieldGroup label="Headline *">
+                  <Input value={editing.title ?? ''} onChange={e => setEditing({ ...editing, title: e.target.value })} placeholder="e.g. Weekend Family Package — Special Rate" />
+                </FieldGroup>
+
+                <FieldGroup label="Description" hint="Shown below the headline on the strip">
+                  <Textarea rows={3} value={editing.subtitle ?? ''} onChange={e => setEditing({ ...editing, subtitle: e.target.value })} placeholder="Short description of the offer..." />
+                </FieldGroup>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FieldGroup label="CTA Button Label" hint="Defaults to 'Find Out More'">
+                    <Input value={editing.ctaLabel ?? ''} onChange={e => setEditing({ ...editing, ctaLabel: e.target.value })} placeholder="Book Now" />
+                  </FieldGroup>
+                  <FieldGroup label="CTA URL" hint="Leave blank to auto-link to WhatsApp">
+                    <Input value={editing.ctaUrl ?? ''} onChange={e => setEditing({ ...editing, ctaUrl: e.target.value })} placeholder="https://... or /park" />
+                  </FieldGroup>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FieldGroup label="Expires On" hint="Leave blank to never expire">
+                    <Input type="date" value={editing.expiresAt ?? ''} onChange={e => setEditing({ ...editing, expiresAt: e.target.value || null })} />
+                  </FieldGroup>
+                  <FieldGroup label="Display Order" hint="Lower = shown first">
+                    <Input type="number" min="0" value={editing.displayOrder ?? 0} onChange={e => setEditing({ ...editing, displayOrder: parseInt(e.target.value) || 0 })} />
+                  </FieldGroup>
+                </div>
+
+                <FieldGroup label="Banner Image URL" hint="Optional Cloudinary image shown on the right side of the strip">
+                  <Input value={editing.imageUrl ?? ''} onChange={e => setEditing({ ...editing, imageUrl: e.target.value })} placeholder="https://res.cloudinary.com/..." />
+                </FieldGroup>
+
+                <div className="flex items-center gap-3 pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <button onClick={() => setEditing({ ...editing, active: !editing.active })}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                        editing.active ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-500'
+                      }`}>
+                      {editing.active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                      {editing.active ? 'Live on site' : 'Hidden'}
+                    </button>
+                  </label>
+                </div>
+
+                {/* Live preview chip */}
+                {editing.title && (
+                  <div className="rounded-xl overflow-hidden border border-slate-100 mt-2">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-4 pt-3 pb-1">Preview</p>
+                    <div className="px-4 pb-4 flex items-center gap-3"
+                      style={{ backgroundColor: '#1a0f0f' }}>
+                      <div
+                        className="w-1 self-stretch rounded-full flex-shrink-0"
+                        style={{ backgroundColor: tc?.color, minHeight: 36 }}
+                      />
+                      <div className="flex-1 min-w-0 py-2">
+                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full text-white mb-1.5 inline-block"
+                          style={{ backgroundColor: tc?.color }}>{tc?.label}</span>
+                        <p className="text-white font-bold text-sm leading-snug">{editing.title}</p>
+                        {editing.subtitle && <p className="text-white/50 text-xs mt-0.5 line-clamp-1">{editing.subtitle}</p>}
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full text-white flex-shrink-0"
+                        style={{ backgroundColor: tc?.color }}>
+                        {editing.ctaLabel || 'Find Out More'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-1">
+                  <Btn onClick={save} disabled={saving || !editing.title?.trim()}>
+                    {saving ? <><Spinner size={13} /> Saving…</> : isNew ? 'Create Promotion' : 'Save Changes'}
+                  </Btn>
+                  <Btn variant="ghost" onClick={cancel}>Cancel</Btn>
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <EmptyState icon={Tag} title="Select a promotion to edit" sub="Or click New Promotion to create one" />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

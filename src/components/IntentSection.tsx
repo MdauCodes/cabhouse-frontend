@@ -1,50 +1,33 @@
 import { SITE } from '../config/site'
+import { useContentBlocks } from '../hooks/useContentBlocks'
 
 const INTENTS = [
-  {
-    num: '01',
-    title: 'Somewhere to stay',
-    sub: 'Rooms, cabins & overnight camping',
-    cta: 'Book a stay →',
-    waMsg: "Hi, I'd like to book a stay at CabHouse Park",
-  },
-  {
-    num: '02',
-    title: 'A fun day out',
-    sub: 'Swimming, indoor games, zipline',
-    cta: 'Book a visit →',
-    waMsg: "Hi, I'd like to book a day visit at CabHouse Park",
-  },
-  {
-    num: '03',
-    title: 'Order water',
-    sub: 'Bulk or domestic water delivery',
-    cta: 'Order now →',
-    waMsg: "Hi, I'd like to order CabHouse Water",
-  },
-  {
-    num: '04',
-    title: 'Moments to celebrate',
-    sub: 'Birthdays, schools & corporate',
-    cta: 'Plan an event →',
-    waMsg: "Hi, I'd like to enquire about hosting an event at CabHouse",
-  },
+  { num: '01', title: 'Somewhere to stay',    sub: 'Rooms, cabins & overnight camping', cta: 'Book a stay →',    waMsg: "Hi, I'd like to book a stay at CabHouse Park" },
+  { num: '02', title: 'A fun day out',         sub: 'Swimming, indoor games, zipline',   cta: 'Book a visit →',  waMsg: "Hi, I'd like to book a day visit at CabHouse Park" },
+  { num: '03', title: 'Order water',           sub: 'Bulk or domestic water delivery',   cta: 'Order now →',     waMsg: "Hi, I'd like to order CabHouse Water" },
+  { num: '04', title: 'Moments to celebrate',  sub: 'Birthdays, schools & corporate',    cta: 'Plan an event →', waMsg: "Hi, I'd like to enquire about hosting an event at CabHouse" },
 ]
 
 export default function IntentSection() {
+  const { get } = useContentBlocks()
   const wa = SITE.contact.whatsapp.replace('+', '')
+
+  const eyebrow  = get('home.intent.eyebrow',  'Find Joy that meets your well-being')
+  const heading1 = get('home.intent.heading1',  'We have')
+  const heading2 = get('home.intent.heading2',  'what you are looking for.')
+
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="max-w-7xl mx-auto bg-[#D4B882] rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20">
         <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-dark)' }}>
-          Find Joy that meets your well-being
+          {eyebrow}
         </p>
         <h2
           className="font-display font-black text-brand-dark leading-[1.05] mb-12"
           style={{ fontSize: 'var(--type-h2)', letterSpacing: '-0.028em' }}
         >
-          We have{' '}
-          <span className="text-brand-dark/40">what you are looking for.</span>
+          {heading1}{' '}
+          <span className="text-brand-dark/40">{heading2}</span>
         </h2>
 
         <div className="rounded-2xl p-5 lg:p-7 border border-brand-dark/10" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>

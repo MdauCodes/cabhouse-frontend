@@ -1,5 +1,6 @@
 import AnnouncementBar from '../components/AnnouncementBar'
 import Navbar from '../components/Navbar'
+import PromotionsStrip from '../components/PromotionsStrip'
 import HeroCarousel from '../components/HeroCarousel'
 import IntentSection from '../components/IntentSection'
 import BrandShowcase from '../components/BrandShowcase'
@@ -20,6 +21,7 @@ export default function Home() {
     <div id="home-page" style={{ overflowX: 'clip', background: 'var(--canvas)' }}>
       <AnnouncementBar />
       <Navbar />
+      <PromotionsStrip />
       <HeroCarousel />
       <IntentSection />
       <BrandShowcase />
