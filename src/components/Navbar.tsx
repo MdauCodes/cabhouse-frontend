@@ -170,7 +170,17 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden lg:flex items-center gap-3">
+          <a
+            href="/login"
+            className="font-body font-medium text-sm text-brand-dark/50 hover:text-brand-dark transition-colors flex items-center gap-1.5"
+          >
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-3.5 h-3.5">
+              <circle cx="8" cy="5" r="2.5"/>
+              <path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>
+            </svg>
+            Sign In
+          </a>
           <a
             href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book a visit to CabHouse Park")}`}
             target="_blank" rel="noopener noreferrer"
@@ -257,6 +267,14 @@ export default function Navbar() {
               </a>
             </div>
 
+            <a href="/login" onClick={() => setOpen(false)}
+              className="block text-brand-dark/55 font-body text-sm py-2 hover:text-brand-dark transition-colors flex items-center gap-2">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-3.5 h-3.5 shrink-0">
+                <circle cx="8" cy="5" r="2.5"/>
+                <path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>
+              </svg>
+              Member Portal / Sign In
+            </a>
             <a
               href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}`}
               target="_blank" rel="noopener noreferrer"
