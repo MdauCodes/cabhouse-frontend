@@ -243,11 +243,14 @@ export default function Login() {
                 {loading ? 'Signing in…' : 'Sign in'}
               </button>
 
-              {/* Forgot password — placeholder for next feature */}
               <p className="text-center">
-                <span className="text-white/25 text-xs font-body">
-                  Forgot password? Password reset coming soon.
-                </span>
+                <button
+                  type="button"
+                  onClick={() => navigate('/forgot-password')}
+                  className="text-white/35 hover:text-white/60 text-xs font-body transition-colors"
+                >
+                  Forgot password?
+                </button>
               </p>
             </div>
           )}
