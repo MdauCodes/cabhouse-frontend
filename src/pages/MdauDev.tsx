@@ -28,11 +28,6 @@ function getSession(): AdminSession | null {
     return t && u ? { accessToken: t, ...JSON.parse(u) } : null
   } catch { return null }
 }
-function saveSession(d: { accessToken: string; username: string; role: string }) {
-  localStorage.setItem(ADMIN_TOKEN_KEY, d.accessToken)
-  localStorage.setItem(ADMIN_USER_KEY, JSON.stringify({ username: d.username, role: d.role }))
-  staffAuth.setToken(d.accessToken)
-}
 function clearSession() {
   localStorage.removeItem(ADMIN_TOKEN_KEY)
   localStorage.removeItem(ADMIN_USER_KEY)
