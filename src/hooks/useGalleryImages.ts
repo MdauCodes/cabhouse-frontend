@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const API = import.meta.env.DEV
-  ? 'http://localhost:8081/api'
-  : 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+const API = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
 
 const CACHE_KEY = 'cabhouse_gallery_images'
 const CACHE_TTL = 5 * 60 * 1000

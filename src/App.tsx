@@ -9,6 +9,7 @@ import WaterPage from './pages/WaterPage'
 import MdauDev from './pages/MdauDev'
 import AboutPage from './pages/AboutPage'
 import PatronPortal from './pages/PatronPortal'
+import PromotionsPage from './pages/PromotionsPage'
 import StaffPOS from './pages/StaffPOS'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/mdau/dev" element={<MdauDev />} />
           <Route path="/mdau/pos" element={<StaffPOS />} />
           <Route path="/patrons" element={<PatronPortal />} />
+          <Route path="/promotions" element={<PromotionsPage />} />
         </Routes>
       </BrowserRouter>
     </>

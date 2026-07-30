@@ -40,9 +40,7 @@ async function fetchBlocks() {
   if (fetchStarted) return
   fetchStarted = true
   try {
-    const BASE = import.meta.env.DEV
-      ? 'http://localhost:8081/api'
-      : 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+    const BASE = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
     const res = await fetch(`${BASE}/content/public/blocks`)
     if (!res.ok) return
     const json = await res.json()
