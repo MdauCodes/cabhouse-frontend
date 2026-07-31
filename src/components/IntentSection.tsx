@@ -1,5 +1,5 @@
 import { SITE } from '../config/site'
-import { useContentBlocks } from '../hooks/useContentBlocks'
+// import { useContentBlocks } from '../hooks/useContentBlocks' // re-enable with headings
 
 const INTENTS = [
   { num: '01', title: 'Somewhere to stay',    sub: 'Rooms, cabins & overnight camping', cta: 'Book a stay →',    waMsg: "Hi, I'd like to book a stay at CabHouse Park" },
@@ -9,16 +9,18 @@ const INTENTS = [
 ]
 
 export default function IntentSection() {
-  const { get } = useContentBlocks()
+  // const { get } = useContentBlocks() // re-enable with headings
   const wa = SITE.contact.whatsapp.replace('+', '')
 
-  const eyebrow  = get('home.intent.eyebrow',  'Find Joy that meets your well-being')
-  const heading1 = get('home.intent.heading1',  'We have')
-  const heading2 = get('home.intent.heading2',  'what you are looking for.')
+  // Headings commented out — remove these when re-enabling the heading block below
+  // const eyebrow  = get('home.intent.eyebrow',  'Find Joy that meets your well-being')
+  // const heading1 = get('home.intent.heading1',  'We have')
+  // const heading2 = get('home.intent.heading2',  'what you are looking for.')
 
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="max-w-7xl mx-auto bg-[#D4B882] rounded-3xl overflow-hidden px-4 lg:px-10 py-12 lg:py-20">
+        {/* Headings hidden — re-enable when needed
         <p className="font-body text-xs uppercase tracking-[0.28em] font-bold mb-4" style={{ color: 'var(--color-dark)' }}>
           {eyebrow}
         </p>
@@ -29,6 +31,7 @@ export default function IntentSection() {
           {heading1}{' '}
           <span className="text-brand-dark/40">{heading2}</span>
         </h2>
+        */}
 
         <div className="rounded-2xl p-5 lg:p-7 border border-brand-dark/10" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
           <p className="text-brand-dark/50 font-body text-xs uppercase tracking-[0.22em] font-semibold mb-6">

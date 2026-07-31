@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { usePromotions, type PromotionTag } from '../hooks/usePromotions'
 import { SITE } from '../config/site'
 
-const TAG_CONFIG: Record<PromotionTag, { label: string; color: string; bg: string; glow: string }> = {
-  DEAL:       { label: 'Deal',        color: '#F59E0B', bg: 'rgba(245,158,11,0.15)',  glow: 'rgba(245,158,11,0.35)'  },
-  DISCOUNT:   { label: 'Discount',    color: '#EF4444', bg: 'rgba(239,68,68,0.15)',   glow: 'rgba(239,68,68,0.35)'   },
-  NEW:        { label: 'New',         color: '#38BDF8', bg: 'rgba(56,189,248,0.15)',  glow: 'rgba(56,189,248,0.35)'  },
-  EXPERIENCE: { label: 'Experience',  color: '#A78BFA', bg: 'rgba(167,139,250,0.15)', glow: 'rgba(167,139,250,0.35)' },
-  EVENT:      { label: 'Event',       color: '#34D399', bg: 'rgba(52,211,153,0.15)',  glow: 'rgba(52,211,153,0.35)'  },
-  SEASONAL:   { label: 'Seasonal',    color: '#FB923C', bg: 'rgba(251,146,60,0.15)',  glow: 'rgba(251,146,60,0.35)'  },
+const TAG_CONFIG: Record<PromotionTag, { label: string; accent: string; glow: string; dark: string }> = {
+  DEAL:       { label: 'Deal',       accent: '#F59E0B', glow: 'rgba(245,158,11,0.4)',  dark: '#92400e' },
+  DISCOUNT:   { label: 'Discount',   accent: '#EF4444', glow: 'rgba(239,68,68,0.4)',   dark: '#991b1b' },
+  NEW:        { label: 'New',        accent: '#38BDF8', glow: 'rgba(56,189,248,0.4)',  dark: '#075985' },
+  EXPERIENCE: { label: 'Experience', accent: '#A78BFA', glow: 'rgba(167,139,250,0.4)', dark: '#5b21b6' },
+  EVENT:      { label: 'Event',      accent: '#34D399', glow: 'rgba(52,211,153,0.4)',  dark: '#065f46' },
+  SEASONAL:   { label: 'Seasonal',   accent: '#FB923C', glow: 'rgba(251,146,60,0.4)',  dark: '#9a3412' },
 }
 
 const wa = SITE.contact.whatsapp.replace('+', '')
@@ -22,7 +22,7 @@ export default function PromotionsStrip() {
   const [entered, setEntered] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 800)
+    const t = setTimeout(() => setEntered(true), 400)
     return () => clearTimeout(t)
   }, [])
 
@@ -31,14 +31,14 @@ export default function PromotionsStrip() {
   const goTo = useCallback((idx: number) => {
     if (idx === active) return
     setVis(false)
-    setTimeout(() => { setActive(idx); setVis(true) }, 240)
+    setTimeout(() => { setActive(idx); setVis(true) }, 220)
   }, [active])
 
   const next = useCallback(() => goTo((active + 1) % count), [active, count, goTo])
 
   useEffect(() => {
     if (count <= 1) return
-    const id = setInterval(next, 6000)
+    const id = setInterval(next, 7000)
     return () => clearInterval(id)
   }, [count, next])
 
@@ -47,7 +47,6 @@ export default function PromotionsStrip() {
   const promo = promotions[active]
   const tag = TAG_CONFIG[promo.tag]
   const waFallback = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I saw your promotion: ${promo.title}`)}`
-  const hasImage = !!promo.imageUrl
 
   function handleCta(e: React.MouseEvent) {
     e.stopPropagation()
@@ -58,222 +57,229 @@ export default function PromotionsStrip() {
   return (
     <>
       <style>{`
-        @keyframes promo-in {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0); }
+        @keyframes promo-enter {
+          from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes promo-pulse-ring {
-          0%, 100% { box-shadow: 0 0 0 0 var(--promo-glow); }
-          50% { box-shadow: 0 0 0 4px transparent; }
+        @keyframes promo-flash {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.55; }
         }
-        @keyframes promo-sweep {
-          0%   { transform: translateX(-100%) skewX(-12deg); opacity: 0; }
-          30%  { opacity: 1; }
-          100% { transform: translateX(400%) skewX(-12deg); opacity: 0; }
+        @keyframes promo-scroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-        .promo-tag-ring {
-          animation: promo-pulse-ring 2.4s ease-in-out infinite;
+        @keyframes promo-shine {
+          0%   { left: -80%; }
+          100% { left: 130%; }
         }
+        @keyframes promo-badge-pop {
+          0%, 100% { transform: scale(1) rotate(-2deg); }
+          50%       { transform: scale(1.06) rotate(-2deg); }
+        }
+        .promo-badge-pop { animation: promo-badge-pop 2s ease-in-out infinite; }
+        .promo-flash      { animation: promo-flash 1.4s ease-in-out infinite; }
       `}</style>
 
       <div
         className="px-3 md:px-5 pt-3"
         style={{
           opacity: entered ? 1 : 0,
-          transform: entered ? 'translateY(0)' : 'translateY(-8px)',
+          transform: entered ? 'translateY(0)' : 'translateY(-10px)',
           transition: 'opacity 0.5s ease, transform 0.5s ease',
+          animation: entered ? undefined : 'promo-enter 0.5s ease forwards',
         }}
       >
         <div
-          className="max-w-7xl mx-auto rounded-2xl overflow-hidden cursor-pointer group relative"
+          className="max-w-7xl mx-auto rounded-2xl overflow-hidden relative cursor-pointer group"
           style={{
-            background: 'linear-gradient(135deg, #0e0e0e 0%, #141414 100%)',
-            border: `1px solid rgba(255,255,255,0.07)`,
-            minHeight: 112,
-            boxShadow: `0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.3)`,
+            background: `linear-gradient(135deg, #050f05 0%, #091409 50%, #050f05 100%)`,
+            border: `1px solid ${tag.accent}25`,
+            boxShadow: `0 0 0 1px rgba(0,0,0,0.5), 0 8px 48px rgba(0,0,0,0.6), 0 0 80px ${tag.glow}`,
+            minHeight: 148,
           }}
           onClick={() => navigate('/promotions')}
           role="banner"
           aria-label={`Promotion: ${promo.title}`}
         >
-          {/* ── Left trapezoid image ── */}
-          {hasImage && (
-            <div
-              className="absolute hidden md:block top-0 left-0 bottom-0"
-              style={{
-                width: '26%',
-                backgroundImage: `url(${promo.imageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                clipPath: 'polygon(0 0, 88% 0, 100% 100%, 0 100%)',
-                opacity: vis ? 1 : 0,
-                transition: 'opacity 0.24s ease',
-              }}
-            >
-              {/* fade toward center */}
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 45%, #0e0e0e 100%)' }} />
-              {/* color tint */}
-              <div className="absolute inset-0" style={{ background: tag.bg, mixBlendMode: 'overlay' }} />
-            </div>
-          )}
+          {/* ── Diagonal stripe texture ── */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `repeating-linear-gradient(
+              -55deg,
+              transparent,
+              transparent 18px,
+              rgba(255,255,255,0.012) 18px,
+              rgba(255,255,255,0.012) 19px
+            )`,
+          }} />
 
-          {/* ── Right trapezoid image ── */}
-          {hasImage && (
-            <div
-              className="absolute hidden md:block top-0 right-0 bottom-0"
-              style={{
-                width: '26%',
-                backgroundImage: `url(${promo.imageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                clipPath: 'polygon(12% 0, 100% 0, 100% 100%, 0% 100%)',
-                opacity: vis ? 1 : 0,
-                transition: 'opacity 0.24s ease',
-              }}
-            >
-              {/* fade toward center */}
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, transparent 45%, #0e0e0e 100%)' }} />
-              {/* color tint */}
-              <div className="absolute inset-0" style={{ background: tag.bg, mixBlendMode: 'overlay' }} />
-            </div>
-          )}
+          {/* ── Top accent line ── */}
+          <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
+            background: `linear-gradient(to right, transparent 5%, ${tag.accent} 30%, ${tag.accent} 70%, transparent 95%)`,
+            boxShadow: `0 0 12px 1px ${tag.glow}`,
+          }} />
 
-          {/* Mobile: full-bg image muted */}
-          {hasImage && (
-            <div
-              className="absolute md:hidden inset-0"
-              style={{
-                backgroundImage: `url(${promo.imageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: vis ? 0.12 : 0,
-                transition: 'opacity 0.24s ease',
-              }}
-            />
-          )}
+          {/* ── Bottom accent line ── */}
+          <div className="absolute bottom-0 left-0 right-0 h-px" style={{
+            background: `linear-gradient(to right, transparent 15%, ${tag.accent}40 50%, transparent 85%)`,
+          }} />
 
-          {/* Top hairline accent */}
-          <div
-            className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: `linear-gradient(to right, transparent 10%, ${tag.color}50 50%, transparent 90%)` }}
-          />
-
-          {/* Subtle center glow */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: `radial-gradient(ellipse 60% 100% at 50% 50%, ${tag.bg} 0%, transparent 70%)` }}
-          />
-
-          {/* Hover shimmer sweep */}
-          <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <div
-              style={{
-                position: 'absolute', top: 0, bottom: 0, width: '25%',
-                background: `linear-gradient(to right, transparent, ${tag.color}10, transparent)`,
-                animation: 'promo-sweep 1.6s ease forwards',
-              }}
-            />
-          </div>
-
-          {/* ── Content row ── */}
-          <div
-            className="relative flex items-center h-full gap-4 px-5 md:px-8"
-            style={{
-              minHeight: 112,
+          {/* ── Left image trapezoid ── */}
+          {promo.imageUrl && (
+            <div className="absolute hidden md:block top-0 left-0 bottom-0" style={{
+              width: '28%',
+              backgroundImage: `url(${promo.imageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              clipPath: 'polygon(0 0, 82% 0, 100% 100%, 0 100%)',
               opacity: vis ? 1 : 0,
               transition: 'opacity 0.22s ease',
+            }}>
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(5,15,5,0.1) 20%, #050f05 100%)' }} />
+              <div className="absolute inset-0" style={{ background: `${tag.accent}15`, mixBlendMode: 'overlay' }} />
+            </div>
+          )}
+
+          {/* ── Right image trapezoid ── */}
+          {promo.imageUrl && (
+            <div className="absolute hidden md:block top-0 right-0 bottom-0" style={{
+              width: '28%',
+              backgroundImage: `url(${promo.imageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              clipPath: 'polygon(18% 0, 100% 0, 100% 100%, 0 100%)',
+              opacity: vis ? 1 : 0,
+              transition: 'opacity 0.22s ease',
+            }}>
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, rgba(5,15,5,0.1) 20%, #050f05 100%)' }} />
+              <div className="absolute inset-0" style={{ background: `${tag.accent}15`, mixBlendMode: 'overlay' }} />
+            </div>
+          )}
+
+          {/* ── Mobile background image ── */}
+          {promo.imageUrl && (
+            <div className="absolute md:hidden inset-0" style={{
+              backgroundImage: `url(${promo.imageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: vis ? 0.08 : 0,
+              transition: 'opacity 0.22s ease',
+            }} />
+          )}
+
+          {/* ── Center radial glow ── */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: `radial-gradient(ellipse 70% 100% at 50% 50%, ${tag.accent}18 0%, transparent 65%)`,
+          }} />
+
+          {/* ── Shine on hover ── */}
+          <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+            <div className="absolute top-0 bottom-0 w-20 opacity-0 group-hover:opacity-100" style={{
+              background: `linear-gradient(to right, transparent, ${tag.accent}18, transparent)`,
+              animation: 'promo-shine 1s ease forwards',
+              animationPlayState: 'paused',
+            }} />
+          </div>
+
+          {/* ══ MAIN CONTENT ══ */}
+          <div
+            className="relative flex items-center h-full px-5 md:px-10 gap-4 md:gap-8"
+            style={{
+              minHeight: 148,
+              opacity: vis ? 1 : 0,
+              transition: 'opacity 0.2s ease',
             }}
           >
-            {/* Spacers that clear the image trapezoids on desktop */}
-            {hasImage && <div className="hidden md:block shrink-0" style={{ width: '22%' }} />}
+            {promo.imageUrl && <div className="hidden md:block shrink-0" style={{ width: '22%' }} />}
 
-            {/* ── Left content: tag + text ── */}
-            <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-              {/* Tag pill */}
-              <div className="flex items-center gap-2">
+            {/* ── Left: label + title + sub ── */}
+            <div className="flex-1 min-w-0 flex flex-col gap-2">
+
+              {/* Tag pill + dots */}
+              <div className="flex items-center gap-3 flex-wrap">
                 <span
-                  className="promo-tag-ring inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.18em]"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em]"
                   style={{
-                    background: `linear-gradient(135deg, ${tag.color}22, ${tag.color}11)`,
-                    border: `1px solid ${tag.color}40`,
-                    color: tag.color,
-                    '--promo-glow': tag.glow,
-                  } as React.CSSProperties}
+                    background: `linear-gradient(135deg, ${tag.accent}28, ${tag.accent}12)`,
+                    border: `1px solid ${tag.accent}45`,
+                    color: tag.accent,
+                  }}
                 >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full animate-pulse"
-                    style={{ backgroundColor: tag.color, animationDuration: '1.6s' }}
-                  />
+                  <span className="promo-flash w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.accent }} />
                   {tag.label}
                 </span>
 
-                {/* Desktop pagination */}
                 {count > 1 && (
-                  <div className="hidden sm:flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5">
                     {promotions.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={e => { e.stopPropagation(); goTo(i) }}
+                      <button key={i} onClick={e => { e.stopPropagation(); goTo(i) }}
                         className="rounded-full transition-all duration-300"
                         style={{
-                          width: i === active ? 20 : 5,
-                          height: 5,
+                          width: i === active ? 22 : 5, height: 5,
                           background: i === active
-                            ? `linear-gradient(to right, ${tag.color}, ${tag.color}bb)`
+                            ? `linear-gradient(to right, ${tag.accent}, ${tag.accent}bb)`
                             : 'rgba(255,255,255,0.12)',
                         }}
-                        aria-label={`Go to promotion ${i + 1}`}
+                        aria-label={`Promotion ${i + 1}`}
                       />
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Title */}
-              <p
-                className="font-display font-black text-white leading-tight group-hover:text-white/90 transition-colors"
-                style={{ fontSize: 'clamp(0.875rem, 2.2vw, 1.125rem)', letterSpacing: '-0.025em', textWrap: 'balance' } as React.CSSProperties}
-              >
-                {promo.title}
-              </p>
-
-              {/* Subtitle (desktop) */}
-              {promo.subtitle && (
+              {/* ── BIG TITLE — marketing grade ── */}
+              <div>
                 <p
-                  className="text-white/38 font-body text-xs leading-relaxed hidden md:block"
-                  style={{ maxWidth: '42ch' }}
+                  className="font-display font-black text-white leading-none uppercase"
+                  style={{
+                    fontSize: 'clamp(1.35rem, 3.5vw, 2rem)',
+                    letterSpacing: '-0.03em',
+                    textShadow: `0 0 40px ${tag.glow}`,
+                  }}
                 >
-                  {promo.subtitle}
+                  {promo.title}
                 </p>
+                {promo.subtitle && (
+                  <p className="text-white/40 font-body text-xs mt-1.5 hidden md:block" style={{ maxWidth: '48ch' }}>
+                    {promo.subtitle}
+                  </p>
+                )}
+              </div>
+
+              {/* Mobile subtitle */}
+              {promo.subtitle && (
+                <p className="text-white/38 font-body text-xs md:hidden leading-relaxed">{promo.subtitle}</p>
               )}
             </div>
 
-            {/* ── Right controls ── */}
-            <div className="shrink-0 flex flex-col items-end gap-2">
-              {/* CTA */}
+            {/* ── Right: CTA stack ── */}
+            <div className="shrink-0 flex flex-col items-end gap-3">
+
+              {/* Main CTA button */}
               <a
                 href={promo.ctaUrl || waFallback}
                 onClick={handleCta}
-                className="inline-flex items-center gap-2 font-body font-black text-[10px] uppercase tracking-[0.15em] px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 hover:brightness-115 hover:scale-[1.02] active:scale-95"
+                className="inline-flex items-center gap-2.5 font-body font-black uppercase tracking-[0.12em] px-6 py-3 rounded-xl whitespace-nowrap transition-all duration-200 hover:scale-[1.03] hover:brightness-110 active:scale-95"
                 style={{
-                  background: `linear-gradient(135deg, ${tag.color}, ${tag.color}cc)`,
+                  background: `linear-gradient(135deg, ${tag.accent} 0%, ${tag.dark} 100%)`,
                   color: '#fff',
-                  boxShadow: `0 2px 16px ${tag.glow}, 0 0 0 1px ${tag.color}22`,
+                  fontSize: '0.7rem',
+                  boxShadow: `0 4px 24px ${tag.glow}, 0 0 0 1px ${tag.accent}30, inset 0 1px 0 rgba(255,255,255,0.2)`,
                 }}
               >
-                {promo.ctaLabel || 'See Offer'}
-                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5">
+                {promo.ctaLabel || 'Claim Offer'}
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
                   <path d="M2 7h10M8 3l4 4-4 4" />
                 </svg>
               </a>
 
-              {/* "All offers" ghost link (desktop) */}
+              {/* Ghost "all offers" */}
               <button
                 onClick={e => { e.stopPropagation(); navigate('/promotions') }}
-                className="hidden md:inline-flex items-center gap-1 font-body text-[9px] uppercase tracking-widest transition-colors"
-                style={{ color: 'rgba(255,255,255,0.2)' }}
+                className="hidden md:flex items-center gap-1 font-body text-[9px] uppercase tracking-widest transition-colors"
+                style={{ color: 'rgba(255,255,255,0.18)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.2)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.18)')}
               >
                 All offers
                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" className="w-2.5 h-2.5">
@@ -282,8 +288,24 @@ export default function PromotionsStrip() {
               </button>
             </div>
 
-            {/* Spacer for right image on desktop */}
-            {hasImage && <div className="hidden md:block shrink-0" style={{ width: '20%' }} />}
+            {promo.imageUrl && <div className="hidden md:block shrink-0" style={{ width: '22%' }} />}
+          </div>
+
+          {/* ── Scrolling ticker at bottom (desktop) ── */}
+          <div className="hidden md:block absolute bottom-0 left-0 right-0 overflow-hidden" style={{ height: 26, borderTop: `1px solid ${tag.accent}18` }}>
+            <div
+              className="flex items-center whitespace-nowrap h-full"
+              style={{ animation: 'promo-scroll 18s linear infinite', width: 'max-content' }}
+            >
+              {[...Array(6)].map((_, i) => (
+                <span key={i} className="inline-flex items-center gap-4 px-6 font-body text-[9px] uppercase tracking-[0.25em]" style={{ color: `${tag.accent}60` }}>
+                  <span>{promo.title}</span>
+                  <span style={{ color: `${tag.accent}35` }}>◆</span>
+                  <span>{promo.ctaLabel || 'Limited time'}</span>
+                  <span style={{ color: `${tag.accent}35` }}>◆</span>
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
