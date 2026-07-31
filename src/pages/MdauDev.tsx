@@ -714,6 +714,16 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   const [adjusting, setAdjusting] = useState(false)
   const [adjustError, setAdjustError] = useState('')
   const [adjustDone, setAdjustDone] = useState(false)
+  const [toggling, setToggling] = useState(false)
+
+  async function toggleActive() {
+    if (!detail) return
+    setToggling(true)
+    try {
+      const updated = await api.patch<PatronRow>(`/patrons/${patronId}/toggle`, {}, token)
+      setDetail(prev => prev ? { ...prev, active: updated.active } : prev)
+    } catch {} finally { setToggling(false) }
+  }
 
   useEffect(() => {
     api.get<PatronDetail>(`/patrons/${patronId}`, token)
@@ -753,7 +763,12 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
             <div className="text-right">
               <p className="text-3xl font-bold text-slate-900">{detail.couponBalance}</p>
               <p className="text-slate-400 text-xs">coupons</p>
-              <div className="mt-1"><Badge variant={detail.active ? 'green' : 'red'}>{detail.active ? 'Active' : 'Inactive'}</Badge></div>
+              <div className="mt-1 flex flex-col items-end gap-1.5">
+                <Badge variant={detail.active ? 'green' : 'red'}>{detail.active ? 'Active' : 'Inactive'}</Badge>
+                <Btn size="sm" variant={detail.active ? 'danger' : 'secondary'} disabled={toggling} onClick={toggleActive}>
+                  {toggling ? <Spinner size={11} /> : detail.active ? 'Deactivate' : 'Activate'}
+                </Btn>
+              </div>
             </div>
           </div>
 
@@ -1146,7 +1161,7 @@ function PromotionsTab({ token }: { token: string }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-slate-900 font-bold text-lg">Promotions</h2>
-          <p className="text-slate-500 text-sm">Deals, discounts, and experiences shown on the website before the hero.</p>
+          <p className="text-slate-500 text-sm">Manage the homepage banner strip and the <a href="/promotions" target="_blank" className="text-blue-600 hover:underline">/promotions</a> marketing page — both are driven by this list.</p>
         </div>
         {!editing && (
           <Btn onClick={startNew}><Plus size={14} className="mr-1.5" />New Promotion</Btn>
@@ -1893,6 +1908,10 @@ const CONTENT_SECTION_LABELS: Record<string, string> = {
   contact: 'Contact Details',
   hero: 'Hero Headings',
   pricing: 'Pricing',
+  home: 'Home Page Content',
+  events: 'Events Page',
+  footer: 'Footer',
+  cloudinary: 'Cloudinary Config',
 }
 
 function ContentTab({ token }: { token: string }) {
@@ -1935,7 +1954,10 @@ function ContentTab({ token }: { token: string }) {
     }, {})
   )
 
-  const isMultiline = (key: string) => key.includes('.heading') || key.includes('.subheading') || key.includes('.text')
+  const isMultiline = (key: string) =>
+    key.includes('.heading') || key.includes('.subheading') || key.includes('.text') ||
+    key.includes('.desc') || key.includes('.sub') || key.includes('.tagline') ||
+    key.includes('announcement.text') || key.includes('footer.tagline')
 
   return (
     <div>
@@ -2020,31 +2042,53 @@ interface SItem {
   images: { id: string; cloudinaryUrl: string; label: string; displayOrder: number }[]
 }
 
+const BLANK_SITEM = (category: string): Omit<SItem, 'id' | 'images'> => ({
+  category, slug: '', title: '', description: '', price: '', tag: '', displayOrder: 0, visible: true,
+})
+
 function ServiceItemsTab({ token }: { token: string }) {
   const { get: getBlock } = useContentBlocks()
   const [category, setCategory] = useState('PARK_ACTIVITY')
   const [items, setItems] = useState<SItem[]>([])
   const [editing, setEditing] = useState<SItem | null>(null)
+  const [isNew, setIsNew] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    setEditing(null)
+    setEditing(null); setIsNew(false)
     api.get<SItem[]>(`/service-items?category=${category}`, token).then(setItems).catch(() => {})
   }, [category, token])
 
   async function save() {
     if (!editing) return; setSaving(true)
     try {
-      const updated = await api.put<SItem>(`/service-items/${editing.id}`, {
-        title: editing.title, description: editing.description, price: editing.price,
-        tag: editing.tag, displayOrder: editing.displayOrder, visible: editing.visible,
-      }, token)
-      setItems(prev => prev.map(s => s.id === updated.id ? updated : s))
-      setEditing(updated); setSaved(true); setTimeout(() => setSaved(false), 2000)
+      const body = {
+        title: editing.title, description: editing.description, price: editing.price || null,
+        tag: editing.tag || null, displayOrder: editing.displayOrder, visible: editing.visible,
+      }
+      if (isNew) {
+        const created = await api.post<SItem>('/service-items', { ...body, category, slug: editing.slug || editing.title.toLowerCase().replace(/\s+/g, '-') }, token)
+        setItems(prev => [...prev, created])
+        setEditing(created); setIsNew(false)
+      } else {
+        const updated = await api.put<SItem>(`/service-items/${editing.id}`, body, token)
+        setItems(prev => prev.map(s => s.id === updated.id ? updated : s))
+        setEditing(updated)
+      }
+      setSaved(true); setTimeout(() => setSaved(false), 2000)
     } catch {} finally { setSaving(false) }
+  }
+
+  async function deleteItem(id: string) {
+    if (!confirm('Delete this service item?')) return
+    try {
+      await api.del<void>(`/service-items/${id}`, token)
+      setItems(prev => prev.filter(s => s.id !== id))
+      if (editing?.id === id) { setEditing(null); setIsNew(false) }
+    } catch {}
   }
 
   async function uploadImage(file: File) {
@@ -2073,9 +2117,14 @@ function ServiceItemsTab({ token }: { token: string }) {
 
   return (
     <div>
-      <div className="mb-5">
-        <h2 className="text-slate-900 font-bold text-lg">Service Items</h2>
-        <p className="text-slate-500 text-sm">Edit service item details and manage their Cloudinary images.</p>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="text-slate-900 font-bold text-lg">Service Items</h2>
+          <p className="text-slate-500 text-sm">Edit service item details and manage their Cloudinary images.</p>
+        </div>
+        <Btn onClick={() => { setEditing({ ...BLANK_SITEM(category), id: '', images: [] } as SItem); setIsNew(true); setSaved(false) }}>
+          <Plus size={14} /> New Item
+        </Btn>
       </div>
       <div className="flex flex-wrap gap-2 mb-5">
         {SERVICE_CATEGORIES.map(c => (
@@ -2090,20 +2139,28 @@ function ServiceItemsTab({ token }: { token: string }) {
       <div className="grid lg:grid-cols-5 gap-5">
         <div className="lg:col-span-2 space-y-2">
           {items.map(s => (
-            <button key={s.id} onClick={() => { setEditing({ ...s }); setSaved(false) }}
-              className={`w-full text-left p-4 rounded-xl border transition-all ${
-                editing?.id === s.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+            <div key={s.id}
+              className={`p-4 rounded-xl border transition-all ${
+                editing?.id === s.id && !isNew ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
               }`}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-slate-800 font-semibold text-sm">{s.title}</span>
-                <div className="flex items-center gap-2">
-                  {s.price && <span className="text-xs text-slate-500">{s.price}</span>}
-                  <Badge variant={s.visible ? 'green' : 'gray'}>{s.visible ? 'On' : 'Off'}</Badge>
+              <button className="w-full text-left" onClick={() => { setEditing({ ...s }); setIsNew(false); setSaved(false) }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-slate-800 font-semibold text-sm">{s.title}</span>
+                  <div className="flex items-center gap-2">
+                    {s.price && <span className="text-xs text-slate-500">{s.price}</span>}
+                    <Badge variant={s.visible ? 'green' : 'gray'}>{s.visible ? 'On' : 'Off'}</Badge>
+                  </div>
                 </div>
+                <p className="text-slate-400 text-xs line-clamp-1">{s.description}</p>
+                {s.images.length > 0 && <p className="text-slate-300 text-[10px] mt-1">{s.images.length} image{s.images.length > 1 ? 's' : ''}</p>}
+              </button>
+              <div className="flex justify-end mt-1.5">
+                <button onClick={() => deleteItem(s.id)}
+                  className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded">
+                  <Trash2 size={11} />
+                </button>
               </div>
-              <p className="text-slate-400 text-xs line-clamp-1">{s.description}</p>
-              {s.images.length > 0 && <p className="text-slate-300 text-[10px] mt-1">{s.images.length} image{s.images.length > 1 ? 's' : ''}</p>}
-            </button>
+            </div>
           ))}
           {items.length === 0 && <EmptyState icon={FileText} title="No items" sub="No service items in this category" />}
         </div>
@@ -2112,12 +2169,17 @@ function ServiceItemsTab({ token }: { token: string }) {
             <Card>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="text-slate-900 font-semibold">Edit Item</h3>
-                  <p className="text-slate-400 text-xs font-mono">{editing.slug}</p>
+                  <h3 className="text-slate-900 font-semibold">{isNew ? 'New Service Item' : 'Edit Item'}</h3>
+                  {!isNew && <p className="text-slate-400 text-xs font-mono">{editing.slug}</p>}
                 </div>
                 {saved && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
               </div>
               <div className="space-y-4">
+                {isNew && (
+                  <FieldGroup label="Slug" hint="URL-safe identifier, lowercase with hyphens">
+                    <Input value={editing.slug} onChange={e => setEditing({ ...editing, slug: e.target.value })} placeholder="e.g. archery-range" />
+                  </FieldGroup>
+                )}
                 <FieldGroup label="Title">
                   <Input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
                 </FieldGroup>
@@ -2148,11 +2210,14 @@ function ServiceItemsTab({ token }: { token: string }) {
                   </FieldGroup>
                 </div>
                 <div className="flex gap-2 pt-1">
-                  <Btn onClick={save} disabled={saving}>{saving ? <><Spinner size={13} /> Saving…</> : 'Save Changes'}</Btn>
-                  <Btn variant="ghost" onClick={() => setEditing(null)}>Cancel</Btn>
+                  <Btn onClick={save} disabled={saving || !editing.title.trim()}>
+                    {saving ? <><Spinner size={13} /> Saving…</> : isNew ? 'Create Item' : 'Save Changes'}
+                  </Btn>
+                  <Btn variant="ghost" onClick={() => { setEditing(null); setIsNew(false) }}>Cancel</Btn>
                 </div>
 
-                {/* Images */}
+                {/* Images — only for existing items */}
+                {!isNew && (
                 <div className="border-t border-slate-100 pt-4 mt-2">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-slate-700 font-semibold text-sm">Images</h4>
@@ -2178,11 +2243,12 @@ function ServiceItemsTab({ token }: { token: string }) {
                     <p className="text-slate-400 text-xs">No images yet — upload one above.</p>
                   )}
                 </div>
+                )}
               </div>
             </Card>
           ) : (
             <div className="h-full flex items-center justify-center">
-              <EmptyState icon={FileText} title="Select an item to edit" sub="Click any service item on the left" />
+              <EmptyState icon={FileText} title="Select an item to edit" sub="Click any service item on the left, or New Item to add one" />
             </div>
           )}
         </div>
