@@ -42,6 +42,44 @@ function getClds() {
 }
 interface UploadedAsset { url: string; publicId: string; type: 'image' | 'video'; bytes: number; format: string }
 
+// Module-level reactive uploads list — shared between SlotsTab and UploadTab
+let _uploads: UploadedAsset[] = (() => { try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] } })()
+let _uploadListeners: Array<(list: UploadedAsset[]) => void> = []
+function notifyUploadListeners() { _uploadListeners.forEach(fn => fn([..._uploads])) }
+function pushUploads(assets: UploadedAsset[]) {
+  _uploads = [...assets, ..._uploads]
+  localStorage.setItem('cld_uploads', JSON.stringify(_uploads))
+  notifyUploadListeners()
+}
+function clearUploads() {
+  _uploads = []
+  localStorage.removeItem('cld_uploads')
+  notifyUploadListeners()
+}
+function useUploadsList(): UploadedAsset[] {
+  const [list, setList] = useState<UploadedAsset[]>(() => [..._uploads])
+  useEffect(() => {
+    _uploadListeners.push(setList)
+    return () => { _uploadListeners = _uploadListeners.filter(fn => fn !== setList) }
+  }, [])
+  return list
+}
+
+async function uploadToCloudinary(
+  file: File,
+  creds: { cloudName: string; uploadPreset: string }
+): Promise<UploadedAsset> {
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('upload_preset', creds.uploadPreset)
+  fd.append('folder', 'cabhouse')
+  const rt = file.type.startsWith('video') ? 'video' : 'image'
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${creds.cloudName}/${rt}/upload`, { method: 'POST', body: fd })
+  if (!res.ok) throw new Error(res.statusText)
+  const d = await res.json()
+  return { url: d.secure_url, publicId: d.public_id, type: rt, bytes: d.bytes, format: d.format }
+}
+
 // ── Primitive UI ──────────────────────────────────────────────────────────────
 function Spinner({ size = 16 }: { size?: number }) {
   return <Loader2 size={size} className="animate-spin" />
@@ -485,248 +523,239 @@ function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MEDIA TAB
 // ═══════════════════════════════════════════════════════════════════════════════
-function MediaTab({ token }: { token: string }) {
-  const [view, setView] = useState<'slots' | 'upload' | 'config'>('slots')
-  const [creds, setCreds] = useState(getClds)
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-slate-900 font-bold text-lg">Media Management</h2>
-          <p className="text-slate-500 text-sm">Manage images and videos across all site sections.</p>
-        </div>
-        <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
-          {(['slots','upload','config'] as const).map(v => (
-            <button key={v} onClick={() => setView(v)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all capitalize ${view === v ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
-              {v === 'slots' ? 'Image Slots' : v === 'upload' ? 'Upload' : 'Cloudinary'}
-            </button>
-          ))}
-        </div>
-      </div>
-      {view === 'slots'  && <SlotsTab  token={token} />}
-      {view === 'upload' && <UploadTab creds={creds} />}
-      {view === 'config' && <CredentialsTab creds={creds} setCreds={setCreds} onSave={() => { localStorage.setItem(CLD_CLOUD_KEY, creds.cloudName.trim()); localStorage.setItem(CLD_PRESET_KEY, creds.uploadPreset.trim()) }} />}
-    </div>
-  )
-}
-
-function CredentialsTab({ creds, setCreds, onSave }: {
-  creds: { cloudName: string; uploadPreset: string }
-  setCreds: (c: { cloudName: string; uploadPreset: string }) => void
-  onSave: () => void
+// ─── shared page sidebar ──────────────────────────────────────────────────────
+function PageSidebar({ activePage, onSelect, pages }: {
+  activePage: string
+  onSelect: (id: string) => void
+  pages: readonly { id: string; label: string }[]
 }) {
-  const [saved, setSaved] = useState(false)
-  function save() { onSave(); setSaved(true); setTimeout(() => setSaved(false), 2000) }
   return (
-    <Card className="max-w-lg">
-      <h3 className="text-slate-900 font-semibold mb-5">Cloudinary Config</h3>
-      <div className="space-y-4">
-        <FieldGroup label="Cloud Name">
-          <Input value={creds.cloudName} onChange={e => setCreds({ ...creds, cloudName: e.target.value })} placeholder="e.g. my-cloud" />
-        </FieldGroup>
-        <FieldGroup label="Unsigned Upload Preset" hint="Must be set to 'Unsigned' mode in your Cloudinary console">
-          <Input value={creds.uploadPreset} onChange={e => setCreds({ ...creds, uploadPreset: e.target.value })} placeholder="e.g. cabhouse_unsigned" />
-        </FieldGroup>
-        <Btn onClick={save}>{saved ? <><Check size={13} /> Saved</> : 'Save'}</Btn>
-      </div>
-    </Card>
+    <nav className="flex flex-col gap-0.5 w-36 flex-shrink-0">
+      {pages.map(p => (
+        <button key={p.id} onClick={() => onSelect(p.id)}
+          className={`text-left px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            activePage === p.id
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+          }`}>
+          {p.label}
+        </button>
+      ))}
+    </nav>
   )
 }
 
-function UploadTab({ creds }: { creds: { cloudName: string; uploadPreset: string } }) {
-  const [uploads, setUploads] = useState<UploadedAsset[]>(() => {
-    try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
-  })
-  const [uploading, setUploading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [error, setError] = useState<string | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+// ═══════════════════════════════════════════════════════════════════════════════
+// MEDIA TAB — per-page image management with large previews
+// ═══════════════════════════════════════════════════════════════════════════════
 
-  function saveUploads(list: UploadedAsset[]) { setUploads(list); localStorage.setItem('cld_uploads', JSON.stringify(list)) }
-
-  async function uploadFiles(files: FileList | File[]) {
-    if (!creds.cloudName || !creds.uploadPreset) { setError('Configure Cloudinary credentials first.'); return }
-    setError(null); setUploading(true); setProgress(0)
-    const arr = Array.from(files); const results: UploadedAsset[] = []
-    for (let i = 0; i < arr.length; i++) {
-      const file = arr[i]; const fd = new FormData()
-      fd.append('file', file); fd.append('upload_preset', creds.uploadPreset); fd.append('folder', 'cabhouse')
-      const rt = file.type.startsWith('video') ? 'video' : 'image'
-      try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${creds.cloudName}/${rt}/upload`, { method: 'POST', body: fd })
-        if (!res.ok) throw new Error(res.statusText)
-        const d = await res.json()
-        results.push({ url: d.secure_url, publicId: d.public_id, type: rt, bytes: d.bytes, format: d.format })
-      } catch { setError(`Upload failed: ${file.name}`) }
-      setProgress(Math.round(((i + 1) / arr.length) * 100))
-    }
-    saveUploads([...results, ...uploads]); setUploading(false)
-  }
-
-  return (
-    <div className="max-w-3xl">
-      <div
-        className="border-2 border-dashed border-slate-200 hover:border-blue-300 rounded-2xl p-14 text-center cursor-pointer transition-colors bg-white"
-        onClick={() => inputRef.current?.click()}
-        onDragOver={e => e.preventDefault()}
-        onDrop={e => { e.preventDefault(); e.dataTransfer.files.length && uploadFiles(e.dataTransfer.files) }}
-      >
-        <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
-          <Upload size={20} className="text-slate-400" />
-        </div>
-        <p className="text-slate-700 font-semibold text-sm">Drop files here or click to browse</p>
-        <p className="text-slate-400 text-xs mt-1">Images and videos up to 100MB</p>
-        <input ref={inputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={e => e.target.files && uploadFiles(e.target.files)} />
-      </div>
-
-      {uploading && (
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Uploading…</span><span>{progress}%</span></div>
-          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500 transition-all" style={{ width: `${progress}%` }} /></div>
-        </div>
-      )}
-      {error && <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">{error}</div>}
-
-      {uploads.length > 0 && (
-        <div className="mt-8">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-slate-700 text-sm font-semibold">{uploads.length} file{uploads.length !== 1 ? 's' : ''} uploaded</p>
-            <button onClick={() => saveUploads([])} className="text-xs text-slate-400 hover:text-red-600 transition-colors">Clear all</button>
-          </div>
-          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
-            {uploads.map(a => (
-              <div key={a.publicId} className="group relative rounded-xl overflow-hidden aspect-square bg-slate-100 border border-slate-200">
-                <img src={a.url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button onClick={() => navigator.clipboard.writeText(a.url)}
-                    className="bg-white text-slate-900 text-[9px] font-bold px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                    <Copy size={9} /> Copy
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function SlotsTab({ token }: { token: string }) {
-  const [uploads] = useState<UploadedAsset[]>(() => {
-    try { return JSON.parse(localStorage.getItem('cld_uploads') ?? '[]') } catch { return [] }
-  })
+function MediaTab({ token }: { token: string }) {
+  const [creds, setCreds] = useState(getClds)
+  const [activePage, setActivePage] = useState<string>('home')
   const [backendSlots, setBackendSlots] = useState<Record<string, string | null>>({})
-  const sections = [...new Set(MEDIA_SLOTS.map(s => s.section))]
-  const [openSection, setOpenSection] = useState(sections[0])
+  const uploads = useUploadsList()
 
+  // Auto-load Cloudinary creds from DB
+  useEffect(() => {
+    const stored = getClds()
+    if (stored.cloudName && stored.uploadPreset) return
+    api.get<{ key: string; value: string }[]>('/content/public/blocks', token)
+      .then(blocks => {
+        const cloud = blocks.find((b: any) => b.key === 'cloudinary.cloud_name')?.value ?? ''
+        const preset = blocks.find((b: any) => b.key === 'cloudinary.upload_preset')?.value ?? ''
+        if (cloud) { localStorage.setItem(CLD_CLOUD_KEY, cloud); setCreds(c => ({ ...c, cloudName: cloud })) }
+        if (preset) { localStorage.setItem(CLD_PRESET_KEY, preset); setCreds(c => ({ ...c, uploadPreset: preset })) }
+      }).catch(() => {})
+  }, [token])
+
+  // Load all backend slot overrides
   useEffect(() => {
     api.get<{ slotId: string; cloudinaryUrl: string | null }[]>('/content/media-slots', token)
-      .then(slots => { const m: Record<string, string | null> = {}; slots.forEach(s => { m[s.slotId] = s.cloudinaryUrl }); setBackendSlots(m) })
-      .catch(() => {})
+      .then(slots => {
+        const m: Record<string, string | null> = {}
+        slots.forEach(s => { m[s.slotId] = s.cloudinaryUrl })
+        setBackendSlots(m)
+        slots.forEach(s => {
+          if (s.cloudinaryUrl) { applyOverride(s.slotId, s.cloudinaryUrl) } else { clearOverride(s.slotId) }
+        })
+      }).catch(() => {})
   }, [token])
 
   async function applySlot(slotId: string, url: string) {
     await api.put(`/content/media-slots/${slotId}`, { cloudinaryUrl: url }, token)
-    setBackendSlots(prev => ({ ...prev, [slotId]: url })); applyOverride(slotId, url)
+    setBackendSlots(prev => ({ ...prev, [slotId]: url }))
+    applyOverride(slotId, url)
   }
   async function resetSlot(slotId: string) {
     await api.del(`/content/media-slots/${slotId}`, token)
-    setBackendSlots(prev => ({ ...prev, [slotId]: null })); clearOverride(slotId)
+    setBackendSlots(prev => ({ ...prev, [slotId]: null }))
+    clearOverride(slotId)
   }
 
+  const mediaPages = SITE_PAGES.filter(p => p.mediaSections.length > 0)
+  const page = SITE_PAGES.find(p => p.id === activePage) ?? SITE_PAGES[0]
+  const pageSlots = MEDIA_SLOTS.filter(s => (page.mediaSections as readonly string[]).includes(s.section))
+  const liveCount = pageSlots.filter(s => backendSlots[s.id]).length
+
   return (
-    <div className="space-y-2">
-      {sections.map(section => {
-        const slots = MEDIA_SLOTS.filter(s => s.section === section)
-        const liveCount = slots.filter(s => backendSlots[s.id]).length
-        const isOpen = openSection === section
-        return (
-          <Card key={section} padding={false}>
-            <button onClick={() => setOpenSection(isOpen ? '' : section)}
-              className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors rounded-xl text-left">
-              <div className="flex items-center gap-3">
-                <span className="text-slate-900 font-semibold text-sm">{section}</span>
-                <span className="text-slate-400 text-xs">{slots.length} slots</span>
-                {liveCount > 0 && <Badge variant="green">{liveCount} live</Badge>}
+    <div>
+      <div className="mb-6">
+        <h2 className="text-slate-900 font-bold text-lg">Images</h2>
+        <p className="text-slate-500 text-sm">Upload and assign images per page. Each slot shows a live preview.</p>
+      </div>
+      {!creds.cloudName && (
+        <div className="mb-5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-amber-800 text-sm flex items-center gap-2">
+          <span className="font-semibold">Cloudinary not configured.</span>
+          <span>Go to Settings in the Content tab to set it up.</span>
+        </div>
+      )}
+      <div className="flex gap-6">
+        <PageSidebar activePage={activePage} onSelect={setActivePage}
+          pages={mediaPages.map(p => ({ id: p.id, label: p.label }))} />
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-5">
+            <h3 className="text-slate-900 font-bold">{page.label}</h3>
+            <span className="text-slate-400 text-xs">{pageSlots.length} image{pageSlots.length !== 1 ? 's' : ''}</span>
+            {liveCount > 0 && <Badge variant="green">{liveCount} live</Badge>}
+          </div>
+
+          {pageSlots.length === 0 ? (
+            <p className="text-slate-400 text-sm">No image slots on this page.</p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {pageSlots.map(slot => (
+                <SlotCard key={slot.id} slot={slot} uploads={uploads} creds={creds}
+                  backendUrl={backendSlots[slot.id] ?? null}
+                  onApply={applySlot} onReset={resetSlot} />
+              ))}
+            </div>
+          )}
+
+          {/* Upload library strip */}
+          {uploads.length > 0 && (
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-slate-600 text-xs font-semibold uppercase tracking-wider">Upload library ({uploads.length})</p>
+                <button onClick={clearUploads} className="text-xs text-slate-400 hover:text-red-500 transition-colors">Clear</button>
               </div>
-              <ChevronDown size={15} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isOpen && (
-              <div className="border-t border-slate-100 divide-y divide-slate-50">
-                {slots.map(slot => (
-                  <SlotRow key={slot.id} slot={slot} uploads={uploads}
-                    backendUrl={backendSlots[slot.id] ?? null}
-                    onApply={applySlot} onReset={resetSlot} />
+              <div className="flex gap-2 flex-wrap">
+                {uploads.map(a => (
+                  <div key={a.publicId} className="group relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                    {a.type === 'video'
+                      ? <video src={a.url} className="w-full h-full object-cover" muted />
+                      : <img src={a.url} alt="" className="w-full h-full object-cover" loading="lazy" />}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button onClick={() => navigator.clipboard.writeText(a.url)}
+                        className="bg-white text-slate-900 text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                        Copy
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
-          </Card>
-        )
-      })}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
 
-function SlotRow({ slot, uploads, backendUrl, onApply, onReset }: {
-  slot: MediaSlot; uploads: UploadedAsset[]
+// ─── Slot card — large image preview card ─────────────────────────────────────
+function SlotCard({ slot, uploads, creds, backendUrl, onApply, onReset }: {
+  slot: MediaSlot
+  uploads: UploadedAsset[]
+  creds: { cloudName: string; uploadPreset: string }
   backendUrl: string | null
   onApply: (id: string, url: string) => Promise<void>
   onReset: (id: string) => Promise<void>
 }) {
-  const displayUrl = backendUrl ?? getSlotUrl(slot.id)
-  const [manual, setManual] = useState('')
+  const currentUrl = backendUrl ?? getSlotUrl(slot.id)
   const [showPicker, setShowPicker] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState<'upload' | 'apply' | 'reset' | null>(null)
+  const [uploadErr, setUploadErr] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   async function apply(url: string) {
-    setSaving(true); try { await onApply(slot.id, url); setManual(''); setShowPicker(false) } finally { setSaving(false) }
+    setSaving('apply')
+    try { await onApply(slot.id, url); setShowPicker(false) }
+    finally { setSaving(null) }
   }
-  async function reset() { setSaving(true); try { await onReset(slot.id) } finally { setSaving(false) } }
+  async function reset() {
+    setSaving('reset')
+    try { await onReset(slot.id) }
+    finally { setSaving(null) }
+  }
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]; if (!file) return
+    if (!creds.cloudName || !creds.uploadPreset) { setUploadErr('Cloudinary not configured'); return }
+    setUploadErr(null); setSaving('upload')
+    try {
+      const asset = await uploadToCloudinary(file, creds)
+      pushUploads([asset])
+      await onApply(slot.id, asset.url)
+      setShowPicker(false)
+    } catch { setUploadErr('Upload failed') }
+    finally { setSaving(null); e.target.value = '' }
+  }
 
   return (
-    <div className="px-5 py-4 flex gap-4">
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
-        {displayUrl
-          ? <img src={displayUrl} alt={slot.alt} className="w-full h-full object-cover" loading="lazy" />
-          : <div className="w-full h-full flex items-center justify-center"><Image size={16} className="text-slate-300" /></div>}
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+      {/* Large image preview */}
+      <div className="relative aspect-[4/3] bg-slate-100">
+        {currentUrl
+          ? (slot.type === 'video'
+              ? <video src={currentUrl} className="w-full h-full object-cover" muted loop />
+              : <img src={currentUrl} alt={slot.alt} className="w-full h-full object-cover" loading="lazy" />)
+          : <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+              <Image size={28} className="text-slate-300" />
+              <span className="text-slate-400 text-xs">No image set</span>
+            </div>}
+        {backendUrl && (
+          <div className="absolute top-2 right-2 bg-green-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">Live</div>
+        )}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <p className="text-slate-800 text-sm font-semibold">{slot.label}</p>
-          <code className="text-slate-400 text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">{slot.id}</code>
-          {backendUrl && <Badge variant="amber">Live</Badge>}
+
+      {/* Controls */}
+      <div className="p-3">
+        <p className="text-slate-800 text-sm font-semibold mb-0.5">{slot.label}</p>
+        <p className="text-slate-400 text-[10px] font-mono mb-3">{slot.id}</p>
+
+        <div className="flex gap-2 flex-wrap">
+          <input ref={fileRef} type="file" accept={slot.type === 'video' ? 'video/*' : 'image/*'} className="hidden" onChange={handleFileChange} />
+          <Btn size="sm" onClick={() => fileRef.current?.click()} disabled={saving !== null}>
+            {saving === 'upload' ? <><Spinner size={11} /> Uploading…</> : <><Upload size={11} /> Upload</>}
+          </Btn>
+          {uploads.length > 0 && (
+            <Btn size="sm" variant="secondary" onClick={() => setShowPicker(p => !p)} disabled={saving !== null}>
+              <Image size={11} /> Pick ({uploads.length})
+            </Btn>
+          )}
+          {backendUrl && (
+            <Btn size="sm" variant="secondary" onClick={reset} disabled={saving !== null} title="Reset to default">
+              {saving === 'reset' ? <Spinner size={11} /> : <RefreshCw size={11} />}
+            </Btn>
+          )}
         </div>
-        {displayUrl && <p className="text-slate-400 text-[10px] font-mono truncate mb-2">{displayUrl}</p>}
-        {uploads.length > 0 && (
-          <div className="mb-2">
-            <button onClick={() => setShowPicker(!showPicker)} className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium transition-colors">
-              Pick from uploads <ChevronDown size={10} className={showPicker ? 'rotate-180' : ''} />
-            </button>
-            {showPicker && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {uploads.map(u => (
-                  <button key={u.publicId} onClick={() => apply(u.url)}
-                    className="w-10 h-10 rounded-lg overflow-hidden border-2 border-transparent hover:border-blue-500 transition-colors">
-                    <img src={u.url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                  </button>
-                ))}
-              </div>
-            )}
+
+        {showPicker && uploads.length > 0 && (
+          <div className="mt-3 p-2 bg-slate-50 border border-slate-200 rounded-xl">
+            <p className="text-slate-400 text-[10px] mb-2">Pick from library:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {uploads.map(u => (
+                <button key={u.publicId} onClick={() => apply(u.url)} disabled={saving !== null}
+                  className="w-12 h-12 rounded-lg overflow-hidden border-2 border-transparent hover:border-blue-500 transition-colors disabled:opacity-50">
+                  {u.type === 'video'
+                    ? <video src={u.url} className="w-full h-full object-cover" muted />
+                    : <img src={u.url} alt="" className="w-full h-full object-cover" loading="lazy" />}
+                </button>
+              ))}
+            </div>
           </div>
         )}
-        <div className="flex gap-2">
-          <input value={manual} onChange={e => setManual(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && manual.trim() && apply(manual.trim())}
-            placeholder="Paste URL and press Enter…"
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono" />
-          <Btn size="sm" disabled={!manual.trim() || saving} onClick={() => apply(manual.trim())}>
-            {saving ? <Spinner size={12} /> : 'Apply'}
-          </Btn>
-          {backendUrl && <Btn size="sm" variant="secondary" onClick={reset} disabled={saving}><RefreshCw size={11} /></Btn>}
-        </div>
+
+        {uploadErr && <p className="text-red-500 text-[10px] mt-2">{uploadErr}</p>}
       </div>
     </div>
   )
@@ -1954,12 +1983,26 @@ const CONTENT_SECTION_LABELS: Record<string, string> = {
   cloudinary: 'Cloudinary Config',
 }
 
+// ── Page definitions for per-page media & content editing ─────────────────────
+const SITE_PAGES = [
+  { id: 'home',       label: 'Home',        mediaSections: ['Hero', 'Experience Cards', 'Featured'], contentSections: ['announcement', 'hero', 'home'] },
+  { id: 'park',       label: 'Park',        mediaSections: ['Park Playground'],                       contentSections: ['pricing'] },
+  { id: 'gallery',    label: 'Gallery',     mediaSections: ['Gallery'],                               contentSections: [] },
+  { id: 'events',     label: 'Events',      mediaSections: [],                                        contentSections: ['events'] },
+  { id: 'contact',    label: 'Contact',     mediaSections: [],                                        contentSections: ['contact'] },
+  { id: 'footer',     label: 'Footer',      mediaSections: [],                                        contentSections: ['footer'] },
+  { id: 'settings',   label: 'Settings',    mediaSections: [],                                        contentSections: ['cloudinary'] },
+] as const
+
 function ContentTab({ token }: { token: string }) {
   const [blocks, setBlocks] = useState<ContentBlock[]>([])
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState<Record<string, boolean>>({})
   const [saved, setSaved] = useState<Record<string, boolean>>({})
   const [error, setError] = useState<Record<string, string>>({})
+  const [activePage, setActivePage] = useState<string>('home')
+  const [credDraft, setCredDraft] = useState({ cloudName: getClds().cloudName, uploadPreset: getClds().uploadPreset })
+  const [credSaved, setCredSaved] = useState(false)
 
   useEffect(() => {
     api.get<ContentBlock[]>('/content/blocks', token)
@@ -1978,7 +2021,7 @@ function ContentTab({ token }: { token: string }) {
       await api.put<ContentBlock>(`/content/blocks/${key}`, { value: drafts[key] ?? '' }, token)
       setBlocks(prev => prev.map(b => b.key === key ? { ...b, value: drafts[key] ?? '' } : b))
       setSaved(p => ({ ...p, [key]: true }))
-      setTimeout(() => setSaved(p => ({ ...p, [key]: false })), 2000)
+      setTimeout(() => setSaved(p => ({ ...p, [key]: false })), 2500)
       invalidateContentCache()
     } catch {
       setError(p => ({ ...p, [key]: 'Save failed' }))
@@ -1987,77 +2030,121 @@ function ContentTab({ token }: { token: string }) {
     }
   }
 
-  const sections = Object.entries(
-    blocks.reduce<Record<string, ContentBlock[]>>((acc, b) => {
-      ;(acc[b.section] = acc[b.section] ?? []).push(b)
-      return acc
-    }, {})
-  )
+  function saveCredentials() {
+    localStorage.setItem(CLD_CLOUD_KEY, credDraft.cloudName.trim())
+    localStorage.setItem(CLD_PRESET_KEY, credDraft.uploadPreset.trim())
+    setCredSaved(true)
+    setTimeout(() => setCredSaved(false), 2500)
+  }
 
   const isMultiline = (key: string) =>
     key.includes('.heading') || key.includes('.subheading') || key.includes('.text') ||
     key.includes('.desc') || key.includes('.sub') || key.includes('.tagline') ||
     key.includes('announcement.text') || key.includes('footer.tagline')
 
+  const page = SITE_PAGES.find(p => p.id === activePage) ?? SITE_PAGES[0]
+  const pageBlocks = blocks.filter(b => (page.contentSections as readonly string[]).includes(b.section))
+
+  const blocksBySection = pageBlocks.reduce<Record<string, ContentBlock[]>>((acc, b) => {
+    ;(acc[b.section] = acc[b.section] ?? []).push(b)
+    return acc
+  }, {})
+
+  const isSettingsPage = activePage === 'settings'
+
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-slate-900 font-bold text-lg">Content Blocks</h2>
-        <p className="text-slate-500 text-sm">Edit text displayed on the website. Changes go live after the page cache refreshes (up to 5 minutes).</p>
+        <h2 className="text-slate-900 font-bold text-lg">Text Content</h2>
+        <p className="text-slate-500 text-sm">Edit text per page. Changes go live within 5 minutes. Defaults fall back to built-in static text if not set.</p>
       </div>
-      <div className="space-y-8">
-        {sections.map(([section, items]) => (
-          <div key={section}>
-            <h3 className="text-slate-700 font-semibold text-sm mb-3 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block" />
-              {CONTENT_SECTION_LABELS[section] ?? section}
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {items.map(block => {
-                const changed = drafts[block.key] !== block.value
-                const multi = isMultiline(block.key)
-                return (
-                  <Card key={block.key}>
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <p className="text-slate-800 text-sm font-semibold">{block.label}</p>
-                        <p className="text-slate-400 text-[10px] font-mono mt-0.5">{block.key}</p>
-                      </div>
-                      {saved[block.key] && (
-                        <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>
-                      )}
-                    </div>
-                    {multi ? (
-                      <Textarea
-                        rows={3}
-                        value={drafts[block.key] ?? ''}
-                        onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))}
-                      />
-                    ) : (
-                      <Input
-                        value={drafts[block.key] ?? ''}
-                        onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))}
-                      />
-                    )}
-                    {error[block.key] && (
-                      <p className="text-red-500 text-xs mt-1">{error[block.key]}</p>
-                    )}
-                    <div className="flex justify-end mt-3">
-                      <Btn
-                        onClick={() => saveBlock(block.key)}
-                        disabled={!changed || saving[block.key]}
-                        variant={changed ? 'primary' : 'ghost'}
-                      >
-                        {saving[block.key] ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
-                        {saving[block.key] ? 'Saving…' : 'Save'}
-                      </Btn>
-                    </div>
-                  </Card>
-                )
-              })}
+      <div className="flex gap-6">
+        <PageSidebar activePage={activePage} onSelect={setActivePage}
+          pages={SITE_PAGES.map(p => ({ id: p.id, label: p.label }))} />
+
+        <div className="flex-1 min-w-0">
+          {isSettingsPage ? (
+            /* Cloudinary credentials */
+            <Card className="max-w-lg">
+              <h3 className="text-slate-900 font-semibold mb-1">Cloudinary Setup</h3>
+              <p className="text-slate-400 text-xs mb-5">Stored in browser only. Pre-filled from the database when available.</p>
+              <div className="space-y-4">
+                <FieldGroup label="Cloud Name">
+                  <Input value={credDraft.cloudName} onChange={e => setCredDraft(d => ({ ...d, cloudName: e.target.value }))} placeholder="e.g. j47mpkup" />
+                </FieldGroup>
+                <FieldGroup label="Upload Preset" hint="Must be 'Unsigned' in Cloudinary console">
+                  <Input value={credDraft.uploadPreset} onChange={e => setCredDraft(d => ({ ...d, uploadPreset: e.target.value }))} placeholder="e.g. CabHouse" />
+                </FieldGroup>
+                <Btn onClick={saveCredentials}>{credSaved ? <><Check size={13} /> Saved</> : 'Save to Browser'}</Btn>
+              </div>
+            </Card>
+          ) : pageBlocks.length === 0 ? (
+            <p className="text-slate-400 text-sm">No text blocks for this page yet.</p>
+          ) : (
+            <div className="space-y-8">
+              {Object.entries(blocksBySection).map(([section, items]) => (
+                <div key={section}>
+                  <h4 className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-4">
+                    {CONTENT_SECTION_LABELS[section] ?? section}
+                  </h4>
+                  <div className="space-y-4">
+                    {items.map(block => {
+                      const draft = drafts[block.key] ?? ''
+                      const changed = draft !== block.value
+                      const multi = isMultiline(block.key)
+                      return (
+                        <div key={block.key} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <p className="text-slate-800 text-sm font-semibold">{block.label}</p>
+                              <p className="text-slate-400 text-[10px] font-mono mt-0.5">{block.key}</p>
+                            </div>
+                            {saved[block.key] && <Badge variant="green"><Check size={10} className="mr-1" />Saved</Badge>}
+                          </div>
+
+                          {/* Edit field */}
+                          {multi ? (
+                            <Textarea rows={3} value={draft}
+                              onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))} />
+                          ) : (
+                            <Input value={draft}
+                              onChange={e => setDrafts(p => ({ ...p, [block.key]: e.target.value }))} />
+                          )}
+
+                          {/* Live preview strip */}
+                          {draft && (
+                            <div className="mt-3 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl">
+                              <p className="text-[9px] text-slate-400 uppercase tracking-wider mb-1">Preview</p>
+                              <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">{draft}</p>
+                            </div>
+                          )}
+
+                          {error[block.key] && <p className="text-red-500 text-xs mt-2">{error[block.key]}</p>}
+
+                          <div className="flex items-center justify-between mt-3">
+                            {changed && (
+                              <button onClick={() => setDrafts(p => ({ ...p, [block.key]: block.value }))}
+                                className="text-slate-400 text-xs hover:text-slate-600 transition-colors">
+                                Discard
+                              </button>
+                            )}
+                            <div className="ml-auto">
+                              <Btn onClick={() => saveBlock(block.key)} disabled={!changed || saving[block.key]}
+                                variant={changed ? 'primary' : 'ghost'}>
+                                {saving[block.key] ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                                {saving[block.key] ? 'Saving…' : 'Save'}
+                              </Btn>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+          )}
+        </div>
       </div>
     </div>
   )
