@@ -171,18 +171,39 @@ function WhatsAppPanel() {
   )
 }
 
+const API = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+
 function EmailPanel() {
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', message: '' })
-  const [showPicker, setShowPicker] = useState(false)
+  const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const { ref, inView } = useInView(0.08)
 
   const set = (k: keyof typeof form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm(f => ({ ...f, [k]: e.target.value }))
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowPicker(true)
+    setState('loading')
+    try {
+      const res = await fetch(`${API}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone || '000',
+          email: form.email,
+          company: form.company || null,
+          service: 'CORPORATE',
+          guests: 1,
+          message: form.message,
+        }),
+      })
+      if (!res.ok) throw new Error('failed')
+      setState('success')
+    } catch {
+      setState('error')
+    }
   }
 
   const inputCls =
@@ -205,11 +226,26 @@ function EmailPanel() {
         <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Enquiry</em>
       </h3>
       <p className="text-white/50 font-body text-xs leading-relaxed mb-7 max-w-xs">
-        For team events, school trips, weddings and bulk bookings — we'll come back with a tailored proposal.
+        For team events, school trips, weddings and bulk bookings — we'll reply with a tailored proposal.
       </p>
 
-      {showPicker && <ChannelPicker formData={form} onClose={() => setShowPicker(false)} />}
-      {(
+      {state === 'success' ? (
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 py-8">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'rgba(200,135,58,0.15)', border: '1px solid rgba(200,135,58,0.3)' }}>
+            <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6" stroke="#C8873A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 10l4 4 8-8" />
+            </svg>
+          </div>
+          <p className="text-white font-bold text-lg font-display">Enquiry received</p>
+          <p className="text-white/50 text-sm font-body max-w-[28ch]">We'll review your message and get back to you within 24 hours.</p>
+          <button
+            onClick={() => { setForm({ name: '', company: '', email: '', phone: '', message: '' }); setState('idle') }}
+            className="text-white/40 text-xs font-body underline underline-offset-2 mt-2"
+          >
+            Send another
+          </button>
+        </div>
+      ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input required value={form.name} onChange={set('name')} placeholder="Your name *" className={inputCls} />
@@ -225,19 +261,22 @@ function EmailPanel() {
             rows={5}
             className={`${inputCls} resize-none flex-1`}
           />
+          {state === 'error' && (
+            <p className="text-red-400 text-xs font-body">Something went wrong — please try again or contact us on WhatsApp.</p>
+          )}
           <button
             type="submit"
-            className="inline-flex items-center gap-2 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide"
+            disabled={state === 'loading'}
+            className="inline-flex items-center gap-2 text-white font-body font-bold text-sm px-6 py-3.5 rounded-full transition-all duration-200 self-start uppercase tracking-wide disabled:opacity-60"
             style={{ backgroundColor: 'var(--color-gold)' }}
           >
-            Send Enquiry
-            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
+            {state === 'loading' ? 'Sending…' : 'Send Enquiry'}
+            {state !== 'loading' && (
+              <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            )}
           </button>
-          <p className="text-white/30 font-body text-[10px] mt-1">
-            Choose WhatsApp or Email after submitting
-          </p>
         </form>
       )}
     </div>

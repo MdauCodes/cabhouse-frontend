@@ -73,29 +73,28 @@ function BrandPanel() {
           <span style={{ color: '#C8873A' }}>Stay.</span><br />
           Celebrate.
         </h2>
-        <p className="font-body text-white/45 text-sm leading-relaxed max-w-[32ch]">
-          Log in to access your CabHouse membership — earn coupons, track your visits, and get exclusive offers.
+        <p className="font-body text-white/45 text-sm leading-relaxed max-w-[28ch]">
+          Member portal. Track visits, earn coupons, and get exclusive offers.
         </p>
       </div>
 
-      {/* Bottom: floating feature cards */}
-      <div className="relative space-y-3">
+      {/* Bottom: feature cards */}
+      <div className="relative space-y-2.5">
         {[
-          { icon: '🎯', label: 'Earn coupons on every visit' },
-          { icon: '🎪', label: 'Exclusive member promotions' },
-          { icon: '📅', label: 'View & manage bookings' },
+          { label: 'Earn coupons on every visit' },
+          { label: 'Exclusive member promotions' },
+          { label: 'View and manage bookings' },
         ].map(f => (
           <div
             key={f.label}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl"
             style={{
               background: 'rgba(255,255,255,0.04)',
               border: '1px solid rgba(255,255,255,0.06)',
-              backdropFilter: 'blur(8px)',
             }}
           >
-            <span className="text-base">{f.icon}</span>
-            <span className="text-white/60 text-sm font-body">{f.label}</span>
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C8873A' }} />
+            <span className="text-white/55 text-sm font-body">{f.label}</span>
           </div>
         ))}
       </div>

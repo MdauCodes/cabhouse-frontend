@@ -1758,12 +1758,12 @@ function ActivityTab({ token }: { token: string }) {
 // BOOKINGS TAB
 // ═══════════════════════════════════════════════════════════════════════════════
 type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
-type BookingServiceType = 'PARK' | 'APARTMENTS' | 'WATER' | 'EVENTS' | 'RESTAURANT' | 'OTHER'
+type BookingServiceType = 'PARK' | 'APARTMENTS' | 'WATER' | 'EVENTS' | 'RESTAURANT' | 'OTHER' | 'CORPORATE'
 
 interface BookingRow {
   id: string; name: string; phone: string; email: string
   service: BookingServiceType; visitDate: string | null; guests: number
-  message: string | null; status: BookingStatus; adminNote: string | null; createdAt: string
+  company: string | null; message: string | null; status: BookingStatus; adminNote: string | null; createdAt: string
 }
 
 const STATUS_FILTERS: { id: BookingStatus | 'ALL'; label: string }[] = [
@@ -1851,7 +1851,7 @@ function BookingsTab({ token }: { token: string }) {
                   className={`w-full text-left p-4 rounded-xl border transition-all ${selected?.id === b.id ? 'border-blue-300 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'}`}>
                   <div className="flex items-start justify-between gap-3 mb-1">
                     <div className="min-w-0">
-                      <p className="text-slate-800 font-semibold text-sm truncate">{b.name}</p>
+                      <p className="text-slate-800 font-semibold text-sm truncate">{b.name}{b.company ? ` · ${b.company}` : ''}</p>
                       <p className="text-slate-400 text-xs">{b.phone} · {b.service} · {b.guests} guest{b.guests !== 1 ? 's' : ''}</p>
                     </div>
                     <Badge variant={bookingStatusVariant[b.status]}>{b.status}</Badge>
@@ -1885,6 +1885,7 @@ function BookingsTab({ token }: { token: string }) {
                 {[
                   ['Phone', selected.phone],
                   ['Email', selected.email || '—'],
+                  ['Organisation', selected.company || '—'],
                   ['Service', selected.service],
                   ['Visit Date', fmt(selected.visitDate)],
                   ['Guests', String(selected.guests)],
