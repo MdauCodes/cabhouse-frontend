@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Upload, Check, Image, RefreshCw, Copy,
-  ChevronDown, Users, TicketPercent, FileText, Activity,
+  Upload, Check, Image, RefreshCw,
+  Users, TicketPercent, FileText, Activity,
   LogOut, Menu, X, Plus, Eye, EyeOff, Search, Loader2,
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, ArrowUpRight,
@@ -733,7 +733,7 @@ function SlotCard({ slot, uploads, creds, backendUrl, onApply, onReset }: {
             </Btn>
           )}
           {backendUrl && (
-            <Btn size="sm" variant="secondary" onClick={reset} disabled={saving !== null} title="Reset to default">
+            <Btn size="sm" variant="secondary" onClick={reset} disabled={saving !== null}>
               {saving === 'reset' ? <Spinner size={11} /> : <RefreshCw size={11} />}
             </Btn>
           )}
