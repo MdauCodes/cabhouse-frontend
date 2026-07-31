@@ -224,34 +224,50 @@ function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
     const active = tab === item.id
     return (
       <button onClick={() => { onTab(item.id); onClose() }}
-        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
-          active ? 'bg-slate-900 text-white font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
-        }`}>
-        <item.Icon size={15} />
+        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all ${
+          active
+            ? 'font-semibold'
+            : 'text-white/40 hover:text-white/80 hover:bg-white/5 font-medium'
+        }`}
+        style={active ? {
+          background: 'linear-gradient(135deg, rgba(200,135,58,0.18), rgba(200,135,58,0.08))',
+          color: '#E8A85C',
+          border: '1px solid rgba(200,135,58,0.20)',
+        } : {}}
+      >
+        <item.Icon size={14} style={active ? { color: '#C8873A' } : {}} />
         {item.label}
       </button>
     )
   }
 
   const inner = (
-    <div className="h-full flex flex-col overflow-y-auto">
+    <div className="h-full flex flex-col overflow-y-auto" style={{ background: '#0d1117' }}>
       {/* Logo */}
-      <div className="px-4 py-5 border-b border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-amber-500 rounded-lg flex-shrink-0" />
+      <div className="px-4 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #C8873A, #a06020)' }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </div>
           <div>
-            <p className="text-slate-900 font-bold text-sm leading-none">CabHouse</p>
-            <p className="text-slate-400 text-[10px] mt-0.5">Admin Panel</p>
+            <p className="text-white font-bold text-sm leading-none">CabHouse</p>
+            <p className="text-white/30 text-[10px] mt-0.5">Admin Panel</p>
           </div>
         </div>
-        <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-slate-600"><X size={18} /></button>
+        <button onClick={onClose} className="lg:hidden text-white/30 hover:text-white/70 transition-colors"><X size={16} /></button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-3 space-y-5">
+      <nav className="flex-1 p-3 space-y-5 mt-1">
         {groups.map(g => (
           <div key={g.label}>
-            <p className="px-3 mb-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{g.label}</p>
+            <p className="px-3 mb-1.5 text-[9px] font-bold text-white/20 uppercase tracking-[0.18em]">{g.label}</p>
             <div className="space-y-0.5">
               {g.items.map(item => <NavItem key={item.id} item={item} />)}
             </div>
@@ -259,19 +275,34 @@ function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
         ))}
       </nav>
 
-      {/* User */}
-      <div className="p-3 border-t border-slate-100 space-y-0.5">
-        <a href="/" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium transition-all">
-          <ChevronRight size={15} /> View site
+      {/* User area */}
+      <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <a
+          href="/"
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all mb-0.5"
+          style={{ color: 'rgba(255,255,255,0.35)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.70)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; e.currentTarget.style.background = 'transparent' }}
+        >
+          <ChevronRight size={14} /> View site
         </a>
-        <button onClick={onLogout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-red-600 hover:bg-red-50 font-medium transition-all">
-          <LogOut size={15} /> Sign out
+        <button
+          onClick={onLogout}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all mb-2"
+          style={{ color: 'rgba(255,255,255,0.35)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.85)'; e.currentTarget.style.background = 'rgba(248,113,113,0.08)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; e.currentTarget.style.background = 'transparent' }}
+        >
+          <LogOut size={14} /> Sign out
         </button>
-        <div className="flex items-center gap-2.5 px-3 py-2.5 mt-1 rounded-xl bg-slate-50 border border-slate-100">
+        <div
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+        >
           <Avatar name={session.username} size="sm" />
           <div className="min-w-0">
-            <p className="text-slate-800 text-xs font-semibold truncate">{session.username}</p>
-            <p className="text-slate-400 text-[10px]">{session.role}</p>
+            <p className="text-white text-xs font-semibold truncate">{session.username}</p>
+            <p className="text-white/30 text-[10px]">{session.role}</p>
           </div>
         </div>
       </div>
@@ -280,9 +311,11 @@ function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
 
   return (
     <>
-      {open && <div className="fixed inset-0 z-20 bg-black/30 lg:hidden" onClick={onClose} />}
-      <aside className={`fixed lg:static z-30 inset-y-0 left-0 w-56 bg-white border-r border-slate-200 transition-transform duration-200
-        ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      {open && <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" onClick={onClose} />}
+      <aside
+        className={`fixed lg:static z-30 inset-y-0 left-0 w-56 transition-transform duration-200 ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        style={{ background: '#0d1117', borderRight: '1px solid rgba(255,255,255,0.06)' }}
+      >
         {inner}
       </aside>
     </>
@@ -291,18 +324,24 @@ function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
 
 function TopBar({ title, session, onMenuOpen }: { title: string; session: AdminSession; onMenuOpen: () => void }) {
   return (
-    <div className="h-14 border-b border-slate-200 bg-white px-5 flex items-center justify-between flex-shrink-0">
+    <div
+      className="h-14 px-5 flex items-center justify-between flex-shrink-0"
+      style={{ background: '#fff', borderBottom: '1px solid #e9ecef' }}
+    >
       <div className="flex items-center gap-3">
-        <button onClick={onMenuOpen} className="lg:hidden text-slate-500 hover:text-slate-900 transition-colors">
-          <Menu size={20} />
+        <button onClick={onMenuOpen} className="lg:hidden text-slate-500 hover:text-slate-900 transition-colors p-1">
+          <Menu size={18} />
         </button>
-        <div className="flex items-center gap-1.5 text-sm">
-          <span className="text-slate-400">cabhouse.site</span>
-          <ChevronRight size={12} className="text-slate-300" />
-          <span className="text-slate-900 font-semibold">{title}</span>
-        </div>
+        <nav className="flex items-center gap-1.5 text-sm">
+          <a href="/" className="text-slate-400 hover:text-slate-600 transition-colors font-medium">cabhouse.site</a>
+          <ChevronRight size={11} className="text-slate-300" />
+          <span className="text-slate-800 font-semibold">{title}</span>
+        </nav>
       </div>
-      <Avatar name={session.username} />
+      <div className="flex items-center gap-3">
+        <span className="text-slate-400 text-xs font-body hidden sm:block">{session.role}</span>
+        <Avatar name={session.username} />
+      </div>
     </div>
   )
 }
