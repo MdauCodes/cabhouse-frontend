@@ -2,7 +2,7 @@ import AnnouncementBar from '../components/AnnouncementBar'
 import Navbar from '../components/Navbar'
 import PromotionsStrip from '../components/PromotionsStrip'
 import HeroCarousel from '../components/HeroCarousel'
-import IntentSection from '../components/IntentSection'
+// import IntentSection from '../components/IntentSection' // hidden — re-enable when needed
 import BrandShowcase from '../components/BrandShowcase'
 import ExperiencesStrip from '../components/ExperiencesStrip'
 import ParkDeepDive from '../components/ParkDeepDive'
@@ -23,7 +23,7 @@ export default function Home() {
       <Navbar />
       <PromotionsStrip />
       <HeroCarousel />
-      <IntentSection />
+      {/* <IntentSection /> */}
       <BrandShowcase />
       <ExperiencesStrip />
       <ParkDeepDive />
