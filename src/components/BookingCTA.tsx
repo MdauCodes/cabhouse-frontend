@@ -90,7 +90,7 @@ function EmailPanel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: form.name,
-          phone: form.phone || '000',
+          phone: form.phone || null,
           email: form.email,
           company: form.company || null,
           service: 'CORPORATE',

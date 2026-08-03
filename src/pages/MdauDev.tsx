@@ -395,7 +395,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar title={PAGE_TITLES[tab]} session={session} onMenuOpen={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-auto p-5 lg:p-8">
-          {tab === 'overview'  && <OverviewTab  token={token} onNav={setTab} />}
+          {tab === 'overview'  && <OverviewTab  token={token} onNav={setTab} username={session.username} />}
           {tab === 'media'     && <MediaTab     token={token} />}
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
@@ -416,7 +416,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
 // ═══════════════════════════════════════════════════════════════════════════════
 // OVERVIEW
 // ═══════════════════════════════════════════════════════════════════════════════
-function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void }) {
+function OverviewTab({ token, onNav, username }: { token: string; onNav: (t: Tab) => void; username: string }) {
   const [stats, setStats] = useState<{ totalPatrons: number; activePatrons: number; totalCouponsIssued: number; totalCouponsRedeemed: number; pendingBookings: number } | null>(null)
   const [settings, setSettings] = useState<{ baseAmount: string; couponValue: string } | null>(null)
   const [recentActivity, setRecentActivity] = useState<any[]>([])
@@ -430,7 +430,7 @@ function OverviewTab({ token, onNav }: { token: string; onNav: (t: Tab) => void 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-slate-900 text-xl font-bold">Good day</h1>
+        <h1 className="text-slate-900 text-xl font-bold">Good day, {username.split('@')[0]}</h1>
         <p className="text-slate-500 text-sm">Here's what's happening at CabHouse.</p>
       </div>
 
@@ -783,14 +783,16 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   const [adjustError, setAdjustError] = useState('')
   const [adjustDone, setAdjustDone] = useState(false)
   const [toggling, setToggling] = useState(false)
+  const [toggleError, setToggleError] = useState('')
 
   async function toggleActive() {
     if (!detail) return
-    setToggling(true)
+    setToggling(true); setToggleError('')
     try {
       const updated = await api.patch<PatronRow>(`/patrons/${patronId}/toggle`, {}, token)
       setDetail(prev => prev ? { ...prev, active: updated.active } : prev)
-    } catch {} finally { setToggling(false) }
+    } catch (e: any) { setToggleError(e.message ?? 'Failed to update status') }
+    finally { setToggling(false) }
   }
 
   useEffect(() => {
@@ -836,6 +838,7 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
                 <Btn size="sm" variant={detail.active ? 'danger' : 'secondary'} disabled={toggling} onClick={toggleActive}>
                   {toggling ? <Spinner size={11} /> : detail.active ? 'Deactivate' : 'Activate'}
                 </Btn>
+                {toggleError && <p className="text-red-500 text-[10px]">{toggleError}</p>}
               </div>
             </div>
           </div>
@@ -1315,7 +1318,7 @@ function PromotionsTab({ token }: { token: string }) {
                 </FieldGroup>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <FieldGroup label="CTA Button Label" hint="Defaults to 'Find Out More'">
+                  <FieldGroup label="CTA Button Label" hint="Defaults to 'Claim Offer'">
                     <Input value={editing.ctaLabel ?? ''} onChange={e => setEditing({ ...editing, ctaLabel: e.target.value })} placeholder="Book Now" />
                   </FieldGroup>
                   <FieldGroup label="CTA URL" hint="Leave blank to auto-link to WhatsApp">
@@ -1540,6 +1543,15 @@ function UsersTab({ token }: { token: string }) {
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
   const [resetTarget, setResetTarget] = useState<UserRow | null>(null)
+  const [deactivating, setDeactivating] = useState<string | null>(null)
+
+  async function deactivate(u: UserRow) {
+    if (!confirm(`Deactivate ${u.username}? They will no longer be able to log in.`)) return
+    setDeactivating(u.id)
+    try { await api.del(`/users/${u.id}`, token); load() }
+    catch (e: any) { alert(e.message ?? 'Deactivation failed') }
+    finally { setDeactivating(null) }
+  }
 
   function load() {
     setLoading(true)
@@ -1561,10 +1573,10 @@ function UsersTab({ token }: { token: string }) {
       </div>
 
       <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-5 w-fit">
-        {(['STAFF', 'ADMIN'] as const).map(r => (
-          <button key={r} onClick={() => setRoleFilter(r)}
-            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${roleFilter === r ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
-            {r}s
+        {([{ role: 'STAFF', label: 'Staff' }, { role: 'ADMIN', label: 'Admins' }] as const).map(({ role, label }) => (
+          <button key={role} onClick={() => setRoleFilter(role)}
+            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${roleFilter === role ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+            {label}
           </button>
         ))}
       </div>
@@ -1602,7 +1614,14 @@ function UsersTab({ token }: { token: string }) {
                       {new Date(u.createdAt).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-5 py-3.5">
-                      <Btn size="sm" variant="ghost" onClick={() => setResetTarget(u)}>Reset PW</Btn>
+                      <div className="flex items-center gap-2">
+                        <Btn size="sm" variant="ghost" onClick={() => setResetTarget(u)}>Reset PW</Btn>
+                        {u.active && (
+                          <Btn size="sm" variant="danger" disabled={deactivating === u.id} onClick={() => deactivate(u)}>
+                            {deactivating === u.id ? <Spinner size={11} /> : 'Deactivate'}
+                          </Btn>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1706,7 +1725,7 @@ function ResetPasswordModal({ token, user, onDone, onClose }: { token: string; u
 // ═══════════════════════════════════════════════════════════════════════════════
 // ACTIVITY TAB
 // ═══════════════════════════════════════════════════════════════════════════════
-interface LogRow { id: string; action: string; entityType: string; detail: string | null; createdAt: string }
+interface LogRow { id: string; actorUsername: string; action: string; entityType: string; detail: string | null; createdAt: string }
 
 function ActivityTab({ token }: { token: string }) {
   const [logs, setLogs] = useState<LogRow[]>([])
@@ -1749,7 +1768,7 @@ function ActivityTab({ token }: { token: string }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100">
-                  {['Action','Entity','Detail','Time'].map(h => (
+                  {['Action','By','Entity','Detail','Time'].map(h => (
                     <th key={h} className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">{h}</th>
                   ))}
                 </tr>
@@ -1758,6 +1777,7 @@ function ActivityTab({ token }: { token: string }) {
                 {logs.map(l => (
                   <tr key={l.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3.5"><Badge variant={actionVariant[l.action] ?? 'gray'}>{l.action.replace(/_/g, ' ')}</Badge></td>
+                    <td className="px-5 py-3.5 text-slate-600 text-xs font-medium">{l.actorUsername}</td>
                     <td className="px-5 py-3.5 text-slate-500 text-xs">{l.entityType}</td>
                     <td className="px-5 py-3.5 text-slate-400 text-xs max-w-[240px] truncate">{l.detail ?? '—'}</td>
                     <td className="px-5 py-3.5 text-slate-400 text-xs whitespace-nowrap">
@@ -1815,6 +1835,7 @@ function BookingsTab({ token }: { token: string }) {
   const [newStatus, setNewStatus] = useState<BookingStatus>('PENDING')
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [page, setPage] = useState(0)
   const [total, setTotal] = useState(0)
 
@@ -1830,17 +1851,18 @@ function BookingsTab({ token }: { token: string }) {
   useEffect(() => { setPage(0); load(0) }, [statusFilter, token])
 
   function openDetail(b: BookingRow) {
-    setSelected(b); setNewStatus(b.status); setNote(b.adminNote ?? '')
+    setSelected(b); setNewStatus(b.status); setNote(b.adminNote ?? ''); setSaveError('')
   }
 
   async function saveStatus() {
     if (!selected) return
-    setSaving(true)
+    setSaving(true); setSaveError('')
     try {
       const updated = await api.patch<BookingRow>(`/bookings/${selected.id}/status`, { status: newStatus, note }, token)
       setBookings(prev => prev.map(b => b.id === updated.id ? updated : b))
       setSelected(updated)
-    } catch {} finally { setSaving(false) }
+    } catch (e: any) { setSaveError(e.message ?? 'Save failed') }
+    finally { setSaving(false) }
   }
 
   const fmt = (iso: string | null) => iso
@@ -1947,8 +1969,9 @@ function BookingsTab({ token }: { token: string }) {
                 <FieldGroup label="Admin Note (optional)">
                   <Textarea rows={2} value={note} onChange={e => setNote(e.target.value)} placeholder="e.g. Called client, confirmed for Saturday" />
                 </FieldGroup>
+                {saveError && <p className="text-red-500 text-xs">{saveError}</p>}
                 <div className="flex gap-2">
-                  <Btn onClick={saveStatus} disabled={saving || newStatus === selected.status && note === (selected.adminNote ?? '')}>
+                  <Btn onClick={saveStatus} disabled={saving || (newStatus === selected.status && note === (selected.adminNote ?? ''))}>
                     {saving ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
                     {saving ? 'Saving…' : 'Save'}
                   </Btn>
@@ -2401,7 +2424,7 @@ function GalleryTab({ token }: { token: string }) {
   const { get: getBlock } = useContentBlocks()
   const [section, setSection] = useState('PARK')
   const [images, setImages] = useState<GalleryImg[]>([])
-  const [uploading, setUploading] = useState(false)
+  const [uploadingCount, setUploadingCount] = useState(0)
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -2412,7 +2435,7 @@ function GalleryTab({ token }: { token: string }) {
     const cloudName = getBlock('cloudinary.cloud_name', '')
     const uploadPreset = getBlock('cloudinary.upload_preset', '')
     if (!cloudName || !uploadPreset) { alert('Cloudinary credentials not configured in Content tab'); return }
-    setUploading(true)
+    setUploadingCount(n => n + 1)
     try {
       const { uploadToCloudinary } = await import('../config/cloudinary')
       const url = await uploadToCloudinary(file, cloudName, uploadPreset, `gallery/${section.toLowerCase()}`)
@@ -2422,7 +2445,7 @@ function GalleryTab({ token }: { token: string }) {
       setImages(prev => [...prev, added])
       invalidateGalleryCache()
     } catch (e: any) { alert(e.message ?? 'Upload failed') } finally {
-      setUploading(false)
+      setUploadingCount(n => n - 1)
       if (fileRef.current) fileRef.current.value = ''
     }
   }
@@ -2457,8 +2480,8 @@ function GalleryTab({ token }: { token: string }) {
         <div>
           <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
             onChange={e => { Array.from(e.target.files ?? []).forEach(f => uploadImage(f)) }} />
-          <Btn onClick={() => fileRef.current?.click()} disabled={uploading}>
-            {uploading ? <><Spinner size={13} /> Uploading…</> : 'Upload Images'}
+          <Btn onClick={() => fileRef.current?.click()} disabled={uploadingCount > 0}>
+            {uploadingCount > 0 ? <><Spinner size={13} /> Uploading {uploadingCount}…</> : 'Upload Images'}
           </Btn>
         </div>
       </div>
