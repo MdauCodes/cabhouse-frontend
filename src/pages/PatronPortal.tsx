@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, patronAuth } from '../lib/api'
 import { SITE } from '../config/site'
+import { usePromotions } from '../hooks/usePromotions'
 
 interface PatronData {
   id: string
@@ -127,6 +128,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
   const [redemptions, setRedemptions] = useState<Redemption[]>([])
   const [loaded, setLoaded] = useState(false)
   const [activityFilter, setActivityFilter] = useState<'all' | 'earned' | 'redeemed'>('all')
+  const promotions = usePromotions()
 
   const token = patronAuth.getToken()
 
@@ -274,6 +276,53 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                 ))}
               </div>
             </div>
+
+            {/* Coupon disclaimer */}
+            <div className="rounded-2xl p-4 flex items-start gap-3" style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.18)' }}>
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(248,113,113,0.15)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-white/80 font-body font-semibold text-xs mb-0.5">Coupons are discounts — not cash</p>
+                <p className="text-white/35 font-body text-xs leading-relaxed">Coupons can only be redeemed as discounts on future purchases at CabHouse. They cannot be exchanged for money or transferred.</p>
+              </div>
+            </div>
+
+            {/* Deals & offers */}
+            {promotions.length > 0 && (
+              <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <p className="text-white/35 text-[10px] font-body uppercase tracking-[0.2em] mb-4">Deals &amp; Offers</p>
+                <div className="space-y-3">
+                  {promotions.map(promo => (
+                    <div key={promo.id} className="rounded-xl overflow-hidden" style={{ background: 'rgba(200,135,58,0.06)', border: '1px solid rgba(200,135,58,0.15)' }}>
+                      {promo.imageUrl && (
+                        <img src={promo.imageUrl} alt={promo.title} className="w-full h-28 object-cover" />
+                      )}
+                      <div className="p-3.5">
+                        {promo.tag && (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-[0.15em] mb-2"
+                            style={{ background: 'rgba(200,135,58,0.2)', color: '#C8873A' }}>{promo.tag}</span>
+                        )}
+                        <p className="text-white font-body font-semibold text-sm mb-1">{promo.title}</p>
+                        {promo.subtitle && <p className="text-white/40 font-body text-xs leading-relaxed">{promo.subtitle}</p>}
+                        {promo.ctaLabel && promo.ctaUrl && (
+                          <a href={promo.ctaUrl} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 mt-2.5 text-xs font-semibold font-body"
+                            style={{ color: '#C8873A' }}>
+                            {promo.ctaLabel}
+                            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <path d="M3 8h10M9 4l4 4-4 4"/>
+                            </svg>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* WhatsApp CTA */}
             <a

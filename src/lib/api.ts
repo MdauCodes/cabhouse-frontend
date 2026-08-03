@@ -16,7 +16,9 @@ async function request<T>(
   const json = await res.json()
 
   if (!res.ok || !json.success) {
-    throw new Error(json.message ?? `Request failed: ${res.status}`)
+    const err = new Error(json.message ?? `Request failed: ${res.status}`) as Error & { status: number }
+    err.status = res.status
+    throw err
   }
   return json.data as T
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { api, staffAuth } from '../lib/api'
 
 interface StaffSession {
@@ -529,14 +529,38 @@ function POSScreen({ session, onLogout }: { session: StaffSession; onLogout: () 
 
 // ── Page entry ───────────────────────────────────────────────────────────────
 export default function StaffPOS() {
-  const savedToken = staffAuth.getToken()
-  const [session, setSession] = useState<StaffSession | null>(
-    savedToken ? { accessToken: savedToken, username: 'Staff', role: 'STAFF' } : null
-  )
+  const [session, setSession] = useState<StaffSession | null>(null)
+  const [validating, setValidating] = useState(true)
+
+  useEffect(() => {
+    const token = staffAuth.getToken()
+    if (!token) { setValidating(false); return }
+    api.get<{ username: string; role: string }>('/auth/me', token)
+      .then(data => {
+        if (data.role === 'STAFF' || data.role === 'ADMIN' || data.role === 'SUPERADMIN') {
+          setSession({ accessToken: token, username: data.username, role: data.role })
+        } else {
+          staffAuth.clear()
+        }
+      })
+      .catch(() => staffAuth.clear())
+      .finally(() => setValidating(false))
+  }, [])
 
   function handleLogout() {
     staffAuth.clear()
     setSession(null)
+  }
+
+  if (validating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0c0c10' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-7 h-7 rounded-full border-2 border-white/10 border-t-white/60 animate-spin" />
+          <p className="text-white/30 text-xs font-body">Verifying session…</p>
+        </div>
+      </div>
+    )
   }
 
   return session

@@ -784,6 +784,11 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   const [adjustDone, setAdjustDone] = useState(false)
   const [toggling, setToggling] = useState(false)
   const [toggleError, setToggleError] = useState('')
+  const [spendAmount, setSpendAmount] = useState('')
+  const [spendNote, setSpendNote] = useState('')
+  const [spending, setSpending] = useState(false)
+  const [spendError, setSpendError] = useState('')
+  const [spendDone, setSpendDone] = useState<{ coupons: number } | null>(null)
 
   async function toggleActive() {
     if (!detail) return
@@ -814,6 +819,22 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
     } catch (e: any) { setAdjustError(e.message ?? 'Adjustment failed') } finally { setAdjusting(false) }
   }
 
+  async function submitSpend() {
+    const amount = parseFloat(spendAmount)
+    if (isNaN(amount) || amount <= 0) { setSpendError('Enter a valid amount'); return }
+    setSpendError(''); setSpending(true); setSpendDone(null)
+    try {
+      const result = await api.post<{ couponsAwarded: number; patronCouponBalance: number }>(
+        '/coupons/spend', { patronId, amount, note: spendNote || null }, token
+      )
+      setDetail(prev => prev ? { ...prev, couponBalance: result.patronCouponBalance } : prev)
+      onBalanceChanged(patronId, result.patronCouponBalance)
+      setSpendAmount(''); setSpendNote('')
+      setSpendDone({ coupons: result.couponsAwarded })
+      setTimeout(() => setSpendDone(null), 4000)
+    } catch (e: any) { setSpendError(e.message ?? 'Failed to record spend') } finally { setSpending(false) }
+  }
+
   return (
     <Modal title="Patron Detail" onClose={onClose} width="max-w-2xl">
       {loading ? (
@@ -841,6 +862,27 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
                 {toggleError && <p className="text-red-500 text-[10px]">{toggleError}</p>}
               </div>
             </div>
+          </div>
+
+          {/* Record spend */}
+          <div className="border border-amber-100 bg-amber-50/40 rounded-xl p-4">
+            <p className="text-slate-800 font-semibold text-sm mb-1">Record Spend &amp; Award Coupons</p>
+            <p className="text-slate-500 text-xs mb-3">Enter the receipt amount — coupons are calculated and added automatically.</p>
+            <div className="flex gap-2 mb-2">
+              <div className="w-40 flex-shrink-0">
+                <Input
+                  type="number" value={spendAmount}
+                  onChange={e => { setSpendAmount(e.target.value); setSpendError('') }}
+                  placeholder="Amount (KES)"
+                />
+              </div>
+              <Input value={spendNote} onChange={e => setSpendNote(e.target.value)} placeholder="Note / receipt ref (optional)" />
+              <Btn disabled={!spendAmount || spending} onClick={submitSpend}>
+                {spending ? <Spinner size={13} /> : spendDone ? <><Check size={13} /> +{spendDone.coupons} coupons!</> : 'Record'}
+              </Btn>
+            </div>
+            {spendError && <p className="text-red-600 text-xs">{spendError}</p>}
+            {spendDone && <p className="text-amber-700 text-xs font-semibold">{spendDone.coupons} coupon{spendDone.coupons !== 1 ? 's' : ''} added — new balance: {detail?.couponBalance}</p>}
           </div>
 
           {/* Adjust balance */}
@@ -933,6 +975,53 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   )
 }
 
+function EnrollPatronModal({ token, onClose, onEnrolled }: {
+  token: string; onClose: () => void; onEnrolled: () => void
+}) {
+  const [phone, setPhone] = useState('')
+  const [name, setName] = useState('')
+  const [pin, setPin] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be exactly 4 digits'); return }
+    setSaving(true); setError('')
+    try {
+      await api.post('/patrons/enroll', { phone, name, pin }, token)
+      onEnrolled()
+      onClose()
+    } catch (e: any) { setError(e.message ?? 'Enrollment failed') } finally { setSaving(false) }
+  }
+
+  return (
+    <Modal title="Enroll Patron" onClose={onClose}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
+          <Input required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Jane Wanjiru" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">Phone Number *</label>
+          <Input required value={phone} onChange={e => setPhone(e.target.value)} placeholder="e.g. +254712345678" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">4-Digit PIN *</label>
+          <Input required value={pin} onChange={e => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            placeholder="4 digits — patron uses this to log in" maxLength={4} inputMode="numeric" />
+          <p className="text-slate-400 text-xs mt-1">The patron will use their phone number + this PIN to access their portal.</p>
+        </div>
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <div className="flex justify-end gap-2 pt-2">
+          <Btn type="button" variant="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn type="submit" disabled={saving}>{saving ? <Spinner size={13} /> : 'Enroll Patron'}</Btn>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
 function PatronsTab({ token }: { token: string }) {
   const [patrons, setPatrons] = useState<PatronRow[]>([])
   const [total, setTotal] = useState(0)
@@ -941,6 +1030,7 @@ function PatronsTab({ token }: { token: string }) {
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [enrollOpen, setEnrollOpen] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -956,6 +1046,8 @@ function PatronsTab({ token }: { token: string }) {
     setPatrons(prev => prev.map(p => p.id === id ? { ...p, couponBalance: newBalance } : p))
   }
 
+  function reload() { setPage(0); setQuery(''); setSearch('') }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -963,7 +1055,11 @@ function PatronsTab({ token }: { token: string }) {
           <h2 className="text-slate-900 font-bold text-lg">Patrons</h2>
           <p className="text-slate-500 text-sm">{total} enrolled member{total !== 1 ? 's' : ''}</p>
         </div>
+        <Btn onClick={() => setEnrollOpen(true)}><Plus size={14} /> Enroll Patron</Btn>
       </div>
+      {enrollOpen && (
+        <EnrollPatronModal token={token} onClose={() => setEnrollOpen(false)} onEnrolled={reload} />
+      )}
 
       <div className="flex gap-2 mb-5 max-w-sm">
         <div className="relative flex-1">
@@ -2517,14 +2613,36 @@ function GalleryTab({ token }: { token: string }) {
 export default function MdauDev() {
   const navigate = useNavigate()
   const [session, setSession] = useState<AdminSession | null>(getSession)
+  const [validating, setValidating] = useState(!!getSession())
 
   useEffect(() => {
-    if (!session) {
+    const s = getSession()
+    if (!s) {
       navigate('/login?next=/ch/admin', { replace: true })
+      return
     }
-  }, [session])
+    // Validate token is still accepted by the backend
+    api.get('/dashboard/stats', s.accessToken)
+      .catch(() => {
+        clearSession()
+        setSession(null)
+        navigate('/login?next=/ch/admin', { replace: true })
+      })
+      .finally(() => setValidating(false))
+  }, [])
 
   function handleLogout() { clearSession(); setSession(null) }
+
+  if (validating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f8f9fa' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-7 h-7 rounded-full border-2 border-slate-200 border-t-slate-600 animate-spin" />
+          <p className="text-slate-400 text-sm font-body">Verifying session…</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!session) return null
   return <AdminDashboard session={session} onLogout={handleLogout} />
