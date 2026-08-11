@@ -1254,7 +1254,9 @@ function PromotionsTab({ token }: { token: string }) {
   const [isNew, setIsNew] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
   const promoImgRef = useRef<HTMLInputElement>(null)
   const { get: getBlock } = useContentBlocks()
 
@@ -1262,9 +1264,9 @@ function PromotionsTab({ token }: { token: string }) {
     api.get<PromotionData[]>('/promotions', token).then(setPromos).catch(() => {})
   }, [token])
 
-  function startNew() { setEditing(BLANK_PROMO()); setIsNew(true); setSaved(false) }
-  function startEdit(p: PromotionData) { setEditing({ ...p }); setIsNew(false); setSaved(false) }
-  function cancel() { setEditing(null); setIsNew(false) }
+  function startNew() { setEditing(BLANK_PROMO()); setIsNew(true); setSaved(false); setSaveError('') }
+  function startEdit(p: PromotionData) { setEditing({ ...p }); setIsNew(false); setSaved(false); setSaveError('') }
+  function cancel() { setEditing(null); setIsNew(false); setSaveError(''); setUploadError('') }
 
   async function save() {
     if (!editing || !editing.title?.trim()) return
@@ -1287,20 +1289,20 @@ function PromotionsTab({ token }: { token: string }) {
       }
       invalidatePromotionsCache()
       setSaved(true); setTimeout(() => { setSaved(false); cancel() }, 1200)
-    } catch (e: any) { alert(e.message ?? 'Save failed') } finally { setSaving(false) }
+    } catch (e: any) { setSaveError(e.message ?? 'Save failed') } finally { setSaving(false) }
   }
 
   async function uploadPromoImage(file: File) {
     if (!editing) return
     const cloudName = getBlock('cloudinary.cloud_name', '')
     const uploadPreset = getBlock('cloudinary.upload_preset', '')
-    if (!cloudName || !uploadPreset) { alert('Cloudinary credentials not configured in Content tab'); return }
-    setUploading(true)
+    if (!cloudName || !uploadPreset) { setUploadError('Cloudinary credentials not configured in Content tab'); return }
+    setUploading(true); setUploadError('')
     try {
       const { uploadToCloudinary } = await import('../config/cloudinary')
       const url = await uploadToCloudinary(file, cloudName, uploadPreset, 'promotions')
       setEditing(prev => prev ? { ...prev, imageUrl: url } : prev)
-    } catch { alert('Image upload failed') } finally { setUploading(false) }
+    } catch { setUploadError('Image upload failed') } finally { setUploading(false) }
   }
 
   async function toggle(p: PromotionData) {
@@ -1457,6 +1459,7 @@ function PromotionsTab({ token }: { token: string }) {
                         onChange={e => { const f = e.target.files?.[0]; if (f) uploadPromoImage(f); e.target.value = '' }}
                       />
                     </div>
+                    {uploadError && <p className="text-red-600 text-xs mt-1">{uploadError}</p>}
                     {editing.imageUrl && (
                       <div className="relative rounded-lg overflow-hidden h-24 bg-slate-100">
                         <img src={editing.imageUrl} alt="preview" className="w-full h-full object-cover" />
@@ -1508,9 +1511,11 @@ function PromotionsTab({ token }: { token: string }) {
                   </div>
                 )}
 
+                {saveError && <p className="text-red-600 text-xs">{saveError}</p>}
+                {uploadError && <p className="text-red-600 text-xs">{uploadError}</p>}
                 <div className="flex gap-2 pt-1">
                   <Btn onClick={save} disabled={saving || !editing.title?.trim()}>
-                    {saving ? <><Spinner size={13} /> Saving…</> : isNew ? 'Create Promotion' : 'Save Changes'}
+                    {saving ? <><Spinner size={13} /> Saving…</> : saved ? <><Check size={13} /> Saved</> : isNew ? 'Create Promotion' : 'Save Changes'}
                   </Btn>
                   <Btn variant="ghost" onClick={cancel}>Cancel</Btn>
                 </div>
