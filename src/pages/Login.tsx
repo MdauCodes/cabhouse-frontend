@@ -175,7 +175,7 @@ export default function Login() {
         staffAuth.setToken(data.accessToken)
         navigate(next ?? '/ch/pos', { replace: true })
       } else {
-        adminAuth.setSession(data.accessToken, data.username, data.role)
+        adminAuth.setSession(data.accessToken, data.refreshToken, data.username, data.role)
         navigate(next ?? '/ch/admin', { replace: true })
       }
     } catch {

@@ -13,7 +13,7 @@ import { applyOverride, clearOverride } from '../hooks/useMedia'
 import { useContentBlocks, invalidateContentCache } from '../hooks/useContentBlocks'
 import { invalidateGalleryCache } from '../hooks/useGalleryImages'
 import { invalidatePromotionsCache, type PromotionTag, type PromotionData } from '../hooks/usePromotions'
-import { api, staffAuth } from '../lib/api'
+import { api, staffAuth, UNAUTHORIZED_EVENT } from '../lib/api'
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 const ADMIN_TOKEN_KEY = 'cabhouse_admin_token'
@@ -2630,6 +2630,17 @@ export default function MdauDev() {
       })
       .finally(() => setValidating(false))
   }, [])
+
+  // Instant logout when any in-session API call returns 401 and refresh fails
+  useEffect(() => {
+    function onUnauthorized() {
+      clearSession()
+      setSession(null)
+      navigate('/login?next=/ch/admin', { replace: true })
+    }
+    window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+  }, [navigate])
 
   function handleLogout() { clearSession(); setSession(null) }
 
