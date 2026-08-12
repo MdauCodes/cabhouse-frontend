@@ -226,13 +226,14 @@ function Modal({ title, onClose, children, width = 'max-w-md' }: {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'promotions' | 'packages' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'reservations' | 'promotions' | 'packages' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',     Icon: LayoutGrid,    group: 'main' },
   { id: 'patrons',   label: 'Patrons',      Icon: Users,         group: 'main' },
   { id: 'coupons',   label: 'Coupons',      Icon: TicketPercent, group: 'main' },
-  { id: 'bookings',   label: 'Bookings',     Icon: CalendarDays,  group: 'main' },
+  { id: 'bookings',      label: 'Enquiries',     Icon: CalendarDays,  group: 'main' },
+  { id: 'reservations',  label: 'Reservations',  Icon: CalendarDays,  group: 'main' },
   { id: 'promotions',label: 'Promotions',   Icon: Megaphone,     group: 'main' },
   { id: 'media',     label: 'Media',        Icon: Image,         group: 'content' },
   { id: 'packages',  label: 'Park Packages', Icon: TicketPercent, group: 'content' },
@@ -246,7 +247,7 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', bookings: 'Bookings', promotions: 'Promotions', packages: 'Park Packages',
+  coupons: 'Coupons', bookings: 'Enquiries', reservations: 'Reservations', promotions: 'Promotions', packages: 'Park Packages',
   services: 'Services', sitems: 'Service Items', gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
@@ -400,7 +401,8 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'media'     && <MediaTab     token={token} />}
           {tab === 'patrons'   && <PatronsTab   token={token} />}
           {tab === 'coupons'   && <CouponsTab   token={token} />}
-          {tab === 'bookings'   && <BookingsTab    token={token} />}
+          {tab === 'bookings'      && <BookingsTab       token={token} />}
+          {tab === 'reservations'  && <ReservationsTab   token={token} />}
           {tab === 'promotions' && <PromotionsTab  token={token} />}
           {tab === 'packages'  && <PackagesTab    token={token} />}
           {tab === 'services'   && <ServicesTab    token={token} />}
@@ -2883,6 +2885,397 @@ function GalleryTab({ token }: { token: string }) {
         </div>
       ) : (
         <EmptyState icon={Image} title="No images yet" sub="Upload images to populate this gallery section" />
+      )}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RESERVATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+type ReservationStatus = 'PENDING_PAYMENT' | 'PAYMENT_RECORDED' | 'CONFIRMED' | 'CANCELLED'
+
+interface BookableResource {
+  id: string
+  name: string
+  slug: string
+  type: string
+  pricingUnit: string
+  basePrice: number
+  units: number
+  depositType: string
+  depositValue: number | null
+  dailyVisitorCap: number | null
+  bookingNote: string | null
+  displayOrder: number
+  visible: boolean
+}
+
+interface Reservation {
+  id: string
+  referenceCode: string
+  resourceName: string
+  resourceId: string
+  customerName: string
+  customerPhone: string
+  customerEmail: string | null
+  guests: number
+  checkIn: string | null
+  checkOut: string | null
+  depositAmount: number | null
+  paymentReference: string | null
+  paymentName: string | null
+  status: ReservationStatus
+  adminNote: string | null
+  createdAt: string
+}
+
+const STATUS_LABELS: Record<ReservationStatus, string> = {
+  PENDING_PAYMENT: 'Pending Payment',
+  PAYMENT_RECORDED: 'Payment Recorded',
+  CONFIRMED: 'Confirmed',
+  CANCELLED: 'Cancelled',
+}
+
+const STATUS_COLORS: Record<ReservationStatus, string> = {
+  PENDING_PAYMENT:  'bg-yellow-100 text-yellow-800',
+  PAYMENT_RECORDED: 'bg-blue-100 text-blue-800',
+  CONFIRMED:        'bg-green-100 text-green-800',
+  CANCELLED:        'bg-red-100 text-red-800',
+}
+
+function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
+  reservation: Reservation; token: string; onClose: () => void; onUpdated: (r: Reservation) => void
+}) {
+  const [payRef, setPayRef] = useState(r.paymentReference ?? '')
+  const [payName, setPayName] = useState(r.paymentName ?? '')
+  const [note, setNote] = useState(r.adminNote ?? '')
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  async function doAction(action: string) {
+    setSaving(true); setErr('')
+    try {
+      let res: Reservation
+      if (action === 'record-payment') {
+        res = await api.post<Reservation>(`/reservations/${r.id}/record-payment`, { paymentReference: payRef, paymentName: payName }, token)
+      } else if (action === 'note') {
+        res = await api.patch<Reservation>(`/reservations/${r.id}/note`, { note }, token)
+      } else {
+        res = await api.post<Reservation>(`/reservations/${r.id}/${action}`, {}, token)
+      }
+      onUpdated(res)
+    } catch (e: any) {
+      setErr(e.message ?? 'Error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b">
+          <div>
+            <p className="text-xs font-bold tracking-widest text-[#C8873A] uppercase">Reservation</p>
+            <h2 className="text-lg font-bold text-gray-900">{r.referenceCode}</h2>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+          </div>
+          <table className="w-full text-sm">
+            <tbody className="divide-y">
+              {[
+                ['Package', r.resourceName],
+                ['Customer', r.customerName],
+                ['Phone', r.customerPhone],
+                ['Email', r.customerEmail ?? '—'],
+                ['Guests', String(r.guests)],
+                ['Check-in', r.checkIn ?? '—'],
+                ['Check-out', r.checkOut ?? '—'],
+                ['Deposit', r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'],
+              ].map(([label, val]) => (
+                <tr key={label}>
+                  <td className="py-2 pr-4 text-gray-500 w-28">{label}</td>
+                  <td className="py-2 font-medium text-gray-900">{val}</td>
+                </tr>
+              ))}
+              {r.paymentReference && (
+                <>
+                  <tr><td className="py-2 pr-4 text-gray-500">M-Pesa Ref</td><td className="py-2 font-medium">{r.paymentReference}</td></tr>
+                  <tr><td className="py-2 pr-4 text-gray-500">Paid by</td><td className="py-2 font-medium">{r.paymentName}</td></tr>
+                </>
+              )}
+            </tbody>
+          </table>
+
+          {r.status === 'PENDING_PAYMENT' && (
+            <div className="border rounded-xl p-4 space-y-3">
+              <p className="text-sm font-semibold text-gray-700">Record M-Pesa Payment</p>
+              <input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="M-Pesa reference (e.g. QBC1234XYZ)" className="w-full border rounded-lg px-3 py-2 text-sm" />
+              <input value={payName} onChange={e => setPayName(e.target.value)} placeholder="Name used to pay" className="w-full border rounded-lg px-3 py-2 text-sm" />
+              <button onClick={() => doAction('record-payment')} disabled={saving || !payRef.trim() || !payName.trim()} className="w-full bg-[#C8873A] hover:bg-[#b07530] text-white rounded-lg py-2 text-sm font-semibold disabled:opacity-50">
+                {saving ? 'Saving…' : 'Mark as Payment Received'}
+              </button>
+            </div>
+          )}
+
+          {r.status === 'PAYMENT_RECORDED' && (
+            <button onClick={() => doAction('confirm')} disabled={saving} className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg py-2 text-sm font-semibold disabled:opacity-50">
+              {saving ? 'Confirming…' : 'Confirm Reservation'}
+            </button>
+          )}
+
+          {(r.status === 'PENDING_PAYMENT' || r.status === 'PAYMENT_RECORDED') && (
+            <button onClick={() => doAction('cancel')} disabled={saving} className="w-full border border-red-300 text-red-600 hover:bg-red-50 rounded-lg py-2 text-sm font-semibold disabled:opacity-50">
+              Cancel Reservation
+            </button>
+          )}
+
+          <div className="border rounded-xl p-4 space-y-2">
+            <p className="text-sm font-semibold text-gray-700">Admin Note</p>
+            <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} className="w-full border rounded-lg px-3 py-2 text-sm resize-none" placeholder="Internal note…" />
+            <button onClick={() => doAction('note')} disabled={saving} className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-lg text-sm font-semibold disabled:opacity-50">
+              Save Note
+            </button>
+          </div>
+
+          {err && <p className="text-sm text-red-600">{err}</p>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ReservationsTab({ token }: { token: string }) {
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [resources, setResources] = useState<BookableResource[]>([])
+  const [loading, setLoading] = useState(true)
+  const [err, setErr] = useState('')
+  const [statusFilter, setStatusFilter] = useState<ReservationStatus | ''>('')
+  const [resourceFilter, setResourceFilter] = useState('')
+  const [search, setSearch] = useState('')
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [selected, setSelected] = useState<Reservation | null>(null)
+  const [showResources, setShowResources] = useState(false)
+
+  async function load(p = 0) {
+    setLoading(true); setErr('')
+    try {
+      const params = new URLSearchParams({ page: String(p), size: '20' })
+      if (statusFilter) params.set('status', statusFilter)
+      if (resourceFilter) params.set('resourceId', resourceFilter)
+      if (search.trim()) params.set('search', search.trim())
+      const data = await api.get<{ content: Reservation[]; totalPages: number }>(`/reservations?${params}`, token)
+      setReservations(data.content)
+      setTotalPages(data.totalPages)
+      setPage(p)
+    } catch (e: any) {
+      setErr(e.message ?? 'Failed to load')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function loadResources() {
+    try {
+      const data = await api.get<BookableResource[]>('/reservations/resources', token)
+      setResources(data)
+    } catch {}
+  }
+
+  useEffect(() => { load(0); loadResources() }, [])
+
+  function onUpdated(r: Reservation) {
+    setReservations(prev => prev.map(x => x.id === r.id ? r : x))
+    setSelected(r)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h2 className="text-xl font-bold text-gray-900">Reservations</h2>
+        <button onClick={() => setShowResources(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
+          {showResources ? 'Hide' : 'Manage'} Bookable Resources
+        </button>
+      </div>
+
+      {showResources && <ResourcesManager resources={resources} token={token} onUpdated={setResources} />}
+
+      <div className="flex flex-wrap gap-3">
+        <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && load(0)}
+          placeholder="Search name, ref, phone…" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-48" />
+        <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value as any); }} className="border rounded-lg px-3 py-2 text-sm">
+          <option value="">All statuses</option>
+          {(Object.keys(STATUS_LABELS) as ReservationStatus[]).map(s => (
+            <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+          ))}
+        </select>
+        <select value={resourceFilter} onChange={e => setResourceFilter(e.target.value)} className="border rounded-lg px-3 py-2 text-sm">
+          <option value="">All packages</option>
+          {resources.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+        </select>
+        <button onClick={() => load(0)} className="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-semibold">Search</button>
+      </div>
+
+      {err && <p className="text-red-600 text-sm">{err}</p>}
+
+      {loading ? (
+        <div className="flex justify-center py-16"><div className="w-8 h-8 border-4 border-[#C8873A] border-t-transparent rounded-full animate-spin" /></div>
+      ) : reservations.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">No reservations found.</div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                {['Ref', 'Package', 'Customer', 'Guests', 'Check-in', 'Deposit', 'Status', 'Date'].map(h => (
+                  <th key={h} className="px-4 py-3 text-left font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {reservations.map(r => (
+                <tr key={r.id} onClick={() => setSelected(r)} className="hover:bg-gray-50 cursor-pointer">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-[#C8873A]">{r.referenceCode}</td>
+                  <td className="px-4 py-3">{r.resourceName}</td>
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{r.customerName}</div>
+                    <div className="text-gray-400 text-xs">{r.customerPhone}</div>
+                  </td>
+                  <td className="px-4 py-3">{r.guests}</td>
+                  <td className="px-4 py-3">{r.checkIn ?? '—'}</td>
+                  <td className="px-4 py-3">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2">
+          <button disabled={page === 0} onClick={() => load(page - 1)} className="px-3 py-1 border rounded text-sm disabled:opacity-40">Prev</button>
+          <span className="px-3 py-1 text-sm text-gray-500">{page + 1} / {totalPages}</span>
+          <button disabled={page >= totalPages - 1} onClick={() => load(page + 1)} className="px-3 py-1 border rounded text-sm disabled:opacity-40">Next</button>
+        </div>
+      )}
+
+      {selected && (
+        <ReservationDetailModal reservation={selected} token={token} onClose={() => setSelected(null)} onUpdated={onUpdated} />
+      )}
+    </div>
+  )
+}
+
+function ResourcesManager({ resources, token, onUpdated }: {
+  resources: BookableResource[]; token: string; onUpdated: (r: BookableResource[]) => void
+}) {
+  const [editing, setEditing] = useState<BookableResource | null>(null)
+  const [form, setForm] = useState<Partial<BookableResource>>({})
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  function startEdit(r: BookableResource) {
+    setEditing(r)
+    setForm({ ...r })
+    setErr('')
+  }
+
+  async function save() {
+    if (!editing) return
+    setSaving(true); setErr('')
+    try {
+      const updated = await api.put<BookableResource>(`/reservations/resources/${editing.id}`, {
+        name: form.name,
+        pricingUnit: form.pricingUnit,
+        basePrice: form.basePrice,
+        units: form.units ?? 1,
+        depositType: form.depositType,
+        depositValue: form.depositValue,
+        maxCapacityPerSlot: null,
+        dailyVisitorCap: form.dailyVisitorCap,
+        bookingNote: form.bookingNote,
+        displayOrder: form.displayOrder ?? 0,
+        visible: form.visible ?? true,
+      }, token)
+      onUpdated(resources.map(r => r.id === updated.id ? updated : r))
+      setEditing(null)
+    } catch (e: any) {
+      setErr(e.message ?? 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="border rounded-xl overflow-hidden">
+      <table className="w-full text-sm">
+        <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+          <tr>
+            {['Name', 'Type', 'Price', 'Deposit', 'Daily Cap', 'Visible', ''].map(h => (
+              <th key={h} className="px-4 py-3 text-left font-semibold">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y">
+          {resources.map(r => (
+            <tr key={r.id} className="hover:bg-gray-50">
+              <td className="px-4 py-3 font-medium">{r.name}</td>
+              <td className="px-4 py-3 text-gray-500">{r.type}</td>
+              <td className="px-4 py-3">KES {Number(r.basePrice).toLocaleString()}</td>
+              <td className="px-4 py-3">{r.depositType === 'FREE' ? 'Free' : r.depositType === 'FLAT' ? `KES ${r.depositValue}` : `${r.depositValue}%`}</td>
+              <td className="px-4 py-3">{r.dailyVisitorCap ?? '—'}</td>
+              <td className="px-4 py-3">{r.visible ? 'Yes' : 'No'}</td>
+              <td className="px-4 py-3"><button onClick={() => startEdit(r)} className="text-[#C8873A] hover:underline text-xs font-semibold">Edit</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {editing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-gray-900">Edit Resource</h3>
+              <button onClick={() => setEditing(null)} className="p-1 hover:bg-gray-100 rounded"><X size={16} /></button>
+            </div>
+            {([
+              ['name', 'Name', 'text'],
+              ['basePrice', 'Base Price (KES)', 'number'],
+              ['dailyVisitorCap', 'Daily Visitor Cap', 'number'],
+              ['bookingNote', 'Booking Note', 'text'],
+              ['displayOrder', 'Display Order', 'number'],
+            ] as [keyof BookableResource, string, string][]).map(([key, label, type]) => (
+              <div key={key}>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+                <input type={type} value={String(form[key] ?? '')}
+                  onChange={e => setForm(f => ({ ...f, [key]: type === 'number' ? Number(e.target.value) : e.target.value }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+            ))}
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="rvis" checked={!!form.visible} onChange={e => setForm(f => ({ ...f, visible: e.target.checked }))} />
+              <label htmlFor="rvis" className="text-sm">Visible on public booking form</label>
+            </div>
+            {err && <p className="text-red-600 text-sm">{err}</p>}
+            <div className="flex gap-3">
+              <button onClick={save} disabled={saving} className="flex-1 bg-[#C8873A] hover:bg-[#b07530] text-white rounded-lg py-2 text-sm font-semibold disabled:opacity-50">
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+              <button onClick={() => setEditing(null)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
