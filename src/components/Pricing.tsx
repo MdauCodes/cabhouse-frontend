@@ -1,7 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import { useContentBlocks } from '../hooks/useContentBlocks'
+
+const API = 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+
+interface PkgItem {
+  id: string; slug: string; title: string; description: string
+  price: string; tag: string | null; accentColor: string | null
+  solidBg: boolean; ctaLabel: string | null; features: string[]
+  displayOrder: number
+}
+
+function hexToRgb(hex: string) {
+  const h = hex.replace('#', '')
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return { r, g, b }
+}
 
 type Tab = 'packages' | 'activities' | 'stays' | 'venues'
 const TABS: { id: Tab; label: string }[] = [
@@ -18,6 +35,14 @@ export default function Pricing() {
   const [tab, setTab] = useState<Tab>('packages')
   const { get } = useContentBlocks()
   const p = (key: string, def: number) => Number(get(key, String(def)))
+  const [apiPackages, setApiPackages] = useState<PkgItem[]>([])
+
+  useEffect(() => {
+    fetch(`${API}/service-items/public?category=PARK_PACKAGE`)
+      .then(r => r.json())
+      .then(j => { if (j.success && Array.isArray(j.data)) setApiPackages(j.data) })
+      .catch(() => {})
+  }, [])
 
   const SINGLES = [
     { name: 'Mountain & Bridge', note: 'Unlimited', price: p('pricing.mountain', 500) },
@@ -55,42 +80,34 @@ export default function Pricing() {
     { name: 'Premium Tent', note: 'Outdoor events',     price: p('pricing.venue.tent', 4000) },
   ]
 
-  const PACKAGES = [
-    {
-      name: 'Bronze', price: p('pricing.bronze', 1000), tag: null, level: 1,
-      activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings'],
-      bg: 'rgba(68,30,4,0.55)', border: '1px solid rgba(160,80,20,0.30)',
-      accent: '#B87040', dot: '#B87040', priceSize: 'clamp(1rem, 1.8vw, 1.5rem)', solid: false,
-      cta: 'Reserve My Spot',
-      waMsg: `Hi CabHouse 👋 I'd like to book the *Bronze Package* at KES ${p('pricing.bronze', 1000).toLocaleString()} per person.\n\nThis includes: Bouncing Castles, Rainbow Slides & Swings.\n\nPlease let me know your available dates and how many people I can bring. Thank you!`,
-    },
-    {
-      name: 'Silver', price: p('pricing.silver', 1300), tag: null, level: 2,
-      activities: ['Bouncing Castles', 'Rainbow Slides', 'Swings', 'Swimming'],
-      bg: 'linear-gradient(160deg, rgba(60,75,100,0.70) 0%, rgba(40,55,75,0.60) 100%)',
-      border: '1px solid rgba(148,163,184,0.35)', accent: '#A8BACE', dot: '#A8BACE',
-      priceSize: 'clamp(1.1rem, 1.9vw, 1.6rem)', solid: false,
-      cta: 'Book Silver Package',
-      waMsg: `Hi CabHouse 👋 I'd like to book the *Silver Package* at KES ${p('pricing.silver', 1300).toLocaleString()} per person.\n\nThis includes: Bouncing Castles, Rainbow Slides, Swings & Swimming.\n\nKindly confirm availability and any group rates if applicable. Looking forward to visiting!`,
-    },
-    {
-      name: 'Platinum', price: p('pricing.platinum', 1400), tag: 'Popular', level: 3,
-      activities: ['Zipline', 'Sky Bike', 'Rainbow Slides', 'Bridge & Mountain'],
-      bg: 'var(--color-gold)', border: '2px solid rgba(255,255,255,0.20)',
-      accent: '#fff', dot: '#fff', priceSize: 'clamp(1.2rem, 2.1vw, 1.75rem)', solid: true,
-      cta: 'Secure Platinum Now',
-      waMsg: `Hi CabHouse 👋 I'd like to book the *Platinum Package* at KES ${p('pricing.platinum', 1400).toLocaleString()} per person — your most popular pick!\n\nThis includes: Zipline, Sky Bike, Rainbow Slides & Bridge & Mountain.\n\nPlease share available dates and whether group bookings receive any discount. Excited to experience this!`,
-    },
-    {
-      name: 'Gold', price: p('pricing.gold', 2500), tag: 'All-In', level: 4,
-      activities: ['Every Activity', 'Unlimited Access', 'Full Day Pass'],
-      bg: 'linear-gradient(160deg, rgba(120,70,10,0.85) 0%, rgba(80,40,5,0.90) 100%)',
-      border: '2px solid rgba(250,190,60,0.55)', accent: '#FBBF24', dot: '#FBBF24',
-      priceSize: 'clamp(1.3rem, 2.3vw, 2rem)', solid: false,
-      cta: 'Claim Gold Experience',
-      waMsg: `Hi CabHouse 👋 I'm interested in the *Gold All-In Package* at KES ${p('pricing.gold', 2500).toLocaleString()} per person — the full experience!\n\nThis covers: Every Activity, Unlimited Access & a Full Day Pass.\n\nI'd like to plan an unforgettable day out. Please confirm available dates, group size options, and anything I should know before arrival. Can't wait!`,
-    },
+  // Static fallbacks used when API hasn't loaded yet
+  const FALLBACK_PACKAGES: PkgItem[] = [
+    { id:'bronze',   slug:'bronze',   title:'Bronze Package',   description:'', price:`KES ${p('pricing.bronze',1000).toLocaleString()}/pax`,   tag:null,      accentColor:'#B87040', solidBg:false, ctaLabel:'Reserve My Spot',      features:['Bouncing Castles','Rainbow Slides','Swings'],                          displayOrder:1 },
+    { id:'silver',   slug:'silver',   title:'Silver Package',   description:'', price:`KES ${p('pricing.silver',1300).toLocaleString()}/pax`,   tag:null,      accentColor:'#A8BACE', solidBg:false, ctaLabel:'Book Silver Package',   features:['Bouncing Castles','Rainbow Slides','Swings','Swimming'],               displayOrder:2 },
+    { id:'platinum', slug:'platinum', title:'Platinum Package', description:'', price:`KES ${p('pricing.platinum',1400).toLocaleString()}/pax`, tag:'Popular', accentColor:'#C8873A', solidBg:true,  ctaLabel:'Secure Platinum Now',   features:['Zipline','Sky Bike','Rainbow Slides','Bridge & Mountain'],             displayOrder:3 },
+    { id:'gold',     slug:'gold',     title:'Gold Package',     description:'', price:`KES ${p('pricing.gold',2500).toLocaleString()}/pax`,     tag:'All-In',  accentColor:'#FBBF24', solidBg:false, ctaLabel:'Claim Gold Experience', features:['Every Activity','Unlimited Access','Full Day Pass'],                    displayOrder:4 },
   ]
+
+  const PACKAGES = (apiPackages.length > 0 ? apiPackages : FALLBACK_PACKAGES).map((pkg, i) => {
+    const accent = pkg.accentColor ?? '#C8873A'
+    const { r, g, b } = hexToRgb(accent)
+    const level = pkg.displayOrder || (i + 1)
+    const featureList = pkg.features.length > 0 ? pkg.features : ['Park Access']
+    const priceText = pkg.price ?? ''
+    const waMsg = `Hi CabHouse 👋 I'd like to book the *${pkg.title}* at ${priceText} per person.\n\nThis includes: ${featureList.join(', ')}.\n\nPlease let me know your available dates. Thank you!`
+    return {
+      id: pkg.id, name: pkg.title.replace(' Package', ''), fullName: pkg.title,
+      priceText, tag: pkg.tag, level,
+      features: featureList,
+      bg: pkg.solidBg ? accent : `rgba(${Math.round(r*0.25)},${Math.round(g*0.25)},${Math.round(b*0.25)},0.85)`,
+      border: pkg.solidBg ? '2px solid rgba(255,255,255,0.20)' : `1px solid rgba(${r},${g},${b},0.30)`,
+      accent: pkg.solidBg ? '#fff' : accent,
+      dot: pkg.solidBg ? '#fff' : accent,
+      solid: pkg.solidBg,
+      cta: pkg.ctaLabel ?? 'Book Now',
+      waMsg,
+    }
+  })
 
   return (
     <section id="packages" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
@@ -125,7 +142,7 @@ export default function Pricing() {
           {tab === 'packages' && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {PACKAGES.map(pkg => (
-                <div key={pkg.name} className="rounded-xl flex flex-col relative overflow-hidden"
+                <div key={pkg.id} className="rounded-xl flex flex-col relative overflow-hidden"
                   style={{ background: pkg.bg, border: pkg.border }}>
                   <div className="p-3 sm:p-4 pb-2 flex-shrink-0">
                     <div className="flex items-center gap-1 mb-2.5">
@@ -148,16 +165,15 @@ export default function Pricing() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="font-display font-black" style={{ fontSize: pkg.priceSize, color: pkg.accent }}>
-                        {pkg.price.toLocaleString()}
+                    <div className="flex items-baseline gap-1 flex-wrap">
+                      <span className="font-display font-black text-lg sm:text-xl" style={{ color: pkg.accent }}>
+                        {pkg.priceText}
                       </span>
-                      <span className="font-body text-[9px] uppercase tracking-wide text-white/35">KES/pax</span>
                     </div>
                   </div>
                   <div className="mx-3 sm:mx-4 h-px flex-shrink-0" style={{ backgroundColor: `${pkg.accent}28` }} />
                   <ul className="p-3 sm:p-4 space-y-2 flex-1">
-                    {pkg.activities.map(a => (
+                    {pkg.features.map(a => (
                       <li key={a} className="flex items-center gap-2 font-body text-[10px] sm:text-[11px]"
                         style={{ color: pkg.solid ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.70)' }}>
                         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dot }} />

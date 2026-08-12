@@ -226,7 +226,7 @@ function Modal({ title, onClose, children, width = 'max-w-md' }: {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'promotions' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'promotions' | 'packages' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',     Icon: LayoutGrid,    group: 'main' },
@@ -235,6 +235,7 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'bookings',   label: 'Bookings',     Icon: CalendarDays,  group: 'main' },
   { id: 'promotions',label: 'Promotions',   Icon: Megaphone,     group: 'main' },
   { id: 'media',     label: 'Media',        Icon: Image,         group: 'content' },
+  { id: 'packages',  label: 'Park Packages', Icon: TicketPercent, group: 'content' },
   { id: 'services',  label: 'Services',     Icon: FileText,      group: 'content' },
   { id: 'sitems',    label: 'Service Items', Icon: LayoutGrid,   group: 'content' },
   { id: 'gallery',   label: 'Gallery',      Icon: Image,         group: 'content' },
@@ -245,8 +246,8 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
 
 const PAGE_TITLES: Record<Tab, string> = {
   overview: 'Overview', media: 'Media', patrons: 'Patrons',
-  coupons: 'Coupons', bookings: 'Bookings', promotions: 'Promotions', services: 'Services',
-  sitems: 'Service Items', gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
+  coupons: 'Coupons', bookings: 'Bookings', promotions: 'Promotions', packages: 'Park Packages',
+  services: 'Services', sitems: 'Service Items', gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -401,6 +402,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'coupons'   && <CouponsTab   token={token} />}
           {tab === 'bookings'   && <BookingsTab    token={token} />}
           {tab === 'promotions' && <PromotionsTab  token={token} />}
+          {tab === 'packages'  && <PackagesTab    token={token} />}
           {tab === 'services'   && <ServicesTab    token={token} />}
           {tab === 'sitems'    && <ServiceItemsTab token={token} />}
           {tab === 'gallery'   && <GalleryTab   token={token} />}
@@ -1528,6 +1530,280 @@ function PromotionsTab({ token }: { token: string }) {
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PACKAGES TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+interface PackageItem {
+  id: string; slug: string; title: string; description: string
+  price: string; tag: string; accentColor: string | null; solidBg: boolean
+  ctaLabel: string; features: string[]; displayOrder: number; visible: boolean
+}
+
+function PackageCard({ pkg, selected, onClick }: { pkg: PackageItem; selected: boolean; onClick: () => void }) {
+  const accent = pkg.accentColor ?? '#C8873A'
+  return (
+    <button
+      onClick={onClick}
+      className="w-full text-left rounded-xl p-4 border-2 transition-all"
+      style={{
+        borderColor: selected ? accent : 'transparent',
+        background: selected ? `${accent}10` : 'rgba(255,255,255,0.5)',
+        boxShadow: selected ? `0 0 0 1px ${accent}40` : undefined,
+      }}
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white font-black text-xs"
+          style={{ background: pkg.solidBg ? accent : `linear-gradient(135deg, ${accent}cc, ${accent}66)` }}>
+          {pkg.title.charAt(0)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-slate-900 text-sm truncate">{pkg.title}</p>
+          <p className="font-mono text-slate-500 text-xs">{pkg.price}</p>
+        </div>
+        {pkg.tag && (
+          <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full flex-shrink-0"
+            style={{ background: `${accent}18`, color: accent }}>{pkg.tag}</span>
+        )}
+      </div>
+    </button>
+  )
+}
+
+function PackagesTab({ token }: { token: string }) {
+  const [packages, setPackages] = useState<PackageItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState<PackageItem | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [newFeature, setNewFeature] = useState('')
+
+  // Editable draft
+  const [draft, setDraft] = useState<PackageItem | null>(null)
+
+  useEffect(() => {
+    api.get<PackageItem[]>('/service-items?category=PARK_PACKAGE', token)
+      .then(data => { setPackages(data); if (data.length > 0) selectPkg(data[0]) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [token])
+
+  function selectPkg(pkg: PackageItem) {
+    setSelected(pkg)
+    setDraft({ ...pkg, features: [...pkg.features] })
+    setSaveError(''); setSaved(false); setNewFeature('')
+  }
+
+  function set<K extends keyof PackageItem>(key: K, val: PackageItem[K]) {
+    setDraft(prev => prev ? { ...prev, [key]: val } : prev)
+    setSaved(false)
+  }
+
+  function addFeature() {
+    if (!newFeature.trim() || !draft) return
+    set('features', [...draft.features, newFeature.trim()])
+    setNewFeature('')
+  }
+
+  function removeFeature(i: number) {
+    if (!draft) return
+    set('features', draft.features.filter((_, idx) => idx !== i))
+  }
+
+  function moveFeature(i: number, dir: -1 | 1) {
+    if (!draft) return
+    const f = [...draft.features]
+    const j = i + dir
+    if (j < 0 || j >= f.length) return
+    ;[f[i], f[j]] = [f[j], f[i]]
+    set('features', f)
+  }
+
+  async function save() {
+    if (!draft || !selected) return
+    setSaving(true); setSaveError('')
+    try {
+      const updated = await api.put<PackageItem>(`/service-items/${selected.id}`, {
+        title: draft.title,
+        description: draft.description,
+        price: draft.price,
+        tag: draft.tag || null,
+        accentColor: draft.accentColor || null,
+        solidBg: draft.solidBg,
+        ctaLabel: draft.ctaLabel || null,
+        features: draft.features,
+        visible: draft.visible,
+        displayOrder: draft.displayOrder,
+      }, token)
+      setPackages(prev => prev.map(p => p.id === updated.id ? updated : p))
+      setSelected(updated)
+      setDraft({ ...updated, features: [...updated.features] })
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (e: any) { setSaveError(e.message ?? 'Save failed') } finally { setSaving(false) }
+  }
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-slate-900 font-bold text-lg">Park Packages</h2>
+        <p className="text-slate-500 text-sm">Edit each package's price, colour, inclusions, and CTA label. Changes reflect live on the website.</p>
+      </div>
+
+      {loading ? (
+        <div className="py-20 flex justify-center"><Spinner size={20} /></div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-5">
+          {/* Left: package list */}
+          <div className="space-y-2">
+            {packages.map(pkg => (
+              <PackageCard key={pkg.id} pkg={pkg} selected={selected?.id === pkg.id} onClick={() => selectPkg(pkg)} />
+            ))}
+            <p className="text-slate-400 text-[10px] px-1 pt-2">Packages are sorted by Display Order. Edit via Service Items tab to reorder.</p>
+          </div>
+
+          {/* Right: editor */}
+          {draft ? (
+            <Card>
+              <div className="space-y-5">
+                {/* Preview strip */}
+                <div className="rounded-xl p-4 flex items-center gap-4"
+                  style={{ background: draft.solidBg ? (draft.accentColor ?? '#C8873A') : `${draft.accentColor ?? '#C8873A'}15`, border: `1px solid ${draft.accentColor ?? '#C8873A'}40` }}>
+                  <div>
+                    <p className="font-display font-black text-lg" style={{ color: draft.solidBg ? '#fff' : (draft.accentColor ?? '#C8873A') }}>
+                      {draft.title}
+                    </p>
+                    <p className="font-mono text-sm" style={{ color: draft.solidBg ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.45)' }}>
+                      {draft.price || 'No price set'}
+                    </p>
+                  </div>
+                  {draft.tag && (
+                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full"
+                      style={{ background: draft.solidBg ? 'rgba(255,255,255,0.25)' : `${draft.accentColor}28`, color: draft.solidBg ? '#fff' : draft.accentColor ?? '#C8873A' }}>
+                      {draft.tag}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Package Name</label>
+                    <Input value={draft.title} onChange={e => set('title', e.target.value)} />
+                  </div>
+                  {/* Price */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Price Label</label>
+                    <Input value={draft.price ?? ''} onChange={e => set('price', e.target.value)} placeholder="e.g. KES 1,000/pax" />
+                  </div>
+                  {/* Tag badge */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Badge / Tag</label>
+                    <Input value={draft.tag ?? ''} onChange={e => set('tag', e.target.value)} placeholder="e.g. Popular, All-In (leave blank for none)" />
+                  </div>
+                  {/* CTA label */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">CTA Button Label</label>
+                    <Input value={draft.ctaLabel ?? ''} onChange={e => set('ctaLabel', e.target.value)} placeholder="e.g. Secure Platinum Now" />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+                  <textarea
+                    value={draft.description ?? ''}
+                    onChange={e => set('description', e.target.value)}
+                    rows={2}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none font-body"
+                    placeholder="Short description shown on the packages tab"
+                  />
+                </div>
+
+                {/* Colour palette */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">Colour Palette</label>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs text-slate-500">Accent colour</label>
+                      <input
+                        type="color"
+                        value={draft.accentColor ?? '#C8873A'}
+                        onChange={e => set('accentColor', e.target.value)}
+                        className="w-9 h-9 rounded cursor-pointer border border-slate-200"
+                        title="Package accent / highlight colour"
+                      />
+                      <span className="font-mono text-xs text-slate-400">{draft.accentColor ?? '#C8873A'}</span>
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={draft.solidBg}
+                        onChange={e => set('solidBg', e.target.checked)}
+                        className="rounded"
+                      />
+                      <span className="text-xs text-slate-600">Solid colour card background (use accent as fill)</span>
+                    </label>
+                  </div>
+                  <p className="text-slate-400 text-[10px] mt-1.5">
+                    Unchecked → card uses a derived dark background with the accent for text & dots.<br />
+                    Checked → card background = accent colour (like the Platinum gold card).
+                  </p>
+                </div>
+
+                {/* Features / inclusions */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">Package Inclusions</label>
+                  <div className="space-y-1.5 mb-3">
+                    {draft.features.map((f, i) => (
+                      <div key={i} className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: draft.accentColor ?? '#C8873A' }} />
+                        <span className="flex-1 text-sm text-slate-700 font-body">{f}</span>
+                        <div className="flex gap-1">
+                          <button onClick={() => moveFeature(i, -1)} disabled={i === 0}
+                            className="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200 disabled:opacity-30 transition-all text-xs">↑</button>
+                          <button onClick={() => moveFeature(i, 1)} disabled={i === draft.features.length - 1}
+                            className="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200 disabled:opacity-30 transition-all text-xs">↓</button>
+                          <button onClick={() => removeFeature(i)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 transition-all">
+                            <Trash2 size={11} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {draft.features.length === 0 && (
+                      <p className="text-slate-400 text-xs py-2">No inclusions yet — add some below.</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={newFeature}
+                      onChange={e => setNewFeature(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && addFeature()}
+                      placeholder="Add inclusion (e.g. Zipline, Swimming)"
+                    />
+                    <Btn onClick={addFeature} disabled={!newFeature.trim()}><Plus size={13} /> Add</Btn>
+                  </div>
+                </div>
+
+                {saveError && <p className="text-red-600 text-sm">{saveError}</p>}
+                <div className="flex items-center gap-3 pt-1">
+                  <Btn onClick={save} disabled={saving}>
+                    {saving ? <><Spinner size={13} /> Saving…</> : saved ? <><Check size={13} /> Saved</> : 'Save Changes'}
+                  </Btn>
+                  <Btn variant="ghost" onClick={() => selectPkg(selected!)}>Reset</Btn>
+                  {saved && <p className="text-emerald-600 text-xs">Changes saved — live on the website.</p>}
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <EmptyState icon={TicketPercent} title="Select a package to edit" />
+          )}
+        </div>
+      )}
     </div>
   )
 }
