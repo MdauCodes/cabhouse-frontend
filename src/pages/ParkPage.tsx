@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
@@ -5,6 +6,7 @@ import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
 import { useServiceItems } from '../hooks/useServiceItems'
 import { useGalleryImages } from '../hooks/useGalleryImages'
+import ReservationModal, { type ResourceTypeFilter } from '../components/ReservationModal'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500' },
@@ -75,7 +77,7 @@ const STAYS = [
   { name: 'Camping Tent',       base: 1500 },
 ]
 
-function HeroSection() {
+function HeroSection({ onBook }: { onBook: (t: ResourceTypeFilter) => void }) {
   const img = useMediaUrl('hero-1')
   const { ref, inView } = useInView(0.05)
 
@@ -126,13 +128,12 @@ function HeroSection() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <a
-            href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book a visit to CabHouse Park")}`}
-            target="_blank" rel="noopener noreferrer"
+          <button
+            onClick={() => onBook('DAY_PACKAGE')}
             className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
           >
-            Book via WhatsApp
-          </a>
+            Book a Visit
+          </button>
           <a
             href="#packages"
             className="border border-white/30 hover:border-white text-white font-body font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
@@ -216,7 +217,7 @@ function ActivityRow({ a, idx }: { a: { title: string; desc: string; price: stri
   )
 }
 
-function PackagesSection() {
+function PackagesSection({ onBook }: { onBook: (t: ResourceTypeFilter) => void }) {
   const { ref, inView } = useInView()
 
   return (
@@ -234,7 +235,7 @@ function PackagesSection() {
           >
             Day <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Packages</em>
           </h2>
-          <p className="text-white/25 font-body text-[10px]">All prices per person in KES · book via WhatsApp</p>
+          <p className="text-white/25 font-body text-[10px]">All prices per person in KES</p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -287,17 +288,16 @@ function PackagesSection() {
               </ul>
 
               <div className="p-3 sm:p-4 pt-0 flex-shrink-0">
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(pkg.waMsg)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="block text-center font-body font-bold tracking-wide py-3.5 rounded-full transition-all duration-200 hover:opacity-90"
+                <button
+                  onClick={() => onBook('DAY_PACKAGE')}
+                  className="w-full block text-center font-body font-bold tracking-wide py-3.5 rounded-full transition-all duration-200 hover:opacity-90"
                   style={{
                     fontSize: 'clamp(11px, 1.3vw, 13px)',
                     background: pkg.solid ? '#fff' : 'var(--color-gold)',
                     color: pkg.solid ? 'var(--color-gold)' : '#fff',
                   }}>
                   {pkg.cta}
-                </a>
+                </button>
               </div>
             </div>
           ))}
@@ -455,7 +455,7 @@ function DiningSection() {
   )
 }
 
-function StaySection() {
+function StaySection({ onBook }: { onBook: (t: ResourceTypeFilter) => void }) {
   const { ref, inView } = useInView(0.08)
   const dbStays = useServiceItems('PARK_STAY')
   const stays = dbStays.length > 0
@@ -491,15 +491,15 @@ function StaySection() {
                 </span>
               ))}
             </div>
-            <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to book an overnight stay at CabHouse Park")}`}
-              target="_blank" rel="noopener noreferrer"
+            <button
+              onClick={() => onBook('NIGHT_STAY')}
               className="inline-flex items-center gap-2 text-white font-body font-bold text-xs px-6 py-3 rounded-full transition-all duration-200 uppercase tracking-wide self-start lg:self-end"
               style={{ backgroundColor: 'var(--color-gold)' }}>
               Book a Stay
               <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2.5">
                 <path d="M3 8h10M9 4l4 4-4 4" />
               </svg>
-            </a>
+            </button>
           </div>
         </div>
 
@@ -518,10 +518,12 @@ function StaySection() {
 
 export default function ParkPage() {
   const parkDbPhotos = useGalleryImages('PARK').map(img => ({ src: img.cloudinaryUrl, label: img.label }))
+  const [bookModal, setBookModal] = useState<{ open: boolean; type: ResourceTypeFilter }>({ open: false, type: null })
+  const openModal = (t: ResourceTypeFilter) => setBookModal({ open: true, type: t })
 
   return (
     <Layout>
-      <HeroSection />
+      <HeroSection onBook={openModal} />
       <ActivitiesSection />
       <MasonryGallery
         photos={PARK_PHOTOS}
@@ -529,9 +531,15 @@ export default function ParkPage() {
         title='The Park <em class="not-italic" style="color:var(--color-gold)">In Pictures</em>'
         subtitle="Tap any photo to view full size"
       />
-      <PackagesSection />
+      <PackagesSection onBook={openModal} />
       <DiningSection />
-      <StaySection />
+      <StaySection onBook={openModal} />
+      {bookModal.open && (
+        <ReservationModal
+          defaultType={bookModal.type}
+          onClose={() => setBookModal(b => ({ ...b, open: false }))}
+        />
+      )}
     </Layout>
   )
 }

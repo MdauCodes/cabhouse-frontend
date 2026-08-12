@@ -92,7 +92,7 @@ export default function Pricing() {
     const accent = pkg.accentColor ?? '#C8873A'
     const { r, g, b } = hexToRgb(accent)
     const level = pkg.displayOrder || (i + 1)
-    const featureList = pkg.features.length > 0 ? pkg.features : ['Park Access']
+    const featureList = Array.isArray(pkg.features) && pkg.features.length > 0 ? pkg.features : ['Park Access']
     const priceText = pkg.price ?? ''
     const waMsg = `Hi CabHouse 👋 I'd like to book the *${pkg.title}* at ${priceText} per person.\n\nThis includes: ${featureList.join(', ')}.\n\nPlease let me know your available dates. Thank you!`
     return {

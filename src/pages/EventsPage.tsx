@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
+import ReservationModal from '../components/ReservationModal'
 
 const CORPORATE = [
   {
@@ -76,7 +78,7 @@ const VENUES = [
   },
 ]
 
-function Hero() {
+function Hero({ onBook }: { onBook: () => void }) {
   const img = useMediaUrl('feat-events')
   const { ref, inView } = useInView(0.05)
   return (
@@ -100,11 +102,10 @@ function Hero() {
         <p className="text-white/85 font-body text-sm leading-relaxed max-w-sm mb-6">
           Lush gardens for 200, an air-conditioned indoor hall, premium tents, restaurant and bar — every detail handled so you can show up, breathe and actually enjoy the moment.
         </p>
-        <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about hosting an event at CabHouse")}`}
-          target="_blank" rel="noopener noreferrer"
+        <button onClick={onBook}
           className="bg-brand-gold hover:bg-brand-orange text-white font-body font-semibold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 self-start">
-          Enquire Now
-        </a>
+          Reserve a Venue
+        </button>
       </div>
     </div>
     </section>
@@ -116,10 +117,11 @@ export default function EventsPage() {
   const { ref: socialRef, inView: socialInView } = useInView(0.08)
   const { ref: venueRef, inView: venueInView } = useInView(0.08)
   const wa = SITE.contact.whatsapp.replace('+', '')
+  const [bookOpen, setBookOpen] = useState(false)
 
   return (
     <Layout>
-      <Hero />
+      <Hero onBook={() => setBookOpen(true)} />
 
       {/* ── Corporate Events ── gold */}
       <section id="corporate" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
@@ -293,11 +295,10 @@ export default function EventsPage() {
             ))}
           </div>
           <div className="flex items-center gap-5">
-            <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to plan an event at CabHouse")}`}
-              target="_blank" rel="noopener noreferrer"
+            <button onClick={() => setBookOpen(true)}
               className="bg-brand-gold hover:bg-brand-orange text-white font-body font-semibold text-sm px-6 py-3 rounded-full transition-all hover:scale-105">
-              Plan Your Event
-            </a>
+              Reserve a Venue
+            </button>
             <a href={`tel:${SITE.contact.phone}`}
               className="text-white/50 hover:text-white font-body text-sm font-medium transition-colors">
               {SITE.contact.phone}
@@ -305,6 +306,9 @@ export default function EventsPage() {
           </div>
         </div>
       </section>
+      {bookOpen && (
+        <ReservationModal defaultType="VENUE" onClose={() => setBookOpen(false)} />
+      )}
     </Layout>
   )
 }
