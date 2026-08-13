@@ -421,7 +421,12 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
 // OVERVIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function OverviewTab({ token, onNav, username }: { token: string; onNav: (t: Tab) => void; username: string }) {
-  const [stats, setStats] = useState<{ totalPatrons: number; activePatrons: number; totalCouponsIssued: number; totalCouponsRedeemed: number; pendingBookings: number } | null>(null)
+  const [stats, setStats] = useState<{
+    totalPatrons: number; activePatrons: number;
+    totalCouponsIssued: number; totalCouponsRedeemed: number;
+    pendingBookings: number;
+    reservationsPendingPayment: number; reservationsPaymentRecorded: number; reservationsConfirmed: number;
+  } | null>(null)
   const [settings, setSettings] = useState<{ baseAmount: string; couponValue: string } | null>(null)
   const [recentActivity, setRecentActivity] = useState<any[]>([])
 
@@ -438,13 +443,45 @@ function OverviewTab({ token, onNav, username }: { token: string; onNav: (t: Tab
         <p className="text-slate-500 text-sm">Here's what's happening at CabHouse.</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Patrons" value={stats?.totalPatrons ?? '—'} sub="enrolled members" icon={Users} color="blue" />
         <StatCard label="Active Patrons" value={stats?.activePatrons ?? '—'} sub="verified accounts" icon={ShieldCheck} color="green" />
         <StatCard label="Coupons Issued" value={stats?.totalCouponsIssued ?? '—'} sub="all time" icon={TicketPercent} color="amber" />
         <StatCard label="Coupons Redeemed" value={stats?.totalCouponsRedeemed ?? '—'} sub="all time" icon={TrendingUp} color="purple" />
-        <StatCard label="Pending Bookings" value={stats?.pendingBookings ?? '—'} sub="awaiting response" icon={CalendarDays} color="blue"
-          onClick={() => onNav('bookings')} />
+      </div>
+
+      {/* Reservations summary strip */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-slate-700 text-sm font-semibold">Reservations</h2>
+          <button onClick={() => onNav('reservations')} className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all</button>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          <StatCard
+            label="Pending Payment"
+            value={stats?.reservationsPendingPayment ?? '—'}
+            sub="awaiting M-Pesa"
+            icon={CalendarDays}
+            color="amber"
+            onClick={() => onNav('reservations')}
+          />
+          <StatCard
+            label="Payment Received"
+            value={stats?.reservationsPaymentRecorded ?? '—'}
+            sub="needs confirmation"
+            icon={TrendingUp}
+            color="blue"
+            onClick={() => onNav('reservations')}
+          />
+          <StatCard
+            label="Confirmed"
+            value={stats?.reservationsConfirmed ?? '—'}
+            sub="all time"
+            icon={ShieldCheck}
+            color="green"
+            onClick={() => onNav('reservations')}
+          />
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
