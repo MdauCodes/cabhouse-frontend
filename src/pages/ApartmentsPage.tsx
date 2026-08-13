@@ -5,6 +5,7 @@ import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
 import { useServiceItems } from '../hooks/useServiceItems'
 import { useGalleryImages } from '../hooks/useGalleryImages'
+import ReservationModal from '../components/ReservationModal'
 
 const UNITS = [
   {
@@ -185,7 +186,7 @@ function DualCTA() {
   )
 }
 
-function HeroSection() {
+function HeroSection({ onBook }: { onBook: () => void }) {
   const { ref, inView } = useInView(0.05)
   return (
     <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
@@ -222,13 +223,12 @@ function HeroSection() {
             The sophisticated comfort of home blended with world-class hospitality — right in the heart of Kisii. Whether it's an overnight visit, a business trip or a full relocation, we have your space ready.
           </p>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <a
-              href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to enquire about CabHouse Apartments")}`}
-              target="_blank" rel="noopener noreferrer"
+            <button
+              onClick={onBook}
               className="bg-brand-gold hover:bg-brand-orange text-white font-body font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 shadow-lg shadow-brand-gold/25 uppercase tracking-wide text-center"
             >
-              Check Availability
-            </a>
+              Reserve a Room
+            </button>
             <a
               href="#enquire"
               className="border border-white/30 hover:border-white text-white font-body font-semibold text-xs px-4 py-2 rounded-full transition-all duration-200 hover:bg-white/10 uppercase tracking-wide text-center"
@@ -271,6 +271,7 @@ const APT_PHOTOS = [
 ]
 
 export default function ApartmentsPage() {
+  const [bookOpen, setBookOpen] = useState(false)
   const { ref, inView } = useInView(0.1)
   const dbUnits = useServiceItems('APT_UNIT')
   const units = dbUnits.length > 0
@@ -286,7 +287,7 @@ export default function ApartmentsPage() {
 
   return (
     <Layout>
-      <HeroSection />
+      <HeroSection onBook={() => setBookOpen(true)} />
 
       {/* Units — gold */}
       <section style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
@@ -317,14 +318,13 @@ export default function ApartmentsPage() {
                   </h3>
                   <p className="text-brand-dark/50 font-body text-xs leading-relaxed mb-2">{u.desc}</p>
                   <p className="text-brand-dark/35 font-body text-[10px] mb-5">Sleeps up to {u.beds} · Wi-Fi · Fully furnished</p>
-                  <a
-                    href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="block text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200"
+                  <button
+                    onClick={() => setBookOpen(true)}
+                    className="block w-full text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors duration-200"
                     style={{ backgroundColor: '#1a2e1f' }}
                   >
-                    Enquire
-                  </a>
+                    Reserve
+                  </button>
                 </div>
               ))}
             </div>
@@ -351,6 +351,7 @@ export default function ApartmentsPage() {
       />
 
       <DualCTA />
+      {bookOpen && <ReservationModal defaultType="NIGHT_STAY" onClose={() => setBookOpen(false)} />}
     </Layout>
   )
 }
