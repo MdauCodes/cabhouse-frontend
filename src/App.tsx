@@ -14,6 +14,8 @@ import StaffPOS from './pages/StaffPOS'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import PrivacyPage from './pages/PrivacyPage'
+import TermsPage from './pages/TermsPage'
 import LoadingScreen from './components/LoadingScreen'
 
 export default function App() {
@@ -69,6 +71,8 @@ export default function App() {
           <Route path="/ch/pos" element={<StaffPOS />} />
           <Route path="/patrons" element={<PatronPortal />} />
           <Route path="/promotions" element={<PromotionsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
         </Routes>
       </BrowserRouter>
     </>

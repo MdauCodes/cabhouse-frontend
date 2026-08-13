@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
-import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User } from 'lucide-react'
+import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User, ShieldCheck, AlertCircle } from 'lucide-react'
 
-const BASE = import.meta.env.DEV
-  ? 'http://localhost:8081/api'
-  : 'https://cabhouse-kisii-backend-production.up.railway.app/api'
+const BASE = import.meta.env.VITE_API_URL ?? 'https://cabhouse-kisii-backend-production.up.railway.app/api'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,6 +27,7 @@ interface AvailabilityDay {
 }
 
 interface ReservationResponse {
+  id: string
   referenceCode: string
   depositAmount: number | null
   status: string
@@ -51,6 +50,13 @@ function fmtPrice(r: Resource): string {
        : p
 }
 
+function calcDeposit(r: Resource, guests: number): number {
+  if (r.depositType === 'FREE') return 0
+  if (r.depositType === 'FLAT') return Number(r.depositValue ?? 0)
+  const pct = r.depositValue ?? 0
+  return Math.ceil(r.basePrice * guests * pct / 100)
+}
+
 function fmtDeposit(r: Resource, guests: number): string {
   if (r.depositType === 'FREE') return 'No deposit required'
   if (r.depositType === 'FLAT') return `KES ${Number(r.depositValue ?? 0).toLocaleString()} deposit`
@@ -59,10 +65,7 @@ function fmtDeposit(r: Resource, guests: number): string {
   return `KES ${amt.toLocaleString()} deposit (${pct}%)`
 }
 
-function toIso(d: Date) {
-  return d.toISOString().split('T')[0]
-}
-
+function toIso(d: Date) { return d.toISOString().split('T')[0] }
 function today() { return toIso(new Date()) }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -95,18 +98,31 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
 
-  // Step 4 — confirm / submit
+  // Step 4 — submit + result
   const [submitting, setSubmitting] = useState(false)
   const [submitErr, setSubmitErr] = useState('')
   const [result, setResult] = useState<ReservationResponse | null>(null)
+
+  // Post-payment phase
+  const [payPhase, setPayPhase] = useState<'instructions' | 'confirm' | 'done'>('instructions')
+  const [mpesaCode, setMpesaCode] = useState('')
+  const [mpesaName, setMpesaName] = useState('')
+  const [paySubmitting, setPaySubmitting] = useState(false)
+  const [payErr, setPayErr] = useState('')
 
   // Booking settings
   const [paybill, setPaybill] = useState('')
   const [account, setAccount] = useState('')
   const [instructions, setInstructions] = useState('')
 
-  // ── Load resources + booking settings ──────────────────────────────────────
+  // ── Scroll lock ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
 
+  // ── Load resources + booking settings ──────────────────────────────────────
   useEffect(() => {
     fetch(`${BASE}/reservations/resources/public`)
       .then(r => r.json())
@@ -135,13 +151,11 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
   }, [])
 
   // ── Availability check ──────────────────────────────────────────────────────
-
   async function checkAvail() {
     if (!selectedRes || !checkIn) return
     setLoadingAvail(true); setAvailErr(''); setAvail(null)
     try {
-      const to = checkIn // single day check
-      const url = `${BASE}/reservations/resources/public/${selectedRes.id}/availability?from=${checkIn}&to=${to}`
+      const url = `${BASE}/reservations/resources/public/${selectedRes.id}/availability?from=${checkIn}&to=${checkIn}`
       const res = await fetch(url)
       const json = await res.json()
       const days: AvailabilityDay[] = json.data ?? []
@@ -157,8 +171,7 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
     if (step === 2 && selectedRes && checkIn) checkAvail()
   }, [step, checkIn, selectedRes])
 
-  // ── Submit ──────────────────────────────────────────────────────────────────
-
+  // ── Submit booking ──────────────────────────────────────────────────────────
   async function submit() {
     if (!selectedRes) return
     setSubmitting(true); setSubmitErr('')
@@ -167,10 +180,10 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
         resourceId: selectedRes.id,
         customerName: name,
         customerPhone: phone,
+        customerEmail: email.trim(),
         guests,
         checkIn: checkIn || undefined,
       }
-      if (email.trim()) body.customerEmail = email.trim()
       if (selectedRes.type === 'NIGHT_STAY' && checkOut) body.checkOut = checkOut
 
       const res = await fetch(`${BASE}/reservations`, {
@@ -181,6 +194,7 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
       const json = await res.json()
       if (!res.ok || !json.success) throw new Error(json.message ?? 'Submission failed')
       setResult(json.data as ReservationResponse)
+      setPayPhase('instructions')
     } catch (e: any) {
       setSubmitErr(e.message ?? 'Something went wrong. Please try again.')
     } finally {
@@ -188,71 +202,244 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
     }
   }
 
-  // ── Filtered resources ──────────────────────────────────────────────────────
+  // ── Submit payment confirmation ─────────────────────────────────────────────
+  async function submitPayment() {
+    if (!result || !mpesaCode.trim() || !mpesaName.trim()) return
+    setPaySubmitting(true); setPayErr('')
+    try {
+      const res = await fetch(`${BASE}/reservations/${result.id}/record-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentReference: mpesaCode.trim(), paymentName: mpesaName.trim() }),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) throw new Error(json.message ?? 'Could not record payment')
+      setPayPhase('done')
+    } catch (e: any) {
+      setPayErr(e.message ?? 'Something went wrong. Please try again.')
+    } finally {
+      setPaySubmitting(false)
+    }
+  }
 
+  // ── Derived ─────────────────────────────────────────────────────────────────
   const filtered = typeFilter ? resources.filter(r => r.type === typeFilter) : resources
-
-  // ── Styles ──────────────────────────────────────────────────────────────────
+  const depositAmt = selectedRes ? calcDeposit(selectedRes, guests) : 0
+  const needsDeposit = selectedRes?.depositType !== 'FREE' && depositAmt > 0
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const canNext2 = !!checkIn && (avail == null || avail.available) && guests >= 1
+  const canNext3 = name.trim().length >= 2 && phone.trim().length >= 9 && emailValid
 
   const inputCls = 'w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors font-body'
 
-  // ── Success screen ──────────────────────────────────────────────────────────
-
+  // ── Post-booking screens ────────────────────────────────────────────────────
   if (result) {
+    // ── Phase: Done ───────────────────────────────────────────────────────────
+    if (payPhase === 'done') {
+      return (
+        <Overlay onClose={onClose}>
+          <ModalHeader onClose={onClose} title="All Done!" subtitle="" />
+          <div className="px-6 py-8 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#16a34a' }}>
+                <Check size={28} className="text-white" />
+              </div>
+              <div>
+                <p className="font-display font-black text-slate-900 text-lg">Payment details submitted</p>
+                <p className="text-slate-500 text-sm mt-1">Our team will verify your M-Pesa payment and confirm your booking.</p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <p className="text-xs text-slate-400 mb-1">Your booking reference</p>
+              <p className="font-mono text-xl font-black text-slate-900 tracking-widest">{result.referenceCode}</p>
+              <p className="text-xs text-slate-400 mt-1">Quote this when you arrive</p>
+            </div>
+
+            <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm">
+              <Mail size={16} className="text-blue-500 mt-0.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-slate-800">Check your email</p>
+                <p className="text-slate-500 text-xs mt-0.5">A booking summary and payment instructions have been sent to <strong>{email}</strong>. You'll receive a second email once your booking is confirmed.</p>
+              </div>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl p-4 text-sm">
+              <p className="font-semibold text-slate-800 mb-2">Become a CabHouse Member</p>
+              <p className="text-slate-500 text-xs leading-relaxed mb-3">Register for free to track all your bookings, earn loyalty coupons on every visit, and access exclusive member deals.</p>
+              <a href="/login" onClick={onClose}
+                className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+                style={{ backgroundColor: 'var(--color-gold)' }}>
+                Create Member Account
+              </a>
+              <p className="text-center text-xs text-slate-400 mt-2">Use the same phone number you booked with</p>
+            </div>
+
+            <button onClick={onClose}
+              className="w-full font-body font-semibold text-sm py-3 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+              Close
+            </button>
+          </div>
+        </Overlay>
+      )
+    }
+
+    // ── Phase: Payment confirmation form ──────────────────────────────────────
+    if (payPhase === 'confirm') {
+      return (
+        <Overlay onClose={onClose}>
+          <ModalHeader onClose={onClose} title="Confirm Your Payment" subtitle="Enter your M-Pesa details" />
+          <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+            <div className="bg-slate-50 rounded-xl p-4 text-sm">
+              <p className="text-xs text-slate-400 mb-1">Booking reference</p>
+              <p className="font-mono font-black text-slate-900 tracking-widest text-lg">{result.referenceCode}</p>
+            </div>
+
+            <p className="text-slate-600 text-sm leading-relaxed">
+              After completing the M-Pesa payment, enter the details below so our team can match your payment to this booking.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-600 block mb-1">
+                  M-Pesa Transaction Code *
+                </label>
+                <input
+                  value={mpesaCode}
+                  onChange={e => setMpesaCode(e.target.value.toUpperCase())}
+                  placeholder="e.g. QBD1A2B3C4"
+                  className={inputCls}
+                />
+                <p className="text-xs text-slate-400 mt-1">Found in the M-Pesa confirmation SMS you received after paying</p>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-600 block mb-1">
+                  Name on M-Pesa Account *
+                </label>
+                <input
+                  value={mpesaName}
+                  onChange={e => setMpesaName(e.target.value)}
+                  placeholder="Full name as it appears on your M-Pesa"
+                  className={inputCls}
+                />
+                <p className="text-xs text-slate-400 mt-1">This is the name our staff will see on the payment receipt</p>
+              </div>
+            </div>
+
+            {payErr && (
+              <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+                <AlertCircle size={14} className="text-red-500 mt-0.5 shrink-0" />
+                <p className="text-red-600 text-xs">{payErr}</p>
+              </div>
+            )}
+
+            <button
+              onClick={submitPayment}
+              disabled={paySubmitting || !mpesaCode.trim() || !mpesaName.trim()}
+              className="w-full flex items-center justify-center gap-2 font-body font-bold text-sm py-3.5 rounded-full text-white transition-all hover:brightness-110 disabled:opacity-50"
+              style={{ backgroundColor: 'var(--color-gold)' }}>
+              {paySubmitting ? <><Loader2 size={14} className="animate-spin" />Submitting…</> : 'Submit Payment Details'}
+            </button>
+
+            <button onClick={() => setPayPhase('instructions')}
+              className="w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors py-1">
+              Back to payment instructions
+            </button>
+          </div>
+        </Overlay>
+      )
+    }
+
+    // ── Phase: Payment instructions (default after booking created) ───────────
     return (
       <Overlay onClose={onClose}>
-        <ModalHeader onClose={onClose} title="Reservation Submitted!" subtitle="" />
-        <div className="px-6 py-8 space-y-6 text-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-gold)' }}>
-            <Check size={28} className="text-white" />
+        <ModalHeader onClose={onClose} title="Complete Your Booking" subtitle="Pay deposit to secure your spot" />
+        <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+
+          {/* Reference code — prominent */}
+          <div className="rounded-xl text-center py-5 px-4" style={{ background: 'linear-gradient(135deg, #1a1a1a, #2a1a0a)' }}>
+            <p className="text-white/50 text-xs uppercase tracking-[0.2em] mb-1">Your Booking Reference</p>
+            <p className="font-mono text-2xl font-black text-white tracking-widest">{result.referenceCode}</p>
+            <p className="text-white/40 text-xs mt-1.5">Quote this code on arrival — it confirms your identity</p>
           </div>
-          <div>
-            <p className="text-sm text-slate-500 font-body mb-1">Your reference code</p>
-            <p className="font-mono text-2xl font-black text-slate-900 tracking-widest">{result.referenceCode}</p>
-            <p className="text-xs text-slate-400 mt-1">Save this — you'll need it when you arrive</p>
-          </div>
-          {result.depositAmount != null && Number(result.depositAmount) > 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-left space-y-3">
-              <p className="font-semibold text-slate-800 text-sm">Complete your deposit via M-Pesa</p>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Amount</span>
-                  <span className="font-bold">KES {Number(result.depositAmount).toLocaleString()}</span>
-                </div>
-                {paybill && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Paybill</span>
-                    <span className="font-bold">{paybill}</span>
-                  </div>
-                )}
-                {account && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Account</span>
-                    <span className="font-bold">{account}</span>
-                  </div>
-                )}
+
+          {needsDeposit ? (
+            <>
+              {/* Payment amount */}
+              <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                <span className="text-slate-600 text-sm font-semibold">Deposit to pay</span>
+                <span className="font-black text-slate-900 text-xl">KES {depositAmt.toLocaleString()}</span>
               </div>
-              {instructions && <p className="text-xs text-slate-500 leading-relaxed">{instructions}</p>}
+
+              {/* M-Pesa steps */}
+              <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                  <p className="font-semibold text-slate-800 text-sm">How to pay via M-Pesa</p>
+                </div>
+                <div className="px-4 py-4 space-y-3 text-sm">
+                  {[
+                    ['1', 'Open M-Pesa on your phone', ''],
+                    ['2', 'Select Lipa na M-Pesa → Pay Bill', ''],
+                    ['3', 'Enter Business Number', paybill ? `Paybill: ${paybill}` : ''],
+                    ['4', 'Enter Account Number', account ? `Account: ${account}` : ''],
+                    ['5', 'Enter Amount', `KES ${depositAmt.toLocaleString()}`],
+                    ['6', 'Enter your M-Pesa PIN and confirm', ''],
+                  ].map(([n, step, detail]) => (
+                    <div key={n} className="flex items-start gap-3">
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5"
+                        style={{ backgroundColor: 'var(--color-gold)' }}>
+                        {n}
+                      </span>
+                      <div>
+                        <p className="text-slate-700">{step}</p>
+                        {detail && <p className="font-mono font-bold text-slate-900 text-base mt-0.5">{detail}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {instructions && (
+                <p className="text-xs text-slate-400 leading-relaxed">{instructions}</p>
+              )}
+
+              <div className="flex items-start gap-2 bg-green-50 border border-green-100 rounded-xl p-3 text-xs text-slate-600">
+                <ShieldCheck size={14} className="text-green-600 mt-0.5 shrink-0" />
+                <span>Once you pay, you'll get an M-Pesa SMS confirmation. Click <strong>"I have paid"</strong> below and enter the details from that SMS.</span>
+              </div>
+
+              <button
+                onClick={() => setPayPhase('confirm')}
+                className="w-full flex items-center justify-center gap-2 font-body font-bold text-sm py-3.5 rounded-full text-white transition-all hover:brightness-110"
+                style={{ backgroundColor: 'var(--color-gold)' }}>
+                <Check size={16} /> I have paid
+              </button>
+            </>
+          ) : (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-center">
+              <p className="font-semibold text-slate-800">No deposit required</p>
+              <p className="text-slate-500 mt-1 text-xs">Our team will contact you at {phone} to confirm your booking.</p>
             </div>
           )}
-          {(result.depositAmount == null || Number(result.depositAmount) === 0) && (
-            <p className="text-sm text-slate-500">No deposit required. We'll contact you to confirm your booking.</p>
+
+          <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
+            <Mail size={14} className="text-blue-500 mt-0.5 shrink-0" />
+            <span>A booking summary has been sent to <strong>{email}</strong></span>
+          </div>
+
+          {!needsDeposit && (
+            <button onClick={onClose}
+              className="w-full font-body font-semibold text-sm py-3 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+              Done
+            </button>
           )}
-          <button onClick={onClose}
-            className="w-full font-body font-bold text-sm py-3 rounded-full text-white transition-all hover:brightness-110"
-            style={{ backgroundColor: 'var(--color-gold)' }}>
-            Done
-          </button>
         </div>
       </Overlay>
     )
   }
 
   // ── Steps ───────────────────────────────────────────────────────────────────
-
-  const canNext2 = !!checkIn && (avail == null || avail.available) && guests >= 1
-  const canNext3 = name.trim().length >= 2 && phone.trim().length >= 9
-
   return (
     <Overlay onClose={onClose}>
       <ModalHeader
@@ -262,7 +449,7 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
       />
 
       {/* Progress bar */}
-      <div className="px-6 py-3 border-b border-slate-100">
+      <div className="px-6 py-3 border-b border-slate-100 shrink-0">
         <div className="flex gap-1.5">
           {[1, 2, 3, 4].map(n => (
             <div key={n} className={`h-1 flex-1 rounded-full transition-colors ${n <= step ? 'bg-brand-gold' : 'bg-slate-100'}`} />
@@ -275,7 +462,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
         {/* ── Step 1: Resource selection ── */}
         {step === 1 && (
           <div className="space-y-4">
-            {/* Type filter tabs */}
             {resources.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {([null, 'DAY_PACKAGE', 'NIGHT_STAY', 'VENUE'] as ResourceTypeFilter[]).map(t => (
@@ -286,7 +472,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                 ))}
               </div>
             )}
-
             {loadingRes ? (
               <div className="flex justify-center py-10"><Loader2 size={24} className="animate-spin text-slate-400" /></div>
             ) : filtered.length === 0 ? (
@@ -327,7 +512,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
               <p className="font-semibold text-slate-800">{selectedRes.name}</p>
               <p className="text-sm text-slate-600">{fmtPrice(selectedRes)}</p>
             </div>
-
             <div>
               <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
                 <CalendarDays size={12} className="inline mr-1" />
@@ -335,7 +519,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
               </label>
               <input type="date" value={checkIn} min={today()} onChange={e => setCheckIn(e.target.value)} className={inputCls} />
             </div>
-
             {selectedRes.type === 'NIGHT_STAY' && (
               <div>
                 <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
@@ -344,7 +527,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                 <input type="date" value={checkOut} min={checkIn} onChange={e => setCheckOut(e.target.value)} className={inputCls} />
               </div>
             )}
-
             <div>
               <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
                 <Users size={12} className="inline mr-1" />Number of Guests *
@@ -355,8 +537,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                 <p className="text-xs text-slate-400 mt-1">Max {selectedRes.dailyVisitorCap} per day</p>
               )}
             </div>
-
-            {/* Availability indicator */}
             {loadingAvail && (
               <div className="flex items-center gap-2 text-slate-400 text-sm">
                 <Loader2 size={14} className="animate-spin" />Checking availability…
@@ -371,13 +551,11 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
               </div>
             )}
             {availErr && <p className="text-xs text-slate-400">{availErr}</p>}
-
-            {/* Deposit preview */}
             {guests > 0 && (
               <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 text-sm">
                 <p className="font-semibold text-slate-800">Deposit required: {fmtDeposit(selectedRes, guests)}</p>
                 {selectedRes.depositType !== 'FREE' && (
-                  <p className="text-xs text-slate-500 mt-0.5">Paid via M-Pesa after submission</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Paid via M-Pesa after you submit</p>
                 )}
               </div>
             )}
@@ -401,12 +579,18 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             </div>
             <div>
               <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
-                <Mail size={12} className="inline mr-1" />Email Address <span className="font-normal text-slate-400">(optional — for confirmation email)</span>
+                <Mail size={12} className="inline mr-1" />Email Address *
               </label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com" className={inputCls} />
+              {email && !emailValid && (
+                <p className="text-red-500 text-xs mt-1">Please enter a valid email address</p>
+              )}
+              <p className="text-xs text-slate-400 mt-1">Required — we'll send your booking confirmation and payment instructions here</p>
             </div>
-            <p className="text-xs text-slate-400">
-              Your details are used only to confirm your reservation and send payment instructions.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Your details are used only to manage your reservation.{' '}
+              <a href="/privacy" target="_blank" className="underline hover:text-slate-600">Privacy Policy</a> ·{' '}
+              <a href="/terms" target="_blank" className="underline hover:text-slate-600">Terms of Use</a>
             </p>
           </div>
         )}
@@ -422,28 +606,23 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                 ['Deposit', fmtDeposit(selectedRes, guests)],
                 ['Name', name],
                 ['Phone', phone],
-                ...(email ? [['Email', email]] : []),
+                ['Email', email],
               ].map(([label, val]) => (
                 <div key={label} className="flex justify-between px-4 py-2.5">
                   <span className="text-slate-500">{label}</span>
-                  <span className="font-medium text-slate-800 text-right max-w-48">{val}</span>
+                  <span className="font-medium text-slate-800 text-right max-w-48 break-all">{val}</span>
                 </div>
               ))}
             </div>
 
-            {selectedRes.depositType !== 'FREE' && paybill && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm space-y-2">
-                <p className="font-semibold text-slate-800">After submitting, pay the deposit via M-Pesa:</p>
-                <div className="space-y-1 text-slate-600">
-                  {paybill && <p><span className="text-slate-400">Paybill:</span> <strong>{paybill}</strong></p>}
-                  {account && <p><span className="text-slate-400">Account:</span> <strong>{account}</strong></p>}
-                </div>
-                {instructions && <p className="text-xs text-slate-500 leading-relaxed">{instructions}</p>}
-              </div>
-            )}
+            <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
+              <Mail size={14} className="text-blue-500 mt-0.5 shrink-0" />
+              <span>Booking confirmation and M-Pesa payment instructions will be sent to <strong>{email}</strong></span>
+            </div>
 
             {submitErr && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+                <AlertCircle size={14} className="text-red-500 mt-0.5 shrink-0" />
                 <p className="text-red-600 text-xs">{submitErr}</p>
               </div>
             )}
@@ -451,25 +630,32 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             <button onClick={submit} disabled={submitting}
               className="w-full flex items-center justify-center gap-2 font-body font-bold text-sm py-3.5 rounded-full text-white transition-all hover:brightness-110 disabled:opacity-60"
               style={{ backgroundColor: 'var(--color-gold)' }}>
-              {submitting ? <><Loader2 size={14} className="animate-spin" />Submitting…</> : 'Confirm & Submit Reservation'}
+              {submitting ? <><Loader2 size={14} className="animate-spin" />Submitting…</> : 'Confirm & Book'}
             </button>
           </div>
         )}
       </div>
 
       {/* ── Bottom nav ── */}
-      <div className="px-6 py-4 border-t border-slate-100 flex gap-3">
+      <div className="px-6 py-4 border-t border-slate-100 shrink-0 flex gap-3">
         {step > 1 && (
-          <button onClick={() => setStep(s => s - 1)} className="flex items-center gap-1 px-4 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-body hover:bg-slate-50 transition-colors">
+          <button onClick={() => setStep(s => s - 1)}
+            className="flex items-center gap-1 px-4 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-body hover:bg-slate-50 transition-colors">
             <ChevronLeft size={14} /> Back
           </button>
         )}
         {step === 1 && (
-          <button onClick={() => { if (selectedRes) setStep(2) }} disabled={!selectedRes}
-            className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-full font-body font-bold text-sm text-white transition-all hover:brightness-110 disabled:opacity-40"
-            style={{ backgroundColor: 'var(--color-gold)' }}>
-            Next <ChevronRight size={14} />
-          </button>
+          <>
+            <button onClick={() => { if (selectedRes) setStep(2) }} disabled={!selectedRes}
+              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-full font-body font-bold text-sm text-white transition-all hover:brightness-110 disabled:opacity-40"
+              style={{ backgroundColor: 'var(--color-gold)' }}>
+              Next <ChevronRight size={14} />
+            </button>
+            <button onClick={onClose}
+              className="px-4 py-2.5 rounded-full border border-slate-200 text-slate-500 font-body text-sm hover:bg-slate-50 transition-colors">
+              Cancel
+            </button>
+          </>
         )}
         {step === 2 && (
           <button onClick={() => { if (canNext2) setStep(3) }} disabled={!canNext2}
@@ -485,11 +671,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             Review Booking <ChevronRight size={14} />
           </button>
         )}
-        {step === 1 && (
-          <button onClick={onClose} className="px-4 py-2.5 rounded-full border border-slate-200 text-slate-500 font-body text-sm hover:bg-slate-50 transition-colors">
-            Cancel
-          </button>
-        )}
       </div>
     </Overlay>
   )
@@ -503,7 +684,8 @@ function Overlay({ children, onClose }: { children: React.ReactNode; onClose: ()
       style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col"
-        style={{ maxHeight: '90vh' }}>
+        style={{ maxHeight: '90vh' }}
+        onClick={e => e.stopPropagation()}>
         {children}
       </div>
     </div>
