@@ -7,6 +7,7 @@ import {
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, ArrowUpRight,
   Pencil, ToggleLeft, ToggleRight, CalendarDays, Megaphone, Tag, Trash2,
+  BarChart2, Lock, LineChart, PieChart,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
@@ -226,11 +227,11 @@ function Modal({ title, onClose, children, width = 'max-w-md' }: {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD SHELL
 // ═══════════════════════════════════════════════════════════════════════════════
-type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'reservations' | 'promotions' | 'packages' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity'
+type Tab = 'overview' | 'media' | 'patrons' | 'coupons' | 'bookings' | 'reservations' | 'promotions' | 'packages' | 'services' | 'sitems' | 'gallery' | 'content' | 'users' | 'activity' | 'reports'
 
 const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'overview',  label: 'Overview',     Icon: LayoutGrid,    group: 'main' },
-  { id: 'patrons',   label: 'Patrons',      Icon: Users,         group: 'main' },
+  { id: 'patrons',   label: 'Members',      Icon: Users,         group: 'main' },
   { id: 'coupons',   label: 'Coupons',      Icon: TicketPercent, group: 'main' },
   { id: 'bookings',      label: 'Enquiries',     Icon: CalendarDays,  group: 'main' },
   { id: 'reservations',  label: 'Reservations',  Icon: CalendarDays,  group: 'main' },
@@ -243,12 +244,14 @@ const NAV: { id: Tab; label: string; Icon: any; group: string }[] = [
   { id: 'content',   label: 'Content',      Icon: Pencil,        group: 'content' },
   { id: 'users',     label: 'Users',        Icon: ShieldCheck,   group: 'system' },
   { id: 'activity',  label: 'Activity',     Icon: Activity,      group: 'system' },
+  { id: 'reports',   label: 'Reports',      Icon: BarChart2,     group: 'system' },
 ]
 
 const PAGE_TITLES: Record<Tab, string> = {
-  overview: 'Overview', media: 'Media', patrons: 'Patrons',
+  overview: 'Overview', media: 'Media', patrons: 'Members',
   coupons: 'Coupons', bookings: 'Enquiries', reservations: 'Reservations', promotions: 'Promotions', packages: 'Park Packages',
   services: 'Services', sitems: 'Service Items', gallery: 'Gallery', content: 'Content Blocks', users: 'Users', activity: 'Activity Log',
+  reports: 'Reports & Analytics',
 }
 
 function Sidebar({ tab, onTab, onLogout, session, open, onClose }: {
@@ -411,6 +414,7 @@ function AdminDashboard({ session, onLogout }: { session: AdminSession; onLogout
           {tab === 'content'   && <ContentTab   token={token} />}
           {tab === 'users'     && <UsersTab     token={token} />}
           {tab === 'activity'  && <ActivityTab  token={token} />}
+          {tab === 'reports'   && <ReportsTab   token={token} />}
         </main>
       </div>
     </div>
@@ -444,8 +448,8 @@ function OverviewTab({ token, onNav, username }: { token: string; onNav: (t: Tab
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Patrons" value={stats?.totalPatrons ?? '—'} sub="enrolled members" icon={Users} color="blue" />
-        <StatCard label="Active Patrons" value={stats?.activePatrons ?? '—'} sub="verified accounts" icon={ShieldCheck} color="green" />
+        <StatCard label="Total Members" value={stats?.totalPatrons ?? '—'} sub="enrolled members" icon={Users} color="blue" />
+        <StatCard label="Active Members" value={stats?.activePatrons ?? '—'} sub="verified accounts" icon={ShieldCheck} color="green" />
         <StatCard label="Coupons Issued" value={stats?.totalCouponsIssued ?? '—'} sub="all time" icon={TicketPercent} color="amber" />
         <StatCard label="Coupons Redeemed" value={stats?.totalCouponsRedeemed ?? '—'} sub="all time" icon={TrendingUp} color="purple" />
       </div>
@@ -490,7 +494,7 @@ function OverviewTab({ token, onNav, username }: { token: string; onNav: (t: Tab
           <h3 className="text-slate-900 font-semibold text-sm mb-4">Quick Actions</h3>
           <div className="space-y-2">
             {[
-              { label: 'Manage Patrons', sub: 'Search, view balances', tab: 'patrons' as Tab, icon: Users },
+              { label: 'Manage Members', sub: 'Search, view balances', tab: 'patrons' as Tab, icon: Users },
               { label: 'Coupon Settings', sub: 'Adjust earning rate', tab: 'coupons' as Tab, icon: TicketPercent },
               { label: 'Update Media', sub: 'Swap images & videos', tab: 'media' as Tab, icon: Image },
               { label: 'Manage Users', sub: 'Staff & admin accounts', tab: 'users' as Tab, icon: ShieldCheck },
@@ -877,11 +881,11 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   }
 
   return (
-    <Modal title="Patron Detail" onClose={onClose} width="max-w-2xl">
+    <Modal title="Member Detail" onClose={onClose} width="max-w-2xl">
       {loading ? (
         <div className="py-10 flex justify-center"><Spinner size={20} /></div>
       ) : !detail ? (
-        <EmptyState icon={Users} title="Failed to load patron" />
+        <EmptyState icon={Users} title="Failed to load member" />
       ) : (
         <div className="space-y-5">
           {/* Header */}
@@ -1037,7 +1041,7 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
   }
 
   return (
-    <Modal title="Enroll Patron" onClose={onClose}>
+    <Modal title="Enroll Member" onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
@@ -1050,13 +1054,13 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
         <div>
           <label className="block text-xs font-semibold text-slate-600 mb-1">4-Digit PIN *</label>
           <Input required value={pin} onChange={e => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            placeholder="4 digits — patron uses this to log in" maxLength={4} inputMode="numeric" />
-          <p className="text-slate-400 text-xs mt-1">The patron will use their phone number + this PIN to access their portal.</p>
+            placeholder="4 digits — member uses this to log in" maxLength={4} inputMode="numeric" />
+          <p className="text-slate-400 text-xs mt-1">The member will use their phone number + this PIN to access their portal.</p>
         </div>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <div className="flex justify-end gap-2 pt-2">
           <Btn type="button" variant="ghost" onClick={onClose}>Cancel</Btn>
-          <Btn type="submit" disabled={saving}>{saving ? <Spinner size={13} /> : 'Enroll Patron'}</Btn>
+          <Btn type="submit" disabled={saving}>{saving ? <Spinner size={13} /> : 'Enroll Member'}</Btn>
         </div>
       </form>
     </Modal>
@@ -1093,10 +1097,10 @@ function PatronsTab({ token }: { token: string }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-slate-900 font-bold text-lg">Patrons</h2>
+          <h2 className="text-slate-900 font-bold text-lg">Members</h2>
           <p className="text-slate-500 text-sm">{total} enrolled member{total !== 1 ? 's' : ''}</p>
         </div>
-        <Btn onClick={() => setEnrollOpen(true)}><Plus size={14} /> Enroll Patron</Btn>
+        <Btn onClick={() => setEnrollOpen(true)}><Plus size={14} /> Enroll Member</Btn>
       </div>
       {enrollOpen && (
         <EnrollPatronModal token={token} onClose={() => setEnrollOpen(false)} onEnrolled={reload} />
@@ -1118,13 +1122,13 @@ function PatronsTab({ token }: { token: string }) {
             <Spinner size={16} /> <span className="text-sm">Loading patrons…</span>
           </div>
         ) : patrons.length === 0 ? (
-          <EmptyState icon={Users} title="No patrons found" sub={query ? 'Try a different search term' : 'Enroll your first patron via the POS terminal'} />
+          <EmptyState icon={Users} title="No members found" sub={query ? 'Try a different search term' : 'Enroll your first member via the POS terminal'} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Patron</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Member</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Phone</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Coupons</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs font-semibold uppercase tracking-wide">Status</th>
@@ -2141,6 +2145,118 @@ function ResetPasswordModal({ token, user, onDone, onClose }: { token: string; u
 // ═══════════════════════════════════════════════════════════════════════════════
 // ACTIVITY TAB
 // ═══════════════════════════════════════════════════════════════════════════════
+// ── Reports Tab ───────────────────────────────────────────────────────────────
+
+const REPORT_CARDS = [
+  {
+    id: 'reservations',
+    label: 'Reservation Summary',
+    desc: 'Monthly breakdown of reservations — pending, confirmed, and cancelled — with deposit totals.',
+    icon: CalendarDays,
+    color: '#3b82f6',
+    bg: '#eff6ff',
+  },
+  {
+    id: 'members',
+    label: 'Member Growth',
+    desc: 'New member enrolments per month and cumulative membership total over time.',
+    icon: Users,
+    color: '#10b981',
+    bg: '#ecfdf5',
+  },
+  {
+    id: 'coupons',
+    label: 'Coupon Activity',
+    desc: 'Coupons issued vs redeemed per month — track loyalty programme engagement.',
+    icon: TicketPercent,
+    color: '#f59e0b',
+    bg: '#fffbeb',
+  },
+  {
+    id: 'revenue',
+    label: 'Revenue Estimates',
+    desc: 'Deposit revenue grouped by resource and month — a financial overview by product line.',
+    icon: BarChart2,
+    color: '#8b5cf6',
+    bg: '#f5f3ff',
+  },
+  {
+    id: 'export',
+    label: 'Data Export',
+    desc: 'Export reservation, member, or transaction data to CSV or Excel for offline analysis.',
+    icon: FileText,
+    color: '#6366f1',
+    bg: '#eef2ff',
+  },
+  {
+    id: 'charts',
+    label: 'Visual Analytics',
+    desc: 'Interactive charts and trend lines for revenue, footfall, and membership KPIs.',
+    icon: LineChart,
+    color: '#ec4899',
+    bg: '#fdf2f8',
+  },
+]
+
+function ReportsTab({ token: _token }: { token: string }) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-slate-900 text-xl font-bold">Reports &amp; Analytics</h1>
+        <p className="text-slate-500 text-sm mt-1">
+          Full reporting suite — unlocking in the next development cohort.
+        </p>
+      </div>
+
+      {/* Cohort callout */}
+      <div className="flex items-start gap-4 rounded-2xl p-5 border border-amber-200 bg-amber-50">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-100">
+          <Lock size={16} className="text-amber-600" />
+        </div>
+        <div>
+          <p className="text-amber-900 font-semibold text-sm">Next Cohort Feature</p>
+          <p className="text-amber-700 text-xs mt-0.5 leading-relaxed">
+            Reports &amp; Analytics are fully built on the backend and ready to activate.
+            This module will be enabled for your account in the next development cohort.
+            Contact your CabHouse system administrator to unlock access.
+          </p>
+        </div>
+      </div>
+
+      {/* Report cards grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {REPORT_CARDS.map(card => (
+          <div key={card.id} className="relative rounded-2xl border border-slate-100 bg-white overflow-hidden">
+            {/* Locked overlay */}
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-2xl"
+              style={{ background: 'rgba(255,255,255,0.80)', backdropFilter: 'blur(2px)' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-100">
+                <Lock size={14} className="text-slate-400" />
+              </div>
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Next Cohort</span>
+            </div>
+
+            {/* Card content (shown blurred behind overlay) */}
+            <div className="p-5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                style={{ background: card.bg }}>
+                <card.icon size={18} style={{ color: card.color }} />
+              </div>
+              <p className="text-slate-900 font-semibold text-sm mb-1">{card.label}</p>
+              <p className="text-slate-400 text-xs leading-relaxed">{card.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom note */}
+      <p className="text-slate-400 text-xs text-center pb-4">
+        Backend endpoints are live at <code className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">/reports/*</code> — activate by upgrading to the Reports cohort.
+      </p>
+    </div>
+  )
+}
+
 interface LogRow { id: string; actorUsername: string; action: string; entityType: string; detail: string | null; createdAt: string }
 
 function ActivityTab({ token }: { token: string }) {

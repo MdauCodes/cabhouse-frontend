@@ -134,7 +134,7 @@ function EnrollModal({
       <div className="w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-6"
         style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.1)' }}
         onClick={e => e.stopPropagation()}>
-        <h3 className="font-display font-bold text-white text-lg mb-1">Enroll New Patron</h3>
+        <h3 className="font-display font-bold text-white text-lg mb-1">Enroll New Member</h3>
         <p className="text-white/40 text-sm font-body mb-5">{phone}</p>
         <form onSubmit={handleEnroll} className="space-y-3">
           <input
@@ -367,7 +367,7 @@ function POSScreen({ session, onLogout }: { session: StaffSession; onLogout: () 
       <div className="px-5 flex-1">
         {/* Phone lookup */}
         <div className="mb-5">
-          <label className="text-white/50 text-xs uppercase tracking-widest font-body mb-2 block">Patron phone</label>
+          <label className="text-white/50 text-xs uppercase tracking-widest font-body mb-2 block">Member phone</label>
           <div className="flex gap-2">
             <input
               type="tel"
@@ -391,7 +391,7 @@ function POSScreen({ session, onLogout }: { session: StaffSession; onLogout: () 
           <div className="rounded-2xl p-4 mb-5 flex items-center justify-between"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div>
-              <p className="text-white font-body font-semibold text-sm">No patron found</p>
+              <p className="text-white font-body font-semibold text-sm">No member found</p>
               <p className="text-white/40 text-xs font-body mt-0.5">Would you like to enroll {phone}?</p>
             </div>
             <button onClick={() => setShowEnroll(true)}
@@ -494,7 +494,7 @@ function POSScreen({ session, onLogout }: { session: StaffSession; onLogout: () 
 
             <button onClick={reset}
               className="w-full py-3 rounded-xl font-body text-sm text-white/30 hover:text-white/60 transition-colors">
-              Clear · look up another patron
+              Clear · look up another member
             </button>
           </>
         )}
