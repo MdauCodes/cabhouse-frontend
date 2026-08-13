@@ -2383,6 +2383,7 @@ const CONTENT_SECTION_LABELS: Record<string, string> = {
   events: 'Events Page',
   footer: 'Footer',
   cloudinary: 'Cloudinary Config',
+  booking: 'M-Pesa Payment Settings',
 }
 
 // ── Page definitions for per-page media & content editing ─────────────────────
@@ -2393,6 +2394,7 @@ const SITE_PAGES = [
   { id: 'events',     label: 'Events',      mediaSections: [],                                        contentSections: ['events'] },
   { id: 'contact',    label: 'Contact',     mediaSections: [],                                        contentSections: ['contact'] },
   { id: 'footer',     label: 'Footer',      mediaSections: [],                                        contentSections: ['footer'] },
+  { id: 'booking',    label: 'Booking',     mediaSections: [],                                        contentSections: ['booking'] },
   { id: 'settings',   label: 'Settings',    mediaSections: [],                                        contentSections: ['cloudinary'] },
 ] as const
 
@@ -2442,7 +2444,8 @@ function ContentTab({ token }: { token: string }) {
   const isMultiline = (key: string) =>
     key.includes('.heading') || key.includes('.subheading') || key.includes('.text') ||
     key.includes('.desc') || key.includes('.sub') || key.includes('.tagline') ||
-    key.includes('announcement.text') || key.includes('footer.tagline')
+    key.includes('announcement.text') || key.includes('footer.tagline') ||
+    key.includes('.instructions')
 
   const page = SITE_PAGES.find(p => p.id === activePage) ?? SITE_PAGES[0]
   const pageBlocks = blocks.filter(b => (page.contentSections as readonly string[]).includes(b.section))
