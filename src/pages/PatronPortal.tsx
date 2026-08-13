@@ -13,6 +13,18 @@ interface PatronData {
   createdAt: string
 }
 
+interface MyReservation {
+  id: string
+  referenceCode: string
+  resourceName: string
+  checkIn: string | null
+  checkOut: string | null
+  guests: number
+  depositAmount: string | null
+  status: string
+  createdAt: string
+}
+
 interface Transaction {
   id: string
   amount: number
@@ -123,11 +135,13 @@ function MemberCard({ patron }: { patron: PatronData }) {
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
 function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => void }) {
-  const [tab, setTab] = useState<'overview' | 'activity'>('overview')
+  const [tab, setTab] = useState<'overview' | 'bookings' | 'activity'>('overview')
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [redemptions, setRedemptions] = useState<Redemption[]>([])
   const [loaded, setLoaded] = useState(false)
   const [activityFilter, setActivityFilter] = useState<'all' | 'earned' | 'redeemed'>('all')
+  const [bookings, setBookings] = useState<MyReservation[]>([])
+  const [bookingsLoaded, setBookingsLoaded] = useState(false)
   const promotions = usePromotions()
 
   const token = patronAuth.getToken()
@@ -145,9 +159,19 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
     } catch {}
   }
 
-  function handleTabChange(t: 'overview' | 'activity') {
+  async function loadBookings() {
+    if (bookingsLoaded) return
+    try {
+      const res = await api.get<{ content: MyReservation[] }>('/reservations/my?size=50', token)
+      setBookings(res.content)
+      setBookingsLoaded(true)
+    } catch { setBookingsLoaded(true) }
+  }
+
+  function handleTabChange(t: 'overview' | 'bookings' | 'activity') {
     setTab(t)
     if (t === 'activity') loadActivity()
+    if (t === 'bookings') loadBookings()
   }
 
   // Merged timeline
@@ -219,7 +243,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
       {/* ── Tabs ── */}
       <div className="px-5 mb-5">
         <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-          {([['overview', 'Overview'], ['activity', 'Activity']] as const).map(([t, label]) => (
+          {([['overview', 'Overview'], ['bookings', 'Bookings'], ['activity', 'Activity']] as const).map(([t, label]) => (
             <button key={t} onClick={() => handleTabChange(t)}
               className="flex-1 py-2.5 rounded-lg font-body font-semibold text-sm transition-all"
               style={{
@@ -347,6 +371,84 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </a>
+          </div>
+        )}
+
+        {/* BOOKINGS */}
+        {tab === 'bookings' && (
+          <div>
+            {!bookingsLoaded && (
+              <div className="flex flex-col items-center justify-center py-14 gap-3">
+                <div className="w-7 h-7 rounded-full border-2 border-white/10 border-t-amber-500 animate-spin" />
+                <p className="text-white/25 text-xs font-body">Loading bookings…</p>
+              </div>
+            )}
+            {bookingsLoaded && bookings.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-14 gap-2">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </div>
+                <p className="text-white/30 text-sm font-body">No bookings yet</p>
+                <p className="text-white/18 text-xs font-body">Your reservation history will appear here</p>
+              </div>
+            )}
+            {bookingsLoaded && bookings.length > 0 && (
+              <div className="space-y-3">
+                {bookings.map(b => {
+                  const statusColor: Record<string, string> = {
+                    CONFIRMED: '#4ade80',
+                    PAYMENT_RECORDED: '#C8873A',
+                    PENDING_PAYMENT: '#facc15',
+                    CANCELLED: '#f87171',
+                  }
+                  const statusLabel: Record<string, string> = {
+                    CONFIRMED: 'Confirmed',
+                    PAYMENT_RECORDED: 'Payment Received',
+                    PENDING_PAYMENT: 'Pending Payment',
+                    CANCELLED: 'Cancelled',
+                  }
+                  const color = statusColor[b.status] ?? '#94a3b8'
+                  return (
+                    <div key={b.id} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div>
+                          <p className="text-white font-body font-semibold text-sm">{b.resourceName}</p>
+                          <p className="text-white/35 font-mono text-xs mt-0.5">{b.referenceCode}</p>
+                        </div>
+                        <span className="shrink-0 px-2.5 py-1 rounded-full font-body font-bold text-[10px] uppercase tracking-wide"
+                          style={{ background: `${color}18`, color, border: `1px solid ${color}30` }}>
+                          {statusLabel[b.status] ?? b.status}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+                        {b.checkIn && (
+                          <div>
+                            <p className="text-white/25 text-[9px] font-body uppercase tracking-[0.15em]">Date</p>
+                            <p className="text-white/60 font-body text-xs mt-0.5">{fmt(b.checkIn)}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-white/25 text-[9px] font-body uppercase tracking-[0.15em]">Guests</p>
+                          <p className="text-white/60 font-body text-xs mt-0.5">{b.guests}</p>
+                        </div>
+                        {b.depositAmount && Number(b.depositAmount) > 0 && (
+                          <div>
+                            <p className="text-white/25 text-[9px] font-body uppercase tracking-[0.15em]">Deposit</p>
+                            <p className="text-white/60 font-body text-xs mt-0.5">KES {Number(b.depositAmount).toLocaleString()}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-white/25 text-[9px] font-body uppercase tracking-[0.15em]">Booked</p>
+                          <p className="text-white/60 font-body text-xs mt-0.5">{fmt(b.createdAt)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
 
