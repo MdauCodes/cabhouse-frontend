@@ -7,7 +7,7 @@ import {
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, ArrowUpRight,
   Pencil, ToggleLeft, ToggleRight, CalendarDays, Megaphone, Tag, Trash2,
-  BarChart2, Lock, LineChart, PieChart,
+  BarChart2, Lock, LineChart,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
@@ -3443,12 +3443,13 @@ function ResourcesManager({ resources, token, onUpdated }: {
 export default function MdauDev() {
   const navigate = useNavigate()
   const [session, setSession] = useState<AdminSession | null>(getSession)
-  const [validating, setValidating] = useState(!!getSession())
+  const [validating, setValidating] = useState(true) // always spin first — no flash of dashboard or blank
 
   useEffect(() => {
     const s = getSession()
     if (!s) {
       navigate('/login?next=/ch/admin', { replace: true })
+      setValidating(false)
       return
     }
     // Validate token is still accepted by the backend
