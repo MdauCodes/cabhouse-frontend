@@ -3050,7 +3050,7 @@ function GalleryTab({ token }: { token: string }) {
 // RESERVATIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-type ReservationStatus = 'PENDING_PAYMENT' | 'PAYMENT_RECORDED' | 'CONFIRMED' | 'CANCELLED'
+type ReservationStatus = 'PENDING_PAYMENT' | 'PAYMENT_RECORDED' | 'CONFIRMED' | 'EXPIRED' | 'CANCELLED'
 
 interface BookableResource {
   id: string
@@ -3084,21 +3084,66 @@ interface Reservation {
   paymentName: string | null
   status: ReservationStatus
   adminNote: string | null
+  resourceUnitId: string | null
+  resourceUnitName: string | null
+  expiresAt: string | null
   createdAt: string
 }
 
+interface LifecycleEvent {
+  id: string
+  event: 'CREATED' | 'PAYMENT_DECLARED' | 'CONFIRMED' | 'EXPIRED' | 'CANCELLED'
+  actorType: 'CUSTOMER' | 'ADMIN' | 'SYSTEM'
+  actorId: string | null
+  note: string | null
+  createdAt: string
+}
+
+interface BookingPolicyItem {
+  id: string
+  resourceId: string | null
+  resourceName: string
+  maxAdvanceDays: number
+  autoExpireHours: number
+  cancellationWindowHours: number
+  refundPercent: number
+}
+
 const STATUS_LABELS: Record<ReservationStatus, string> = {
-  PENDING_PAYMENT: 'Pending Payment',
+  PENDING_PAYMENT:  'Pending Payment',
   PAYMENT_RECORDED: 'Payment Recorded',
-  CONFIRMED: 'Confirmed',
-  CANCELLED: 'Cancelled',
+  CONFIRMED:        'Confirmed',
+  EXPIRED:          'Expired',
+  CANCELLED:        'Cancelled',
 }
 
 const STATUS_COLORS: Record<ReservationStatus, string> = {
   PENDING_PAYMENT:  'bg-yellow-100 text-yellow-800',
   PAYMENT_RECORDED: 'bg-blue-100 text-blue-800',
   CONFIRMED:        'bg-green-100 text-green-800',
-  CANCELLED:        'bg-red-100 text-red-800',
+  EXPIRED:          'bg-orange-100 text-orange-800',
+  CANCELLED:        'bg-gray-100 text-gray-600',
+}
+
+const EVENT_LABELS: Record<LifecycleEvent['event'], string> = {
+  CREATED:           'Reservation created',
+  PAYMENT_DECLARED:  'Payment reference recorded',
+  CONFIRMED:         'Confirmed by admin',
+  EXPIRED:           'Auto-expired — payment unverified',
+  CANCELLED:         'Cancelled',
+}
+
+const EVENT_COLORS: Record<LifecycleEvent['event'], string> = {
+  CREATED:          'bg-gray-400',
+  PAYMENT_DECLARED: 'bg-amber-500',
+  CONFIRMED:        'bg-green-500',
+  EXPIRED:          'bg-orange-500',
+  CANCELLED:        'bg-gray-500',
+}
+
+function isExpiringSoon(r: Reservation) {
+  if (r.status !== 'PAYMENT_RECORDED' || !r.expiresAt) return false
+  return new Date(r.expiresAt).getTime() - Date.now() < 6 * 3600 * 1000
 }
 
 function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
@@ -3109,6 +3154,14 @@ function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
   const [note, setNote] = useState(r.adminNote ?? '')
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [events, setEvents] = useState<LifecycleEvent[]>([])
+  const [eventsLoaded, setEventsLoaded] = useState(false)
+
+  useEffect(() => {
+    api.get<LifecycleEvent[]>(`/reservations/${r.id}/events`, token)
+      .then(data => { setEvents(data); setEventsLoaded(true) })
+      .catch(() => setEventsLoaded(true))
+  }, [r.id])
 
   async function doAction(action: string) {
     setSaving(true); setErr('')
@@ -3122,12 +3175,17 @@ function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
         res = await api.post<Reservation>(`/reservations/${r.id}/${action}`, {}, token)
       }
       onUpdated(res)
+      // Refresh events after action
+      api.get<LifecycleEvent[]>(`/reservations/${r.id}/events`, token)
+        .then(setEvents).catch(() => {})
     } catch (e: any) {
       setErr(e.message ?? 'Error')
     } finally {
       setSaving(false)
     }
   }
+
+  const expiringSoon = isExpiringSoon(r)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -3140,13 +3198,26 @@ function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
         </div>
         <div className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+            {expiringSoon && (
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                Expiring {new Date(r.expiresAt!).toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
           </div>
+
+          {r.status === 'PAYMENT_RECORDED' && r.expiresAt && !expiringSoon && (
+            <p className="text-xs text-gray-400">
+              Expires {new Date(r.expiresAt).toLocaleString('en-KE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+            </p>
+          )}
+
           <table className="w-full text-sm">
             <tbody className="divide-y">
               {[
                 ['Package', r.resourceName],
+                ...(r.resourceUnitName ? [['Unit', r.resourceUnitName]] : []),
                 ['Customer', r.customerName],
                 ['Phone', r.customerPhone],
                 ['Email', r.customerEmail ?? '—'],
@@ -3201,6 +3272,31 @@ function ReservationDetailModal({ reservation: r, token, onClose, onUpdated }: {
           </div>
 
           {err && <p className="text-sm text-red-600">{err}</p>}
+
+          {/* Lifecycle history */}
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-3">History</p>
+            {!eventsLoaded ? (
+              <p className="text-xs text-gray-400">Loading…</p>
+            ) : events.length === 0 ? (
+              <p className="text-xs text-gray-400">No events recorded.</p>
+            ) : (
+              <div className="space-y-2">
+                {events.map(ev => (
+                  <div key={ev.id} className="flex gap-3 items-start">
+                    <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${EVENT_COLORS[ev.event]}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-gray-800">{EVENT_LABELS[ev.event]}</p>
+                      {ev.note && <p className="text-xs text-gray-400">{ev.note}</p>}
+                      <p className="text-[10px] text-gray-300 mt-0.5">
+                        {ev.actorType.toLowerCase()} · {new Date(ev.createdAt).toLocaleString('en-KE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -3219,6 +3315,7 @@ function ReservationsTab({ token }: { token: string }) {
   const [totalPages, setTotalPages] = useState(1)
   const [selected, setSelected] = useState<Reservation | null>(null)
   const [showResources, setShowResources] = useState(false)
+  const [showPolicies, setShowPolicies] = useState(false)
 
   async function load(p = 0) {
     setLoading(true); setErr('')
@@ -3256,11 +3353,17 @@ function ReservationsTab({ token }: { token: string }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-xl font-bold text-gray-900">Reservations</h2>
-        <button onClick={() => setShowResources(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
-          {showResources ? 'Hide' : 'Manage'} Bookable Resources
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowPolicies(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
+            {showPolicies ? 'Hide' : 'Booking Policies'}
+          </button>
+          <button onClick={() => setShowResources(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
+            {showResources ? 'Hide' : 'Manage'} Resources
+          </button>
+        </div>
       </div>
 
+      {showPolicies && <BookingPolicyManager token={token} />}
       {showResources && <ResourcesManager resources={resources} token={token} onUpdated={setResources} />}
 
       <div className="flex flex-wrap gap-3">
@@ -3296,23 +3399,30 @@ function ReservationsTab({ token }: { token: string }) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {reservations.map(r => (
-                <tr key={r.id} onClick={() => setSelected(r)} className="hover:bg-gray-50 cursor-pointer">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-[#C8873A]">{r.referenceCode}</td>
-                  <td className="px-4 py-3">{r.resourceName}</td>
-                  <td className="px-4 py-3">
-                    <div className="font-medium">{r.customerName}</div>
-                    <div className="text-gray-400 text-xs">{r.customerPhone}</div>
-                  </td>
-                  <td className="px-4 py-3">{r.guests}</td>
-                  <td className="px-4 py-3">{r.checkIn ?? '—'}</td>
-                  <td className="px-4 py-3">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
+              {reservations.map(r => {
+                const soon = isExpiringSoon(r)
+                return (
+                  <tr key={r.id} onClick={() => setSelected(r)}
+                    className={`cursor-pointer transition-colors ${soon ? 'bg-orange-50 hover:bg-orange-100' : 'hover:bg-gray-50'}`}>
+                    <td className="px-4 py-3 font-mono text-xs font-semibold text-[#C8873A]">{r.referenceCode}</td>
+                    <td className="px-4 py-3">{r.resourceName}</td>
+                    <td className="px-4 py-3">
+                      <div className="font-medium">{r.customerName}</div>
+                      <div className="text-gray-400 text-xs">{r.customerPhone}</div>
+                    </td>
+                    <td className="px-4 py-3">{r.guests}</td>
+                    <td className="px-4 py-3">{r.checkIn ?? '—'}</td>
+                    <td className="px-4 py-3">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1 flex-wrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+                        {soon && <span className="text-[10px] text-red-600 font-semibold">Expiring soon</span>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -3329,6 +3439,88 @@ function ReservationsTab({ token }: { token: string }) {
       {selected && (
         <ReservationDetailModal reservation={selected} token={token} onClose={() => setSelected(null)} onUpdated={onUpdated} />
       )}
+    </div>
+  )
+}
+
+function BookingPolicyManager({ token }: { token: string }) {
+  const [policies, setPolicies] = useState<BookingPolicyItem[]>([])
+  const [editing, setEditing] = useState<BookingPolicyItem | null>(null)
+  const [form, setForm] = useState<Partial<BookingPolicyItem>>({})
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  useEffect(() => {
+    api.get<BookingPolicyItem[]>('/booking-policies', token).then(setPolicies).catch(() => {})
+  }, [])
+
+  function startEdit(p: BookingPolicyItem) { setEditing(p); setForm({ ...p }); setErr('') }
+
+  async function save() {
+    if (!editing) return
+    setSaving(true); setErr('')
+    try {
+      const saved = await api.post<BookingPolicyItem>('/booking-policies', {
+        resourceId: editing.resourceId,
+        maxAdvanceDays: Number(form.maxAdvanceDays),
+        autoExpireHours: Number(form.autoExpireHours),
+        cancellationWindowHours: Number(form.cancellationWindowHours),
+        refundPercent: Number(form.refundPercent),
+      }, token)
+      setPolicies(prev => prev.map(p => p.id === saved.id ? saved : p))
+      setEditing(null)
+    } catch (e: any) { setErr(e.message ?? 'Failed to save') }
+    finally { setSaving(false) }
+  }
+
+  return (
+    <div className="border rounded-xl p-5 bg-gray-50 space-y-4">
+      <h3 className="font-semibold text-gray-800 text-sm">Booking Policies</h3>
+      {policies.length === 0 ? (
+        <p className="text-sm text-gray-400">No policies loaded.</p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border bg-white">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                {['Scope', 'Max Advance', 'Expiry Window', 'Cancel Window', 'Refund', ''].map(h => (
+                  <th key={h} className="px-4 py-2.5 text-left font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {policies.map(p => (
+                editing?.id === p.id ? (
+                  <tr key={p.id} className="bg-amber-50">
+                    <td className="px-4 py-2 text-xs font-medium text-gray-600">{p.resourceName}</td>
+                    <td className="px-4 py-2"><input type="number" value={form.maxAdvanceDays ?? ''} onChange={e => setForm(f => ({ ...f, maxAdvanceDays: Number(e.target.value) }))} className="w-20 border rounded px-2 py-1 text-xs" /></td>
+                    <td className="px-4 py-2"><input type="number" value={form.autoExpireHours ?? ''} onChange={e => setForm(f => ({ ...f, autoExpireHours: Number(e.target.value) }))} className="w-16 border rounded px-2 py-1 text-xs" /></td>
+                    <td className="px-4 py-2"><input type="number" value={form.cancellationWindowHours ?? ''} onChange={e => setForm(f => ({ ...f, cancellationWindowHours: Number(e.target.value) }))} className="w-16 border rounded px-2 py-1 text-xs" /></td>
+                    <td className="px-4 py-2"><input type="number" value={form.refundPercent ?? ''} onChange={e => setForm(f => ({ ...f, refundPercent: Number(e.target.value) }))} className="w-16 border rounded px-2 py-1 text-xs" /></td>
+                    <td className="px-4 py-2 flex gap-2">
+                      <button onClick={save} disabled={saving} className="px-3 py-1 bg-gray-800 text-white rounded text-xs font-semibold disabled:opacity-50">{saving ? '…' : 'Save'}</button>
+                      <button onClick={() => setEditing(null)} className="px-3 py-1 border rounded text-xs">Cancel</button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={p.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2.5 text-xs font-medium text-gray-700">{p.resourceName}</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-600">{p.maxAdvanceDays} days</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-600">{p.autoExpireHours}h</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-600">{p.cancellationWindowHours}h</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-600">{p.refundPercent}%</td>
+                    <td className="px-4 py-2.5">
+                      <button onClick={() => startEdit(p)} className="text-xs text-[#C8873A] font-semibold hover:underline">Edit</button>
+                    </td>
+                  </tr>
+                )
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {err && <p className="text-xs text-red-600">{err}</p>}
+      <p className="text-[11px] text-gray-400">Max Advance: how far ahead customers can book · Expiry Window: hours before unverified payment expires · Cancel Window: hours before visit within which deposit is forfeit · Refund: % refunded when cancelled outside window</p>
     </div>
   )
 }
