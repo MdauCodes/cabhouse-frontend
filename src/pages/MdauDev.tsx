@@ -3066,6 +3066,9 @@ interface BookableResource {
   bookingNote: string | null
   displayOrder: number
   visible: boolean
+  slotMode: 'OPEN' | 'TIMED'
+  resourceSubtype: string | null
+  bookWindowDays: number | null
 }
 
 interface Reservation {
@@ -3107,6 +3110,61 @@ interface BookingPolicyItem {
   autoExpireHours: number
   cancellationWindowHours: number
   refundPercent: number
+}
+
+interface ActivitySlot {
+  id: string
+  resourceId: string
+  label: string
+  startTime: string | null
+  endTime: string | null
+  capacity: number
+  active: boolean
+  displayOrder: number
+}
+
+type DiningStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED'
+type DiningDepositType = 'NONE' | 'FLAT' | 'PER_HEAD'
+
+interface DiningSlot {
+  id: string
+  name: string
+  startTime: string | null
+  endTime: string | null
+  maxTables: number
+  maxPartySize: number
+  depositThresholdParty: number
+  depositType: DiningDepositType
+  depositAmount: number | null
+  active: boolean
+}
+
+interface DiningReservation {
+  id: string
+  refCode: string
+  diningSlotId: string
+  diningSlotName: string
+  date: string
+  customerName: string
+  customerPhone: string
+  customerEmail: string | null
+  partySize: number
+  depositAmount: number | null
+  paymentReference: string | null
+  status: DiningStatus
+  createdAt: string
+}
+
+const DINING_STATUS_LABELS: Record<DiningStatus, string> = {
+  PENDING:   'Pending',
+  CONFIRMED: 'Confirmed',
+  CANCELLED: 'Cancelled',
+}
+
+const DINING_STATUS_COLORS: Record<DiningStatus, string> = {
+  PENDING:   'bg-yellow-100 text-yellow-800',
+  CONFIRMED: 'bg-green-100 text-green-800',
+  CANCELLED: 'bg-gray-100 text-gray-600',
 }
 
 const STATUS_LABELS: Record<ReservationStatus, string> = {
@@ -3316,6 +3374,7 @@ function ReservationsTab({ token }: { token: string }) {
   const [selected, setSelected] = useState<Reservation | null>(null)
   const [showResources, setShowResources] = useState(false)
   const [showPolicies, setShowPolicies] = useState(false)
+  const [showDining, setShowDining] = useState(false)
 
   async function load(p = 0) {
     setLoading(true); setErr('')
@@ -3353,18 +3412,22 @@ function ReservationsTab({ token }: { token: string }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-xl font-bold text-gray-900">Reservations</h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button onClick={() => setShowPolicies(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
             {showPolicies ? 'Hide' : 'Booking Policies'}
           </button>
           <button onClick={() => setShowResources(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
             {showResources ? 'Hide' : 'Manage'} Resources
           </button>
+          <button onClick={() => setShowDining(v => !v)} className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">
+            {showDining ? 'Hide' : 'Dining'}
+          </button>
         </div>
       </div>
 
       {showPolicies && <BookingPolicyManager token={token} />}
       {showResources && <ResourcesManager resources={resources} token={token} onUpdated={setResources} />}
+      {showDining && <DiningManager token={token} />}
 
       <div className="flex flex-wrap gap-3">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && load(0)}
@@ -3529,6 +3592,7 @@ function ResourcesManager({ resources, token, onUpdated }: {
   resources: BookableResource[]; token: string; onUpdated: (r: BookableResource[]) => void
 }) {
   const [editing, setEditing] = useState<BookableResource | null>(null)
+  const [slotsResource, setSlotsResource] = useState<BookableResource | null>(null)
   const [form, setForm] = useState<Partial<BookableResource>>({})
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
@@ -3579,12 +3643,22 @@ function ResourcesManager({ resources, token, onUpdated }: {
           {resources.map(r => (
             <tr key={r.id} className="hover:bg-gray-50">
               <td className="px-4 py-3 font-medium">{r.name}</td>
-              <td className="px-4 py-3 text-gray-500">{r.type}</td>
+              <td className="px-4 py-3 text-gray-500">
+                {r.type}
+                {r.slotMode === 'TIMED' && <span className="ml-1 text-[10px] bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded font-semibold">TIMED</span>}
+              </td>
               <td className="px-4 py-3">KES {Number(r.basePrice).toLocaleString()}</td>
               <td className="px-4 py-3">{r.depositType === 'FREE' ? 'Free' : r.depositType === 'FLAT' ? `KES ${r.depositValue}` : `${r.depositValue}%`}</td>
               <td className="px-4 py-3">{r.dailyVisitorCap ?? '—'}</td>
               <td className="px-4 py-3">{r.visible ? 'Yes' : 'No'}</td>
-              <td className="px-4 py-3"><button onClick={() => startEdit(r)} className="text-[#C8873A] hover:underline text-xs font-semibold">Edit</button></td>
+              <td className="px-4 py-3">
+                <div className="flex gap-2">
+                  <button onClick={() => startEdit(r)} className="text-[#C8873A] hover:underline text-xs font-semibold">Edit</button>
+                  {r.slotMode === 'TIMED' && (
+                    <button onClick={() => setSlotsResource(r)} className="text-violet-600 hover:underline text-xs font-semibold">Slots</button>
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -3623,6 +3697,503 @@ function ResourcesManager({ resources, token, onUpdated }: {
               <button onClick={() => setEditing(null)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {slotsResource && (
+        <ActivitySlotModal resource={slotsResource} token={token} onClose={() => setSlotsResource(null)} />
+      )}
+    </div>
+  )
+}
+
+// ── Activity Slot Modal ───────────────────────────────────────────────────────
+
+function ActivitySlotModal({ resource, token, onClose }: {
+  resource: BookableResource; token: string; onClose: () => void
+}) {
+  const [slots, setSlots] = useState<ActivitySlot[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<ActivitySlot | 'new' | null>(null)
+  const [form, setForm] = useState<Partial<ActivitySlot>>({})
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  const baseUrl = `/reservations/resources/${resource.id}/activity-slots`
+
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await api.get<ActivitySlot[]>(baseUrl, token)
+      setSlots(data)
+    } catch (e: any) { setErr(e.message ?? 'Failed to load') }
+    finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  function startNew() {
+    setEditing('new')
+    setForm({ label: '', capacity: 20, active: true, displayOrder: 0 })
+    setErr('')
+  }
+
+  function startEdit(s: ActivitySlot) {
+    setEditing(s)
+    setForm({ ...s })
+    setErr('')
+  }
+
+  async function save() {
+    setSaving(true); setErr('')
+    try {
+      const body = {
+        label: form.label,
+        startTime: form.startTime || null,
+        endTime: form.endTime || null,
+        capacity: Number(form.capacity),
+        active: form.active ?? true,
+        displayOrder: Number(form.displayOrder ?? 0),
+      }
+      if (editing === 'new') {
+        const created = await api.post<ActivitySlot>(baseUrl, body, token)
+        setSlots(prev => [...prev, created])
+      } else if (editing) {
+        const updated = await api.put<ActivitySlot>(`${baseUrl}/${(editing as ActivitySlot).id}`, body, token)
+        setSlots(prev => prev.map(s => s.id === updated.id ? updated : s))
+      }
+      setEditing(null)
+    } catch (e: any) { setErr(e.message ?? 'Save failed') }
+    finally { setSaving(false) }
+  }
+
+  async function deleteSlot(id: string) {
+    if (!confirm('Delete this slot?')) return
+    try {
+      await api.del(`${baseUrl}/${id}`, token)
+      setSlots(prev => prev.filter(s => s.id !== id))
+    } catch (e: any) { setErr(e.message ?? 'Delete failed') }
+  }
+
+  function fmtTime(t: string | null) { return t ? t.slice(0, 5) : '—' }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-gray-900">Activity Slots</h3>
+            <p className="text-xs text-gray-500">{resource.name}</p>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"><X size={16} /></button>
+        </div>
+
+        {err && <p className="text-red-600 text-sm">{err}</p>}
+
+        {loading ? (
+          <div className="flex justify-center py-8"><Spinner size={24} /></div>
+        ) : (
+          <>
+            <div className="overflow-x-auto rounded-lg border">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                  <tr>
+                    {['Label', 'Time', 'Capacity', 'Active', 'Order', ''].map(h => (
+                      <th key={h} className="px-3 py-2.5 text-left font-semibold">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {slots.length === 0 && (
+                    <tr><td colSpan={6} className="px-3 py-6 text-center text-gray-400 text-xs">No slots yet</td></tr>
+                  )}
+                  {slots.map(s => (
+                    <tr key={s.id} className="hover:bg-gray-50">
+                      <td className="px-3 py-2.5 font-medium">{s.label}</td>
+                      <td className="px-3 py-2.5 text-gray-500 text-xs">{fmtTime(s.startTime)} – {fmtTime(s.endTime)}</td>
+                      <td className="px-3 py-2.5">{s.capacity}</td>
+                      <td className="px-3 py-2.5">{s.active ? <Badge variant="green">Active</Badge> : <Badge variant="gray">Off</Badge>}</td>
+                      <td className="px-3 py-2.5">{s.displayOrder}</td>
+                      <td className="px-3 py-2.5">
+                        <div className="flex gap-2">
+                          <button onClick={() => startEdit(s)} className="text-xs text-[#C8873A] font-semibold hover:underline">Edit</button>
+                          <button onClick={() => deleteSlot(s.id)} className="text-xs text-red-500 font-semibold hover:underline">Del</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button onClick={startNew} className="flex items-center gap-1.5 px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-semibold">
+              <Plus size={14} /> Add Slot
+            </button>
+          </>
+        )}
+
+        {editing !== null && (
+          <div className="border rounded-xl p-4 bg-gray-50 space-y-3">
+            <h4 className="font-semibold text-sm text-gray-700">{editing === 'new' ? 'New Slot' : 'Edit Slot'}</h4>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Label</label>
+                <input value={form.label ?? ''} onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="e.g. Morning Session" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Start Time</label>
+                <input type="time" value={form.startTime ?? ''} onChange={e => setForm(f => ({ ...f, startTime: e.target.value || null }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">End Time</label>
+                <input type="time" value={form.endTime ?? ''} onChange={e => setForm(f => ({ ...f, endTime: e.target.value || null }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Capacity</label>
+                <input type="number" min={1} value={form.capacity ?? ''} onChange={e => setForm(f => ({ ...f, capacity: Number(e.target.value) }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Display Order</label>
+                <input type="number" value={form.displayOrder ?? 0} onChange={e => setForm(f => ({ ...f, displayOrder: Number(e.target.value) }))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="slotActive" checked={!!form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} />
+              <label htmlFor="slotActive" className="text-sm">Active</label>
+            </div>
+            {err && <p className="text-red-600 text-xs">{err}</p>}
+            <div className="flex gap-2">
+              <button onClick={save} disabled={saving} className="px-4 py-2 bg-[#C8873A] hover:bg-[#b07530] text-white rounded-lg text-sm font-semibold disabled:opacity-50">
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+              <button onClick={() => setEditing(null)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Dining Manager ────────────────────────────────────────────────────────────
+
+function DiningManager({ token }: { token: string }) {
+  const [activeTab, setActiveTab] = useState<'slots' | 'reservations'>('slots')
+
+  return (
+    <div className="border rounded-xl p-5 bg-gray-50 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-gray-800 text-sm">Dining</h3>
+        <div className="flex gap-1 bg-white border rounded-lg p-0.5">
+          {(['slots', 'reservations'] as const).map(t => (
+            <button key={t} onClick={() => setActiveTab(t)}
+              className={`px-3 py-1 rounded-md text-xs font-semibold capitalize transition-colors ${activeTab === t ? 'bg-gray-800 text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+              {t === 'slots' ? 'Dining Slots' : 'Reservations'}
+            </button>
+          ))}
+        </div>
+      </div>
+      {activeTab === 'slots' ? <DiningSlotsPanel token={token} /> : <DiningReservationsPanel token={token} />}
+    </div>
+  )
+}
+
+function DiningSlotsPanel({ token }: { token: string }) {
+  const [slots, setSlots] = useState<DiningSlot[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<DiningSlot | 'new' | null>(null)
+  const [form, setForm] = useState<Partial<DiningSlot>>({})
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await api.get<DiningSlot[]>('/dining/slots', token)
+      setSlots(data)
+    } catch (e: any) { setErr(e.message ?? 'Failed to load') }
+    finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  function startNew() {
+    setEditing('new')
+    setForm({ name: '', maxTables: 10, maxPartySize: 8, depositThresholdParty: 6, depositType: 'NONE', active: true })
+    setErr('')
+  }
+
+  function startEdit(s: DiningSlot) { setEditing(s); setForm({ ...s }); setErr('') }
+
+  async function save() {
+    setSaving(true); setErr('')
+    try {
+      const body = {
+        name: form.name,
+        startTime: form.startTime || null,
+        endTime: form.endTime || null,
+        maxTables: Number(form.maxTables),
+        maxPartySize: Number(form.maxPartySize),
+        depositThresholdParty: Number(form.depositThresholdParty ?? 6),
+        depositType: form.depositType ?? 'NONE',
+        depositAmount: form.depositAmount ? Number(form.depositAmount) : null,
+        active: form.active ?? true,
+      }
+      if (editing === 'new') {
+        const created = await api.post<DiningSlot>('/dining/slots', body, token)
+        setSlots(prev => [...prev, created])
+      } else if (editing) {
+        const updated = await api.put<DiningSlot>(`/dining/slots/${(editing as DiningSlot).id}`, body, token)
+        setSlots(prev => prev.map(s => s.id === updated.id ? updated : s))
+      }
+      setEditing(null)
+    } catch (e: any) { setErr(e.message ?? 'Save failed') }
+    finally { setSaving(false) }
+  }
+
+  async function deleteSlot(id: string) {
+    if (!confirm('Delete this dining slot?')) return
+    try {
+      await api.del(`/dining/slots/${id}`, token)
+      setSlots(prev => prev.filter(s => s.id !== id))
+    } catch (e: any) { setErr(e.message ?? 'Delete failed') }
+  }
+
+  function fmtTime(t: string | null) { return t ? t.slice(0, 5) : '—' }
+  function depositLabel(s: DiningSlot) {
+    if (s.depositType === 'NONE') return 'None'
+    if (s.depositType === 'FLAT') return `KES ${s.depositAmount} flat`
+    return `KES ${s.depositAmount}/head`
+  }
+
+  return (
+    <div className="space-y-3">
+      {err && <p className="text-red-600 text-sm">{err}</p>}
+      {loading ? <div className="flex justify-center py-6"><Spinner size={20} /></div> : (
+        <>
+          <div className="overflow-x-auto rounded-lg border bg-white">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                <tr>
+                  {['Slot', 'Time', 'Tables', 'Max Party', 'Deposit', 'Active', ''].map(h => (
+                    <th key={h} className="px-3 py-2.5 text-left font-semibold">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {slots.length === 0 && (
+                  <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-400 text-xs">No dining slots yet</td></tr>
+                )}
+                {slots.map(s => (
+                  <tr key={s.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 font-medium">{s.name}</td>
+                    <td className="px-3 py-2.5 text-gray-500 text-xs">{fmtTime(s.startTime)} – {fmtTime(s.endTime)}</td>
+                    <td className="px-3 py-2.5">{s.maxTables}</td>
+                    <td className="px-3 py-2.5">{s.maxPartySize}</td>
+                    <td className="px-3 py-2.5 text-xs text-gray-600">
+                      {depositLabel(s)}
+                      {s.depositType !== 'NONE' && <span className="text-gray-400"> (≥{s.depositThresholdParty})</span>}
+                    </td>
+                    <td className="px-3 py-2.5">{s.active ? <Badge variant="green">Yes</Badge> : <Badge variant="gray">No</Badge>}</td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex gap-2">
+                        <button onClick={() => startEdit(s)} className="text-xs text-[#C8873A] font-semibold hover:underline">Edit</button>
+                        <button onClick={() => deleteSlot(s.id)} className="text-xs text-red-500 font-semibold hover:underline">Del</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <button onClick={startNew} className="flex items-center gap-1.5 px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-semibold">
+            <Plus size={14} /> Add Dining Slot
+          </button>
+        </>
+      )}
+
+      {editing !== null && (
+        <div className="border rounded-xl p-4 bg-white space-y-3">
+          <h4 className="font-semibold text-sm text-gray-700">{editing === 'new' ? 'New Dining Slot' : 'Edit Dining Slot'}</h4>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2">
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Name</label>
+              <input value={form.name ?? ''} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="e.g. Dinner" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Start Time</label>
+              <input type="time" value={form.startTime ?? ''} onChange={e => setForm(f => ({ ...f, startTime: e.target.value || null }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">End Time</label>
+              <input type="time" value={form.endTime ?? ''} onChange={e => setForm(f => ({ ...f, endTime: e.target.value || null }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Max Tables</label>
+              <input type="number" min={1} value={form.maxTables ?? ''} onChange={e => setForm(f => ({ ...f, maxTables: Number(e.target.value) }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Max Party Size</label>
+              <input type="number" min={1} value={form.maxPartySize ?? ''} onChange={e => setForm(f => ({ ...f, maxPartySize: Number(e.target.value) }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Deposit Type</label>
+              <select value={form.depositType ?? 'NONE'} onChange={e => setForm(f => ({ ...f, depositType: e.target.value as DiningDepositType }))}
+                className="w-full border rounded-lg px-3 py-2 text-sm">
+                <option value="NONE">None</option>
+                <option value="FLAT">Flat (KES)</option>
+                <option value="PER_HEAD">Per Head (KES)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Deposit Amount (KES)</label>
+              <input type="number" min={0} value={form.depositAmount ?? ''} onChange={e => setForm(f => ({ ...f, depositAmount: e.target.value ? Number(e.target.value) : null }))}
+                disabled={form.depositType === 'NONE'} className="w-full border rounded-lg px-3 py-2 text-sm disabled:bg-gray-100" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Deposit Threshold (party size)</label>
+              <input type="number" min={1} value={form.depositThresholdParty ?? 6} onChange={e => setForm(f => ({ ...f, depositThresholdParty: Number(e.target.value) }))}
+                disabled={form.depositType === 'NONE'} className="w-full border rounded-lg px-3 py-2 text-sm disabled:bg-gray-100" />
+              <p className="text-[11px] text-gray-400 mt-1">Deposit required when party size is at or above this number</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="dslotActive" checked={!!form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} />
+            <label htmlFor="dslotActive" className="text-sm">Active</label>
+          </div>
+          {err && <p className="text-red-600 text-xs">{err}</p>}
+          <div className="flex gap-2">
+            <button onClick={save} disabled={saving} className="px-4 py-2 bg-[#C8873A] hover:bg-[#b07530] text-white rounded-lg text-sm font-semibold disabled:opacity-50">
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+            <button onClick={() => setEditing(null)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DiningReservationsPanel({ token }: { token: string }) {
+  const [reservations, setReservations] = useState<DiningReservation[]>([])
+  const [slots, setSlots] = useState<DiningSlot[]>([])
+  const [loading, setLoading] = useState(true)
+  const [statusFilter, setStatusFilter] = useState<DiningStatus | ''>('')
+  const [slotFilter, setSlotFilter] = useState('')
+  const [search, setSearch] = useState('')
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [err, setErr] = useState('')
+
+  async function loadSlots() {
+    try {
+      const data = await api.get<DiningSlot[]>('/dining/slots', token)
+      setSlots(data)
+    } catch {}
+  }
+
+  async function load(p = 0) {
+    setLoading(true); setErr('')
+    try {
+      const params = new URLSearchParams({ page: String(p), size: '20' })
+      if (statusFilter) params.set('status', statusFilter)
+      if (slotFilter) params.set('slotId', slotFilter)
+      if (search.trim()) params.set('search', search.trim())
+      const data = await api.get<{ content: DiningReservation[]; totalPages: number }>(`/dining/reservations?${params}`, token)
+      setReservations(data.content)
+      setTotalPages(data.totalPages)
+      setPage(p)
+    } catch (e: any) { setErr(e.message ?? 'Failed to load') }
+    finally { setLoading(false) }
+  }
+
+  useEffect(() => { load(0); loadSlots() }, [])
+
+  async function updateStatus(id: string, action: 'confirm' | 'cancel') {
+    try {
+      const updated = await api.post<DiningReservation>(`/dining/reservations/${id}/${action}`, {}, token)
+      setReservations(prev => prev.map(r => r.id === updated.id ? updated : r))
+    } catch (e: any) { alert(e.message ?? 'Action failed') }
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && load(0)}
+          placeholder="Search name, ref, phone…" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-48 bg-white" />
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as any)} className="border rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All statuses</option>
+          {(Object.keys(DINING_STATUS_LABELS) as DiningStatus[]).map(s => (
+            <option key={s} value={s}>{DINING_STATUS_LABELS[s]}</option>
+          ))}
+        </select>
+        <select value={slotFilter} onChange={e => setSlotFilter(e.target.value)} className="border rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All slots</option>
+          {slots.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+        <button onClick={() => load(0)} className="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-semibold">Search</button>
+      </div>
+
+      {err && <p className="text-red-600 text-sm">{err}</p>}
+
+      {loading ? <div className="flex justify-center py-6"><Spinner size={20} /></div> : reservations.length === 0 ? (
+        <div className="text-center py-8 text-gray-400 text-sm">No dining reservations found.</div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border bg-white">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                {['Ref', 'Slot', 'Date', 'Customer', 'Party', 'Deposit', 'Status', 'Actions'].map(h => (
+                  <th key={h} className="px-3 py-2.5 text-left font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {reservations.map(r => (
+                <tr key={r.id} className="hover:bg-gray-50">
+                  <td className="px-3 py-2.5 font-mono text-xs font-semibold text-[#C8873A]">{r.refCode}</td>
+                  <td className="px-3 py-2.5">{r.diningSlotName}</td>
+                  <td className="px-3 py-2.5">{r.date}</td>
+                  <td className="px-3 py-2.5">
+                    <div className="font-medium">{r.customerName}</div>
+                    <div className="text-gray-400 text-xs">{r.customerPhone}</div>
+                  </td>
+                  <td className="px-3 py-2.5">{r.partySize}</td>
+                  <td className="px-3 py-2.5">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</td>
+                  <td className="px-3 py-2.5">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${DINING_STATUS_COLORS[r.status]}`}>{DINING_STATUS_LABELS[r.status]}</span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex gap-2">
+                      {r.status === 'PENDING' && (
+                        <button onClick={() => updateStatus(r.id, 'confirm')} className="text-xs text-green-600 font-semibold hover:underline">Confirm</button>
+                      )}
+                      {r.status !== 'CANCELLED' && (
+                        <button onClick={() => updateStatus(r.id, 'cancel')} className="text-xs text-red-500 font-semibold hover:underline">Cancel</button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2">
+          <button disabled={page === 0} onClick={() => load(page - 1)} className="px-3 py-1 border rounded text-sm disabled:opacity-40">Prev</button>
+          <span className="px-3 py-1 text-sm text-gray-500">{page + 1} / {totalPages}</span>
+          <button disabled={page >= totalPages - 1} onClick={() => load(page + 1)} className="px-3 py-1 border rounded text-sm disabled:opacity-40">Next</button>
         </div>
       )}
     </div>
