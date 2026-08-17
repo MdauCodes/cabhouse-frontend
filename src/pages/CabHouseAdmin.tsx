@@ -1056,6 +1056,7 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
 }) {
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [pin, setPin] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -1065,7 +1066,7 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
     if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be exactly 4 digits'); return }
     setSaving(true); setError('')
     try {
-      await api.post('/patrons/enroll', { phone, name, pin }, token)
+      await api.post('/patrons/enroll', { phone, name, email, pin }, token)
       onEnrolled()
       onClose()
     } catch (e: any) { setError(e.message ?? 'Enrollment failed') } finally { setSaving(false) }
@@ -1083,10 +1084,15 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
           <Input required value={phone} onChange={e => setPhone(e.target.value)} placeholder="e.g. +254712345678" />
         </div>
         <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">Email Address *</label>
+          <Input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="e.g. jane@example.com" />
+          <p className="text-slate-400 text-xs mt-1">Required for self-service password reset via the member portal.</p>
+        </div>
+        <div>
           <label className="block text-xs font-semibold text-slate-600 mb-1">4-Digit PIN *</label>
           <Input required value={pin} onChange={e => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            placeholder="4 digits — member uses this to log in" maxLength={4} inputMode="numeric" />
-          <p className="text-slate-400 text-xs mt-1">The member will use their phone number + this PIN to access their portal.</p>
+            placeholder="4 digits — member uses this at the POS terminal" maxLength={4} inputMode="numeric" />
+          <p className="text-slate-400 text-xs mt-1">The member logs in to their portal with phone number or email + password (set separately). This PIN is for in-person POS use.</p>
         </div>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <div className="flex justify-end gap-2 pt-2">
