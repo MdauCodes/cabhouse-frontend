@@ -7,6 +7,7 @@ import MasonryGallery from '../components/MasonryGallery'
 import { useServiceItems } from '../hooks/useServiceItems'
 import { useGalleryImages } from '../hooks/useGalleryImages'
 import ReservationModal, { type ResourceTypeFilter } from '../components/ReservationModal'
+import DiningReservationModal from '../components/DiningReservationModal'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500' },
@@ -357,8 +358,10 @@ const DINING_FEATURES = [
 
 function DiningSection() {
   const { ref, inView } = useInView(0.08)
+  const [diningOpen, setDiningOpen] = useState(false)
 
   return (
+    <>
     <section id="dining" style={{ background: 'var(--canvas)' }} className="px-3 md:px-5 pt-3">
       <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden px-6 lg:px-10 py-14 lg:py-16" style={{ backgroundColor: '#D4B882' }}>
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 lg:items-start">
@@ -417,14 +420,13 @@ function DiningSection() {
               </p>
               <div className="h-px bg-white/8" />
               <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent("Hi, I'd like to make a dining reservation or enquire about group catering at CabHouse Park")}`}
-                  target="_blank" rel="noopener noreferrer"
+                <button
+                  onClick={() => setDiningOpen(true)}
                   className="inline-flex items-center justify-center gap-2 text-white font-body font-bold text-xs px-5 py-3 rounded-full uppercase tracking-wide"
                   style={{ backgroundColor: 'var(--color-gold)' }}
                 >
                   Reserve a Table
-                </a>
+                </button>
                 <a
                   href={`tel:${SITE.contact.phone}`}
                   className="inline-flex items-center justify-center border border-white/15 text-white/70 hover:text-white font-body text-xs px-5 py-3 rounded-full transition-colors duration-200"
@@ -452,6 +454,8 @@ function DiningSection() {
         </div>
       </div>
     </section>
+    {diningOpen && <DiningReservationModal onClose={() => setDiningOpen(false)} />}
+    </>
   )
 }
 
