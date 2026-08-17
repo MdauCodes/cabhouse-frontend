@@ -207,7 +207,7 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
     if (!result || !mpesaCode.trim() || !mpesaName.trim()) return
     setPaySubmitting(true); setPayErr('')
     try {
-      const res = await fetch(`${BASE}/reservations/${result.id}/record-payment`, {
+      const res = await fetch(`${BASE}/reservations/${result.id}/submit-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentReference: mpesaCode.trim(), paymentName: mpesaName.trim() }),
