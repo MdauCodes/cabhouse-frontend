@@ -6,7 +6,7 @@ import RelaxPage from './pages/RelaxPage'
 import EventsPage from './pages/EventsPage'
 import ApartmentsPage from './pages/ApartmentsPage'
 import WaterPage from './pages/WaterPage'
-import MdauDev from './pages/MdauDev'
+import CabHouseAdmin from './pages/CabHouseAdmin'
 import AboutPage from './pages/AboutPage'
 import PatronPortal from './pages/PatronPortal'
 import PromotionsPage from './pages/PromotionsPage'
@@ -67,7 +67,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/ch/admin" element={<MdauDev />} />
+          <Route path="/ch/admin" element={<CabHouseAdmin />} />
           <Route path="/ch/pos" element={<StaffPOS />} />
           <Route path="/patrons" element={<PatronPortal />} />
           <Route path="/promotions" element={<PromotionsPage />} />

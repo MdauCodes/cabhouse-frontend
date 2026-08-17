@@ -4203,7 +4203,7 @@ function DiningReservationsPanel({ token }: { token: string }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // ENTRY
 // ═══════════════════════════════════════════════════════════════════════════════
-export default function MdauDev() {
+export default function CabHouseAdmin() {
   const navigate = useNavigate()
   const [session, setSession] = useState<AdminSession | null>(getSession)
   const [validating, setValidating] = useState(true) // always spin first — no flash of dashboard or blank
