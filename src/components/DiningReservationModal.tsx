@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User, ShieldCheck, AlertCircle, Utensils } from 'lucide-react'
+import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User, ShieldCheck, AlertCircle, Utensils, Eye, EyeOff } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL ?? 'https://cabhouse-kisii-backend-production.up.railway.app/api'
 
@@ -62,6 +62,160 @@ function fmtDeposit(slot: DiningSlot, partySize: number): string {
 }
 
 function today() { return new Date().toISOString().split('T')[0] }
+
+// ── Inline member registration ────────────────────────────────────────────────
+
+function MemberSignupInline({ name, phone, bookingEmail }: { name: string; phone: string; bookingEmail: string }) {
+  const [phase, setPhase] = useState<'prompt' | 'form' | 'submitting' | 'success' | 'taken'>('prompt')
+  const [regEmail, setRegEmail] = useState(bookingEmail)
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [showPwd, setShowPwd] = useState(false)
+  const [err, setErr] = useState('')
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail)
+  const pwdValid = password.length >= 8
+  const canSubmit = emailValid && pwdValid && password === confirm
+
+  async function register() {
+    setErr(''); setPhase('submitting')
+    try {
+      const regRes = await fetch(`${BASE}/patrons/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, email: regEmail.trim().toLowerCase(), name, password }),
+      })
+      if (regRes.status === 409) { setPhase('taken'); return }
+      if (!regRes.ok) {
+        const j = await regRes.json()
+        throw new Error(j.message ?? 'Registration failed')
+      }
+      const loginRes = await fetch(`${BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity: phone, password }),
+      })
+      if (loginRes.ok) {
+        const lj = await loginRes.json()
+        if (lj.success && lj.data?.accessToken) {
+          localStorage.setItem('cabhouse_patron_token', lj.data.accessToken)
+        }
+      }
+      setPhase('success')
+    } catch (e: any) {
+      setErr(e.message ?? 'Something went wrong. Please try again.')
+      setPhase('form')
+    }
+  }
+
+  const inputCls = 'w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors font-body'
+
+  if (phase === 'success') {
+    return (
+      <div className="border border-green-200 bg-green-50 rounded-xl p-4 text-sm">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#16a34a' }}>
+            <Check size={12} className="text-white" />
+          </div>
+          <p className="font-semibold text-slate-800">Account created!</p>
+        </div>
+        <p className="text-slate-500 text-xs mb-3">Your CabHouse member account is ready. Track bookings, earn coupons, and access deals.</p>
+        <a href="/patrons"
+          className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Go to My Portal
+        </a>
+      </div>
+    )
+  }
+
+  if (phase === 'taken') {
+    return (
+      <div className="border border-slate-200 rounded-xl p-4 text-sm">
+        <p className="font-semibold text-slate-800 mb-1">Already a member?</p>
+        <p className="text-slate-500 text-xs mb-3">An account with this phone number already exists. Sign in to access your portal.</p>
+        <a href="/login?next=/patrons"
+          className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Sign In
+        </a>
+      </div>
+    )
+  }
+
+  if (phase === 'prompt') {
+    return (
+      <div className="border border-slate-200 rounded-xl p-4 text-sm">
+        <p className="font-semibold text-slate-800 mb-2">Become a CabHouse Member</p>
+        <p className="text-slate-500 text-xs leading-relaxed mb-3">Register for free to track all your bookings, earn loyalty coupons on every visit, and access exclusive member deals.</p>
+        <button onClick={() => setPhase('form')}
+          className="w-full text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Create Member Account
+        </button>
+        <p className="text-center text-xs text-slate-400 mt-2">Use the same phone number you booked with</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="border border-slate-200 rounded-xl p-4 space-y-3 text-sm">
+      <p className="font-semibold text-slate-800">Create your member account</p>
+
+      <div className="bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-600 space-y-0.5">
+        <p><span className="text-slate-400">Name:</span> {name}</p>
+        <p><span className="text-slate-400">Phone:</span> {phone}</p>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-slate-600 block mb-1">Email Address *</label>
+        <input type="email" value={regEmail} onChange={e => setRegEmail(e.target.value)}
+          placeholder="your@email.com" className={inputCls} />
+        <p className="text-xs text-slate-400 mt-1">Required to create your account</p>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-slate-600 block mb-1">Password *</label>
+        <div className="relative">
+          <input type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+            placeholder="Min 8 characters" className={inputCls + ' pr-10'} />
+          <button type="button" onClick={() => setShowPwd(v => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            {showPwd ? <EyeOff size={14} /> : <Eye size={14} />}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-slate-600 block mb-1">Confirm Password *</label>
+        <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
+          placeholder="Re-enter password" className={inputCls} />
+        {confirm && password !== confirm && (
+          <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+        )}
+      </div>
+
+      {err && (
+        <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-2">
+          <AlertCircle size={12} className="text-red-500 mt-0.5 shrink-0" />
+          <p className="text-red-600 text-xs">{err}</p>
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <button onClick={() => setPhase('prompt')}
+          className="px-3 py-2.5 rounded-lg border border-slate-200 text-slate-500 text-xs font-body hover:bg-slate-50 transition-colors">
+          Cancel
+        </button>
+        <button onClick={register} disabled={!canSubmit || phase === 'submitting'}
+          className="flex-1 flex items-center justify-center gap-2 font-body font-bold text-xs py-2.5 rounded-lg text-white transition-all hover:brightness-110 disabled:opacity-50"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          {phase === 'submitting' ? <><Loader2 size={12} className="animate-spin" />Creating…</> : 'Create Account'}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 // ── Main component ────────────────────────────────────────────────────────────
 
@@ -150,8 +304,10 @@ export default function DiningReservationModal({ onClose }: Props) {
       })
       const json = await res.json()
       if (!res.ok || !json.success) throw new Error(json.message ?? 'Submission failed')
-      setResult(json.data as DiningReservationResult)
-      setPayPhase('instructions')
+      const bookingResult = json.data as DiningReservationResult
+      setResult(bookingResult)
+      const depositRequired = bookingResult.depositAmount !== null && Number(bookingResult.depositAmount) > 0
+      setPayPhase(depositRequired ? 'instructions' : 'done')
     } catch (e: any) {
       setSubmitErr(e.message ?? 'Something went wrong. Please try again.')
     } finally {
@@ -190,6 +346,8 @@ export default function DiningReservationModal({ onClose }: Props) {
 
   // ── Post-booking screens ────────────────────────────────────────────────────
   if (result) {
+    const wasDepositPaid = result.depositAmount !== null && Number(result.depositAmount) > 0
+
     if (payPhase === 'done') {
       return (
         <Overlay onClose={onClose}>
@@ -200,8 +358,17 @@ export default function DiningReservationModal({ onClose }: Props) {
                 <Check size={28} className="text-white" />
               </div>
               <div>
-                <p className="font-display font-black text-slate-900 text-lg">Payment details submitted</p>
-                <p className="text-slate-500 text-sm mt-1">Our team will verify your M-Pesa payment and confirm your reservation.</p>
+                {wasDepositPaid ? (
+                  <>
+                    <p className="font-display font-black text-slate-900 text-lg">Payment details submitted</p>
+                    <p className="text-slate-500 text-sm mt-1">Our team will verify your M-Pesa payment and confirm your reservation.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-display font-black text-slate-900 text-lg">Reservation received!</p>
+                    <p className="text-slate-500 text-sm mt-1">Our team will contact you to confirm your table.</p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -216,10 +383,12 @@ export default function DiningReservationModal({ onClose }: Props) {
                 <Mail size={16} className="text-blue-500 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-slate-800">Check your email</p>
-                  <p className="text-slate-500 text-xs mt-0.5">A confirmation has been sent to <strong>{email}</strong>. You'll receive another once we've verified your payment.</p>
+                  <p className="text-slate-500 text-xs mt-0.5">A confirmation has been sent to <strong>{email}</strong>.</p>
                 </div>
               </div>
             )}
+
+            <MemberSignupInline name={name} phone={phone} bookingEmail={email} />
 
             <button onClick={onClose}
               className="w-full font-body font-semibold text-sm py-3 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">

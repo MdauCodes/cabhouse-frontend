@@ -834,6 +834,10 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   const [spending, setSpending] = useState(false)
   const [spendError, setSpendError] = useState('')
   const [spendDone, setSpendDone] = useState<{ coupons: number } | null>(null)
+  const [newPwd, setNewPwd] = useState('')
+  const [resettingPwd, setResettingPwd] = useState(false)
+  const [pwdResetDone, setPwdResetDone] = useState(false)
+  const [pwdResetError, setPwdResetError] = useState('')
 
   async function toggleActive() {
     if (!detail) return
@@ -862,6 +866,16 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
       setAdjustDelta(''); setAdjustReason(''); setAdjustDone(true)
       setTimeout(() => setAdjustDone(false), 2500)
     } catch (e: any) { setAdjustError(e.message ?? 'Adjustment failed') } finally { setAdjusting(false) }
+  }
+
+  async function resetPassword() {
+    if (newPwd.length < 8) { setPwdResetError('Password must be at least 8 characters'); return }
+    setPwdResetError(''); setResettingPwd(true)
+    try {
+      await api.post(`/patrons/${patronId}/reset-password`, { password: newPwd }, token)
+      setNewPwd(''); setPwdResetDone(true)
+      setTimeout(() => setPwdResetDone(false), 3000)
+    } catch (e: any) { setPwdResetError(e.message ?? 'Reset failed') } finally { setResettingPwd(false) }
   }
 
   async function submitSpend() {
@@ -951,6 +965,23 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
             </div>
             {adjustError && <p className="text-red-600 text-xs">{adjustError}</p>}
             <p className="text-slate-400 text-xs">Use positive numbers to add coupons, negative to deduct. Logged to Activity.</p>
+          </div>
+
+          {/* Reset password */}
+          <div className="border border-slate-200 rounded-xl p-4">
+            <p className="text-slate-800 font-semibold text-sm mb-1">Reset Member Password</p>
+            <p className="text-slate-500 text-xs mb-3">Set a new portal password for this member. They can also reset it themselves via <em>Forgot Password</em> on the login page.</p>
+            <div className="flex gap-2 mb-2">
+              <Input
+                type="password" value={newPwd}
+                onChange={e => { setNewPwd(e.target.value); setPwdResetError(''); setPwdResetDone(false) }}
+                placeholder="New password (min 8 chars)"
+              />
+              <Btn disabled={newPwd.length < 8 || resettingPwd} onClick={resetPassword}>
+                {resettingPwd ? <Spinner size={13} /> : pwdResetDone ? <><Check size={13} /> Done</> : 'Set Password'}
+              </Btn>
+            </div>
+            {pwdResetError && <p className="text-red-600 text-xs">{pwdResetError}</p>}
           </div>
 
           {/* Transaction history */}
@@ -4148,44 +4179,53 @@ function DiningReservationsPanel({ token }: { token: string }) {
       {loading ? <div className="flex justify-center py-6"><Spinner size={20} /></div> : reservations.length === 0 ? (
         <div className="text-center py-8 text-gray-400 text-sm">No dining reservations found.</div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border bg-white">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
-              <tr>
-                {['Ref', 'Slot', 'Date', 'Customer', 'Party', 'Deposit', 'Status', 'Actions'].map(h => (
-                  <th key={h} className="px-3 py-2.5 text-left font-semibold">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {reservations.map(r => (
-                <tr key={r.id} className="hover:bg-gray-50">
-                  <td className="px-3 py-2.5 font-mono text-xs font-semibold text-[#C8873A]">{r.refCode}</td>
-                  <td className="px-3 py-2.5">{r.diningSlotName}</td>
-                  <td className="px-3 py-2.5">{r.date}</td>
-                  <td className="px-3 py-2.5">
-                    <div className="font-medium">{r.customerName}</div>
-                    <div className="text-gray-400 text-xs">{r.customerPhone}</div>
-                  </td>
-                  <td className="px-3 py-2.5">{r.partySize}</td>
-                  <td className="px-3 py-2.5">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</td>
-                  <td className="px-3 py-2.5">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${DINING_STATUS_COLORS[r.status]}`}>{DINING_STATUS_LABELS[r.status]}</span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex gap-2">
-                      {r.status === 'PENDING' && (
-                        <button onClick={() => updateStatus(r.id, 'confirm')} className="text-xs text-green-600 font-semibold hover:underline">Confirm</button>
-                      )}
-                      {r.status !== 'CANCELLED' && (
-                        <button onClick={() => updateStatus(r.id, 'cancel')} className="text-xs text-red-500 font-semibold hover:underline">Cancel</button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-3">
+          {reservations.map(r => (
+            <div key={r.id} className="bg-white border border-gray-200 rounded-xl p-4">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <span className="font-mono text-sm font-bold text-[#C8873A]">{r.refCode}</span>
+                  <div className="text-sm font-medium text-gray-900 mt-0.5">{r.diningSlotName}</div>
+                </div>
+                <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold ${DINING_STATUS_COLORS[r.status]}`}>
+                  {DINING_STATUS_LABELS[r.status]}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mb-3">
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">Date</p>
+                  <p className="font-medium text-gray-800">{r.date}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">Party</p>
+                  <p className="font-medium text-gray-800">{r.partySize} guest{r.partySize !== 1 ? 's' : ''}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">Customer</p>
+                  <p className="font-medium text-gray-800">{r.customerName}</p>
+                  <p className="text-xs text-gray-400">{r.customerPhone}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">Deposit</p>
+                  <p className="font-medium text-gray-800">{r.depositAmount != null ? `KES ${Number(r.depositAmount).toLocaleString()}` : '—'}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 pt-3 border-t border-gray-100">
+                {r.status === 'PENDING' && (
+                  <button onClick={() => updateStatus(r.id, 'confirm')}
+                    className="flex-1 py-2 bg-green-50 text-green-700 font-semibold text-sm rounded-lg border border-green-200 hover:bg-green-100 transition-colors">
+                    Confirm
+                  </button>
+                )}
+                {r.status === 'PENDING' || r.status === 'CONFIRMED' ? (
+                  <button onClick={() => updateStatus(r.id, 'cancel')}
+                    className="flex-1 py-2 bg-red-50 text-red-600 font-semibold text-sm rounded-lg border border-red-200 hover:bg-red-100 transition-colors">
+                    Cancel
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

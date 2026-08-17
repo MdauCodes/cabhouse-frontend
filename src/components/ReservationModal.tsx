@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User, ShieldCheck, AlertCircle } from 'lucide-react'
+import { X, Check, ChevronRight, ChevronLeft, Loader2, CalendarDays, Users, Phone, Mail, User, ShieldCheck, AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL ?? 'https://cabhouse-kisii-backend-production.up.railway.app/api'
 
@@ -72,6 +72,162 @@ const TYPE_LABELS: Record<string, string> = {
   DAY_PACKAGE: 'Day Package',
   NIGHT_STAY:  'Night Stay',
   VENUE:       'Event Venue',
+}
+
+// ── Inline member registration ────────────────────────────────────────────────
+
+function MemberSignupInline({ name, phone, email }: { name: string; phone: string; email: string }) {
+  const [phase, setPhase] = useState<'prompt' | 'form' | 'submitting' | 'success' | 'taken'>('prompt')
+  const [regEmail, setRegEmail] = useState(email)
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [showPwd, setShowPwd] = useState(false)
+  const [err, setErr] = useState('')
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail)
+  const pwdValid = password.length >= 8
+  const canSubmit = emailValid && pwdValid && password === confirm
+
+  async function register() {
+    setErr(''); setPhase('submitting')
+    try {
+      const regRes = await fetch(`${BASE}/patrons/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, email: regEmail.trim().toLowerCase(), name, password }),
+      })
+      if (regRes.status === 409) { setPhase('taken'); return }
+      if (!regRes.ok) {
+        const j = await regRes.json()
+        throw new Error(j.message ?? 'Registration failed')
+      }
+      // Auto-login
+      const loginRes = await fetch(`${BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity: phone, password }),
+      })
+      if (loginRes.ok) {
+        const lj = await loginRes.json()
+        if (lj.success && lj.data?.accessToken) {
+          localStorage.setItem('cabhouse_patron_token', lj.data.accessToken)
+        }
+      }
+      setPhase('success')
+    } catch (e: any) {
+      setErr(e.message ?? 'Something went wrong. Please try again.')
+      setPhase('form')
+    }
+  }
+
+  const inputCls = 'w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors font-body'
+
+  if (phase === 'success') {
+    return (
+      <div className="border border-green-200 bg-green-50 rounded-xl p-4 text-sm">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#16a34a' }}>
+            <Check size={12} className="text-white" />
+          </div>
+          <p className="font-semibold text-slate-800">Account created!</p>
+        </div>
+        <p className="text-slate-500 text-xs mb-3">Your CabHouse member account is ready. Track bookings, earn coupons, and access deals.</p>
+        <a href="/patrons"
+          className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Go to My Portal
+        </a>
+      </div>
+    )
+  }
+
+  if (phase === 'taken') {
+    return (
+      <div className="border border-slate-200 rounded-xl p-4 text-sm">
+        <p className="font-semibold text-slate-800 mb-1">Already a member?</p>
+        <p className="text-slate-500 text-xs mb-3">An account with this phone number already exists. Sign in to access your portal.</p>
+        <a href="/login?next=/patrons"
+          className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Sign In
+        </a>
+      </div>
+    )
+  }
+
+  if (phase === 'prompt') {
+    return (
+      <div className="border border-slate-200 rounded-xl p-4 text-sm">
+        <p className="font-semibold text-slate-800 mb-2">Become a CabHouse Member</p>
+        <p className="text-slate-500 text-xs leading-relaxed mb-3">Register for free to track all your bookings, earn loyalty coupons on every visit, and access exclusive member deals.</p>
+        <button onClick={() => setPhase('form')}
+          className="w-full text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          Create Member Account
+        </button>
+        <p className="text-center text-xs text-slate-400 mt-2">Use the same phone number you booked with</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="border border-slate-200 rounded-xl p-4 space-y-3 text-sm">
+      <p className="font-semibold text-slate-800">Create your member account</p>
+
+      <div className="bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-600 space-y-0.5">
+        <p><span className="text-slate-400">Name:</span> {name}</p>
+        <p><span className="text-slate-400">Phone:</span> {phone}</p>
+      </div>
+
+      {!email && (
+        <div>
+          <label className="text-xs font-semibold text-slate-600 block mb-1">Email Address *</label>
+          <input type="email" value={regEmail} onChange={e => setRegEmail(e.target.value)}
+            placeholder="your@email.com" className={inputCls} />
+        </div>
+      )}
+
+      <div>
+        <label className="text-xs font-semibold text-slate-600 block mb-1">Password *</label>
+        <div className="relative">
+          <input type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+            placeholder="Min 8 characters" className={inputCls + ' pr-10'} />
+          <button type="button" onClick={() => setShowPwd(v => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            {showPwd ? <EyeOff size={14} /> : <Eye size={14} />}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-slate-600 block mb-1">Confirm Password *</label>
+        <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
+          placeholder="Re-enter password" className={inputCls} />
+        {confirm && password !== confirm && (
+          <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+        )}
+      </div>
+
+      {err && (
+        <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-2">
+          <AlertCircle size={12} className="text-red-500 mt-0.5 shrink-0" />
+          <p className="text-red-600 text-xs">{err}</p>
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <button onClick={() => setPhase('prompt')}
+          className="px-3 py-2.5 rounded-lg border border-slate-200 text-slate-500 text-xs font-body hover:bg-slate-50 transition-colors">
+          Cancel
+        </button>
+        <button onClick={register} disabled={!canSubmit || phase === 'submitting'}
+          className="flex-1 flex items-center justify-center gap-2 font-body font-bold text-xs py-2.5 rounded-lg text-white transition-all hover:brightness-110 disabled:opacity-50"
+          style={{ backgroundColor: 'var(--color-gold)' }}>
+          {phase === 'submitting' ? <><Loader2 size={12} className="animate-spin" />Creating…</> : 'Create Account'}
+        </button>
+      </div>
+    </div>
+  )
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -193,8 +349,10 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
       })
       const json = await res.json()
       if (!res.ok || !json.success) throw new Error(json.message ?? 'Submission failed')
-      setResult(json.data as ReservationResponse)
-      setPayPhase('instructions')
+      const bookingResult = json.data as ReservationResponse
+      setResult(bookingResult)
+      const depositRequired = bookingResult.depositAmount !== null && Number(bookingResult.depositAmount) > 0
+      setPayPhase(depositRequired ? 'instructions' : 'done')
     } catch (e: any) {
       setSubmitErr(e.message ?? 'Something went wrong. Please try again.')
     } finally {
@@ -234,6 +392,8 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
 
   // ── Post-booking screens ────────────────────────────────────────────────────
   if (result) {
+    const wasDepositPaid = result.depositAmount !== null && Number(result.depositAmount) > 0
+
     // ── Phase: Done ───────────────────────────────────────────────────────────
     if (payPhase === 'done') {
       return (
@@ -245,8 +405,17 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                 <Check size={28} className="text-white" />
               </div>
               <div>
-                <p className="font-display font-black text-slate-900 text-lg">Payment details submitted</p>
-                <p className="text-slate-500 text-sm mt-1">Our team will verify your M-Pesa payment and confirm your booking.</p>
+                {wasDepositPaid ? (
+                  <>
+                    <p className="font-display font-black text-slate-900 text-lg">Payment details submitted</p>
+                    <p className="text-slate-500 text-sm mt-1">Our team will verify your M-Pesa payment and confirm your booking.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-display font-black text-slate-900 text-lg">Booking received!</p>
+                    <p className="text-slate-500 text-sm mt-1">Our team will contact you to confirm your booking.</p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -260,20 +429,11 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
               <Mail size={16} className="text-blue-500 mt-0.5 shrink-0" />
               <div>
                 <p className="font-semibold text-slate-800">Check your email</p>
-                <p className="text-slate-500 text-xs mt-0.5">A booking summary and payment instructions have been sent to <strong>{email}</strong>. You'll receive a second email once your booking is confirmed.</p>
+                <p className="text-slate-500 text-xs mt-0.5">A booking summary has been sent to <strong>{email}</strong>.</p>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-xl p-4 text-sm">
-              <p className="font-semibold text-slate-800 mb-2">Become a CabHouse Member</p>
-              <p className="text-slate-500 text-xs leading-relaxed mb-3">Register for free to track all your bookings, earn loyalty coupons on every visit, and access exclusive member deals.</p>
-              <a href="/login" onClick={onClose}
-                className="block text-center font-body font-bold text-sm py-2.5 rounded-full text-white transition-all hover:brightness-110"
-                style={{ backgroundColor: 'var(--color-gold)' }}>
-                Create Member Account
-              </a>
-              <p className="text-center text-xs text-slate-400 mt-2">Use the same phone number you booked with</p>
-            </div>
+            <MemberSignupInline name={name} phone={phone} email={email} />
 
             <button onClick={onClose}
               className="w-full font-body font-semibold text-sm py-3 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
@@ -291,7 +451,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
           <ModalHeader onClose={onClose} title="Submit Payment Details" subtitle="So we can match your M-Pesa payment" />
           <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
 
-            {/* Booking context — shown so admin can match */}
             <div className="border border-slate-200 rounded-xl divide-y text-sm">
               <div className="flex items-center justify-between px-4 py-2.5">
                 <span className="text-slate-400 text-xs">Booked under</span>
@@ -369,7 +528,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
         <ModalHeader onClose={onClose} title="One Last Step" subtitle="Your spot is reserved — payment confirms it" />
         <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
 
-          {/* Pending-state banner — clearly not done yet */}
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-xl px-4 py-3">
             <AlertCircle size={16} className="text-amber-600 mt-0.5 shrink-0" />
             <div>
@@ -380,13 +538,11 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
 
           {needsDeposit ? (
             <>
-              {/* Payment amount */}
               <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
                 <span className="text-slate-600 text-sm font-semibold">Deposit to pay now</span>
                 <span className="font-black text-slate-900 text-xl">KES {depositAmt.toLocaleString()}</span>
               </div>
 
-              {/* M-Pesa steps */}
               <div className="border border-slate-200 rounded-xl overflow-hidden">
                 <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
                   <p className="font-semibold text-slate-800 text-sm">Pay via M-Pesa</p>
@@ -437,7 +593,6 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             </div>
           )}
 
-          {/* Reference — compact, not celebratory */}
           <div className="flex items-center justify-between border border-slate-200 rounded-xl px-4 py-3 text-sm">
             <span className="text-slate-400 text-xs">Booking ref</span>
             <span className="font-mono font-black text-slate-800 tracking-widest text-sm">{result.referenceCode}</span>
