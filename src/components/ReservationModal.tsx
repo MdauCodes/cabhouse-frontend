@@ -288,15 +288,27 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
     if (payPhase === 'confirm') {
       return (
         <Overlay onClose={onClose}>
-          <ModalHeader onClose={onClose} title="Confirm Your Payment" subtitle="Enter your M-Pesa details" />
+          <ModalHeader onClose={onClose} title="Submit Payment Details" subtitle="So we can match your M-Pesa payment" />
           <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
-            <div className="bg-slate-50 rounded-xl p-4 text-sm">
-              <p className="text-xs text-slate-400 mb-1">Booking reference</p>
-              <p className="font-mono font-black text-slate-900 tracking-widest text-lg">{result.referenceCode}</p>
+
+            {/* Booking context — shown so admin can match */}
+            <div className="border border-slate-200 rounded-xl divide-y text-sm">
+              <div className="flex items-center justify-between px-4 py-2.5">
+                <span className="text-slate-400 text-xs">Booked under</span>
+                <span className="font-semibold text-slate-800">{name}</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-2.5">
+                <span className="text-slate-400 text-xs">Booking ref</span>
+                <span className="font-mono font-black text-slate-900 tracking-widest">{result.referenceCode}</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-2.5">
+                <span className="text-slate-400 text-xs">Amount paid</span>
+                <span className="font-bold text-slate-800">KES {depositAmt.toLocaleString()}</span>
+              </div>
             </div>
 
-            <p className="text-slate-600 text-sm leading-relaxed">
-              After completing the M-Pesa payment, enter the details below so our team can match your payment to this booking.
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Enter the M-Pesa details from the confirmation SMS you received after paying. Our team will use these to find and verify your payment.
             </p>
 
             <div className="space-y-4">
@@ -310,20 +322,20 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
                   placeholder="e.g. QBD1A2B3C4"
                   className={inputCls}
                 />
-                <p className="text-xs text-slate-400 mt-1">Found in the M-Pesa confirmation SMS you received after paying</p>
+                <p className="text-xs text-slate-400 mt-1">The code in the M-Pesa SMS you received after paying</p>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-slate-600 block mb-1">
-                  Name on M-Pesa Account *
+                  Name on your M-Pesa account *
                 </label>
                 <input
                   value={mpesaName}
                   onChange={e => setMpesaName(e.target.value)}
-                  placeholder="Full name as it appears on your M-Pesa"
+                  placeholder="Full name as registered on M-Pesa"
                   className={inputCls}
                 />
-                <p className="text-xs text-slate-400 mt-1">This is the name our staff will see on the payment receipt</p>
+                <p className="text-xs text-slate-400 mt-1">The name our staff will see on the payment record</p>
               </div>
             </div>
 
@@ -344,7 +356,7 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
 
             <button onClick={() => setPayPhase('instructions')}
               className="w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors py-1">
-              Back to payment instructions
+              Back to M-Pesa instructions
             </button>
           </div>
         </Overlay>
@@ -354,28 +366,30 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
     // ── Phase: Payment instructions (default after booking created) ───────────
     return (
       <Overlay onClose={onClose}>
-        <ModalHeader onClose={onClose} title="Complete Your Booking" subtitle="Pay deposit to secure your spot" />
+        <ModalHeader onClose={onClose} title="One Last Step" subtitle="Your spot is reserved — payment confirms it" />
         <div className="px-6 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
 
-          {/* Reference code — prominent */}
-          <div className="rounded-xl text-center py-5 px-4" style={{ background: 'linear-gradient(135deg, #1a1a1a, #2a1a0a)' }}>
-            <p className="text-white/50 text-xs uppercase tracking-[0.2em] mb-1">Your Booking Reference</p>
-            <p className="font-mono text-2xl font-black text-white tracking-widest">{result.referenceCode}</p>
-            <p className="text-white/40 text-xs mt-1.5">Quote this code on arrival — it confirms your identity</p>
+          {/* Pending-state banner — clearly not done yet */}
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-xl px-4 py-3">
+            <AlertCircle size={16} className="text-amber-600 mt-0.5 shrink-0" />
+            <div>
+              <p className="text-amber-800 font-semibold text-sm">Booking not yet confirmed</p>
+              <p className="text-amber-700 text-xs mt-0.5">Your spot is temporarily held. Pay the deposit below to secure it — your booking is only confirmed after we verify your payment.</p>
+            </div>
           </div>
 
           {needsDeposit ? (
             <>
               {/* Payment amount */}
-              <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-                <span className="text-slate-600 text-sm font-semibold">Deposit to pay</span>
+              <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                <span className="text-slate-600 text-sm font-semibold">Deposit to pay now</span>
                 <span className="font-black text-slate-900 text-xl">KES {depositAmt.toLocaleString()}</span>
               </div>
 
               {/* M-Pesa steps */}
               <div className="border border-slate-200 rounded-xl overflow-hidden">
                 <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-                  <p className="font-semibold text-slate-800 text-sm">How to pay via M-Pesa</p>
+                  <p className="font-semibold text-slate-800 text-sm">Pay via M-Pesa</p>
                 </div>
                 <div className="px-4 py-4 space-y-3 text-sm">
                   {[
@@ -406,14 +420,14 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
 
               <div className="flex items-start gap-2 bg-green-50 border border-green-100 rounded-xl p-3 text-xs text-slate-600">
                 <ShieldCheck size={14} className="text-green-600 mt-0.5 shrink-0" />
-                <span>Once you pay, you'll get an M-Pesa SMS confirmation. Click <strong>"I have paid"</strong> below and enter the details from that SMS.</span>
+                <span>After paying, you'll receive an M-Pesa SMS with a transaction code. Click <strong>"I have paid"</strong> below and enter those details — we'll use them to match your payment.</span>
               </div>
 
               <button
                 onClick={() => setPayPhase('confirm')}
                 className="w-full flex items-center justify-center gap-2 font-body font-bold text-sm py-3.5 rounded-full text-white transition-all hover:brightness-110"
                 style={{ backgroundColor: 'var(--color-gold)' }}>
-                <Check size={16} /> I have paid
+                <Check size={16} /> I have paid — enter my details
               </button>
             </>
           ) : (
@@ -423,9 +437,15 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             </div>
           )}
 
+          {/* Reference — compact, not celebratory */}
+          <div className="flex items-center justify-between border border-slate-200 rounded-xl px-4 py-3 text-sm">
+            <span className="text-slate-400 text-xs">Booking ref</span>
+            <span className="font-mono font-black text-slate-800 tracking-widest text-sm">{result.referenceCode}</span>
+          </div>
+
           <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
             <Mail size={14} className="text-blue-500 mt-0.5 shrink-0" />
-            <span>A booking summary has been sent to <strong>{email}</strong></span>
+            <span>A booking summary and payment instructions have been sent to <strong>{email}</strong></span>
           </div>
 
           {!needsDeposit && (
@@ -515,27 +535,27 @@ export default function ReservationModal({ onClose, defaultType, defaultResource
             <div>
               <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
                 <CalendarDays size={12} className="inline mr-1" />
-                {selectedRes.type === 'NIGHT_STAY' ? 'Check-in Date' : 'Visit Date'} *
+                {selectedRes.type === 'NIGHT_STAY' ? 'When are you checking in?' : 'When are you visiting?'} *
               </label>
               <input type="date" value={checkIn} min={today()} onChange={e => setCheckIn(e.target.value)} className={inputCls} />
             </div>
             {selectedRes.type === 'NIGHT_STAY' && (
               <div>
                 <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
-                  <CalendarDays size={12} className="inline mr-1" />Check-out Date
+                  <CalendarDays size={12} className="inline mr-1" />And checking out on?
                 </label>
                 <input type="date" value={checkOut} min={checkIn} onChange={e => setCheckOut(e.target.value)} className={inputCls} />
               </div>
             )}
             <div>
               <label className="text-xs font-body font-semibold text-slate-600 block mb-1">
-                <Users size={12} className="inline mr-1" />Number of Guests *
+                <Users size={12} className="inline mr-1" />How many of you are visiting? *
               </label>
               <input type="number" min={1} max={selectedRes.dailyVisitorCap ?? 500}
                 value={guests} onChange={e => setGuests(Math.max(1, Number(e.target.value)))} className={inputCls} />
-              {selectedRes.dailyVisitorCap && (
-                <p className="text-xs text-slate-400 mt-1">Max {selectedRes.dailyVisitorCap} per day</p>
-              )}
+              <p className="text-xs text-slate-400 mt-1">
+                Count everyone in your group{selectedRes.dailyVisitorCap ? ` — max ${selectedRes.dailyVisitorCap} per day` : ''}
+              </p>
             </div>
             {loadingAvail && (
               <div className="flex items-center gap-2 text-slate-400 text-sm">
