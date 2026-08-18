@@ -7,7 +7,7 @@ import {
   TrendingUp, ShieldCheck, LayoutGrid,
   ChevronRight, ArrowUpRight,
   Pencil, ToggleLeft, ToggleRight, CalendarDays, Megaphone, Tag, Trash2,
-  BarChart2, Lock, LineChart,
+  BarChart2, Lock, LineChart, ExternalLink,
 } from 'lucide-react'
 import { MEDIA_SLOTS, type MediaSlot, getSlotUrl } from '../config/media'
 import { applyOverride, clearOverride } from '../hooks/useMedia'
@@ -838,6 +838,23 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
   const [resettingPwd, setResettingPwd] = useState(false)
   const [pwdResetDone, setPwdResetDone] = useState(false)
   const [pwdResetError, setPwdResetError] = useState('')
+  const [impersonating, setImpersonating] = useState(false)
+
+  async function previewAsMember() {
+    if (!detail) return
+    setImpersonating(true)
+    try {
+      const json = await api.post(`/patrons/${detail.id}/impersonate`, {}, token) as any
+      const accessToken = json.data?.accessToken
+      if (!accessToken) throw new Error('No token returned')
+      localStorage.setItem('cabhouse_patron_token', accessToken)
+      window.open('/patrons', '_blank')
+    } catch (e: any) {
+      alert(e.message ?? 'Failed to open member portal')
+    } finally {
+      setImpersonating(false)
+    }
+  }
 
   async function toggleActive() {
     if (!detail) return
@@ -917,6 +934,9 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
                 <Badge variant={detail.active ? 'green' : 'red'}>{detail.active ? 'Active' : 'Inactive'}</Badge>
                 <Btn size="sm" variant={detail.active ? 'danger' : 'secondary'} disabled={toggling} onClick={toggleActive}>
                   {toggling ? <Spinner size={11} /> : detail.active ? 'Deactivate' : 'Activate'}
+                </Btn>
+                <Btn size="sm" variant="secondary" disabled={impersonating} onClick={previewAsMember}>
+                  {impersonating ? <Spinner size={11} /> : <><ExternalLink size={11} className="mr-1" />Preview Portal</>}
                 </Btn>
                 {toggleError && <p className="text-red-500 text-[10px]">{toggleError}</p>}
               </div>
