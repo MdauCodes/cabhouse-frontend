@@ -845,7 +845,7 @@ function PatronDetailModal({ patronId, token, onClose, onBalanceChanged }: {
     setImpersonating(true)
     try {
       const json = await api.post(`/patrons/${detail.id}/impersonate`, {}, token) as any
-      const accessToken = json.data?.accessToken
+      const accessToken = json?.accessToken
       if (!accessToken) throw new Error('No token returned')
       localStorage.setItem('cabhouse_patron_token', accessToken)
       window.open('/patrons', '_blank')
@@ -1086,7 +1086,7 @@ function EnrollPatronModal({ token, onClose, onEnrolled }: {
     if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be exactly 4 digits'); return }
     setSaving(true); setError('')
     try {
-      await api.post('/patrons/enroll', { phone, name, email, pin }, token)
+      await api.post('/patrons', { phone, name, email, pin }, token)
       onEnrolled()
       onClose()
     } catch (e: any) { setError(e.message ?? 'Enrollment failed') } finally { setSaving(false) }
