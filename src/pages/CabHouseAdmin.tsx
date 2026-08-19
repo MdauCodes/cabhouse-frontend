@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import {
   Upload, Check, Image, RefreshCw,
   Users, TicketPercent, FileText, Activity,
@@ -4301,23 +4301,25 @@ function DiningReservationsPanel({ token }: { token: string }) {
 // ENTRY
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function CabHouseAdmin() {
-  const navigate = useNavigate()
   const [session, setSession] = useState<AdminSession | null>(getSession)
   const [validating, setValidating] = useState(true) // always spin first — no flash of dashboard or blank
 
   useEffect(() => {
     const s = getSession()
     if (!s) {
-      navigate('/login?next=/ch/admin', { replace: true })
       setValidating(false)
       return
     }
     // Validate token is still accepted by the backend
     api.get('/dashboard/stats', s.accessToken)
+      .then(() => {
+        // Re-sync session in case access token was silently refreshed during validation
+        const latest = getSession()
+        if (latest) setSession(latest)
+      })
       .catch(() => {
         clearSession()
         setSession(null)
-        navigate('/login?next=/ch/admin', { replace: true })
       })
       .finally(() => setValidating(false))
   }, [])
@@ -4327,11 +4329,10 @@ export default function CabHouseAdmin() {
     function onUnauthorized() {
       clearSession()
       setSession(null)
-      navigate('/login?next=/ch/admin', { replace: true })
     }
     window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
-  }, [navigate])
+  }, [])
 
   function handleLogout() { clearSession(); setSession(null) }
 
@@ -4346,6 +4347,6 @@ export default function CabHouseAdmin() {
     )
   }
 
-  if (!session) return null
+  if (!session) return <Navigate to="/login?next=/ch/admin" replace />
   return <AdminDashboard session={session} onLogout={handleLogout} />
 }

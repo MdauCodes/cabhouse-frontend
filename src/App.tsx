@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import ParkPage from './pages/ParkPage'
 import RelaxPage from './pages/RelaxPage'
@@ -17,6 +17,17 @@ import ResetPassword from './pages/ResetPassword'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import LoadingScreen from './components/LoadingScreen'
+import { adminAuth, staffAuth } from './lib/api'
+
+function AdminRoute() {
+  if (!adminAuth.getToken()) return <Navigate to="/login?next=/ch/admin" replace />
+  return <CabHouseAdmin />
+}
+
+function PosRoute() {
+  if (!staffAuth.getToken() && !adminAuth.getToken()) return <Navigate to="/login?next=/ch/pos" replace />
+  return <StaffPOS />
+}
 
 export default function App() {
   const [mounted, setMounted] = useState(true)
@@ -67,8 +78,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/ch/admin" element={<CabHouseAdmin />} />
-          <Route path="/ch/pos" element={<StaffPOS />} />
+          <Route path="/ch/admin" element={<AdminRoute />} />
+          <Route path="/ch/pos" element={<PosRoute />} />
           <Route path="/patrons" element={<PatronPortal />} />
           <Route path="/promotions" element={<PromotionsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
