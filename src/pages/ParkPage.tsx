@@ -8,6 +8,7 @@ import { useServiceItems } from '../hooks/useServiceItems'
 import { useGalleryImages } from '../hooks/useGalleryImages'
 import ReservationModal, { type ResourceTypeFilter } from '../components/ReservationModal'
 import DiningReservationModal from '../components/DiningReservationModal'
+import BookingModal from '../components/BookingModal'
 
 const ACTIVITIES = [
   { title: 'Zip Line',          desc: 'Soar across a 100m+ aerial line with a panoramic view of Kisii.', price: 'KES 500' },
@@ -148,7 +149,7 @@ function HeroSection({ onBook }: { onBook: (t: ResourceTypeFilter) => void }) {
   )
 }
 
-function ActivitiesSection() {
+function ActivitiesSection({ onBook }: { onBook: () => void }) {
   const { ref, inView } = useInView()
   const dbActivities = useServiceItems('PARK_ACTIVITY')
   const activities = dbActivities.length > 0
@@ -174,7 +175,7 @@ function ActivitiesSection() {
 
         <div className="divide-y divide-brand-dark/[0.08]">
           {activities.map((a, i) => (
-            <ActivityRow key={i} a={a} idx={i} />
+            <ActivityRow key={i} a={a} idx={i} onBook={onBook} />
           ))}
         </div>
       </div>
@@ -182,7 +183,7 @@ function ActivitiesSection() {
   )
 }
 
-function ActivityRow({ a, idx }: { a: { title: string; desc: string; price: string }; idx: number }) {
+function ActivityRow({ a, idx, onBook }: { a: { title: string; desc: string; price: string }; idx: number; onBook: () => void }) {
   const { ref, inView } = useInView(0.1)
 
   return (
@@ -206,13 +207,12 @@ function ActivityRow({ a, idx }: { a: { title: string; desc: string; price: stri
       </div>
       <div className="flex items-center gap-4 flex-shrink-0">
         <span className="text-brand-dark font-display font-bold text-sm whitespace-nowrap">{a.price}</span>
-        <a
-          href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(`Hi, I'd like to book ${a.title} at CabHouse Park`)}`}
-          target="_blank" rel="noopener noreferrer"
+        <button
+          onClick={onBook}
           className="text-[11px] font-body font-bold uppercase tracking-widest px-3.5 py-2 rounded-full border border-black/20 text-brand-dark/60 hover:border-brand-dark hover:text-brand-dark hover:bg-black/10 transition-all duration-200 hidden sm:inline-flex"
         >
           Book
-        </a>
+        </button>
       </div>
     </div>
   )
@@ -523,12 +523,13 @@ function StaySection({ onBook }: { onBook: (t: ResourceTypeFilter) => void }) {
 export default function ParkPage() {
   const parkDbPhotos = useGalleryImages('PARK').map(img => ({ src: img.cloudinaryUrl, label: img.label }))
   const [bookModal, setBookModal] = useState<{ open: boolean; type: ResourceTypeFilter }>({ open: false, type: null })
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
   const openModal = (t: ResourceTypeFilter) => setBookModal({ open: true, type: t })
 
   return (
     <Layout>
       <HeroSection onBook={openModal} />
-      <ActivitiesSection />
+      <ActivitiesSection onBook={() => setEnquiryOpen(true)} />
       <MasonryGallery
         photos={PARK_PHOTOS}
         dbPhotos={parkDbPhotos}
@@ -543,6 +544,9 @@ export default function ParkPage() {
           defaultType={bookModal.type}
           onClose={() => setBookModal(b => ({ ...b, open: false }))}
         />
+      )}
+      {enquiryOpen && (
+        <BookingModal defaultService="PARK" onClose={() => setEnquiryOpen(false)} />
       )}
     </Layout>
   )

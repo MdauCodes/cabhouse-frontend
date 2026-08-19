@@ -4,6 +4,7 @@ import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import ReservationModal from '../components/ReservationModal'
+import BookingModal from '../components/BookingModal'
 
 const CORPORATE = [
   {
@@ -118,6 +119,7 @@ export default function EventsPage() {
   const { ref: venueRef, inView: venueInView } = useInView(0.08)
   const wa = SITE.contact.whatsapp.replace('+', '')
   const [bookOpen, setBookOpen] = useState(false)
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
 
   return (
     <Layout>
@@ -167,14 +169,13 @@ export default function EventsPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I'd like to enquire about ${e.title} at CabHouse`)}`}
-                  target="_blank" rel="noopener noreferrer"
+                <button
+                  onClick={() => setEnquiryOpen(true)}
                   className="inline-flex items-center justify-center w-full py-3 rounded-xl font-body font-bold text-xs uppercase tracking-wide transition-all duration-200 hover:brightness-110 text-white"
                   style={{ backgroundColor: '#1a2e1f' }}
                 >
-                  Enquire about {e.title} →
-                </a>
+                  Book {e.title} →
+                </button>
               </div>
             ))}
           </div>
@@ -308,6 +309,9 @@ export default function EventsPage() {
       </section>
       {bookOpen && (
         <ReservationModal defaultType="VENUE" onClose={() => setBookOpen(false)} />
+      )}
+      {enquiryOpen && (
+        <BookingModal defaultService="EVENTS" onClose={() => setEnquiryOpen(false)} />
       )}
     </Layout>
   )

@@ -1521,8 +1521,39 @@ function PromotionsTab({ token }: { token: string }) {
                   <FieldGroup label="CTA Button Label" hint="Defaults to 'Claim Offer'">
                     <Input value={editing.ctaLabel ?? ''} onChange={e => setEditing({ ...editing, ctaLabel: e.target.value })} placeholder="Book Now" />
                   </FieldGroup>
-                  <FieldGroup label="CTA URL" hint="Leave blank to auto-link to WhatsApp">
-                    <Input value={editing.ctaUrl ?? ''} onChange={e => setEditing({ ...editing, ctaUrl: e.target.value })} placeholder="https://... or /park" />
+                  <FieldGroup label="CTA Action" hint="What happens when the button is clicked">
+                    <div className="space-y-2">
+                      <select
+                        className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                        value={editing.ctaUrl?.startsWith('booking:') ? 'booking' : 'url'}
+                        onChange={e => {
+                          if (e.target.value === 'booking') {
+                            setEditing({ ...editing, ctaUrl: 'booking:PARK' })
+                          } else {
+                            setEditing({ ...editing, ctaUrl: '' })
+                          }
+                        }}
+                      >
+                        <option value="url">External URL (or WhatsApp)</option>
+                        <option value="booking">Open Booking Form</option>
+                      </select>
+                      {editing.ctaUrl?.startsWith('booking:') ? (
+                        <select
+                          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                          value={editing.ctaUrl.slice('booking:'.length)}
+                          onChange={e => setEditing({ ...editing, ctaUrl: `booking:${e.target.value}` })}
+                        >
+                          <option value="PARK">Park &amp; Day Activities</option>
+                          <option value="APARTMENTS">Apartments &amp; Accommodation</option>
+                          <option value="WATER">Water Delivery</option>
+                          <option value="EVENTS">Events &amp; Venue Hire</option>
+                          <option value="RESTAURANT">Restaurant &amp; Dining</option>
+                          <option value="OTHER">General Enquiry</option>
+                        </select>
+                      ) : (
+                        <Input value={editing.ctaUrl ?? ''} onChange={e => setEditing({ ...editing, ctaUrl: e.target.value })} placeholder="https://... or /park (blank = WhatsApp)" />
+                      )}
+                    </div>
                   </FieldGroup>
                 </div>
 

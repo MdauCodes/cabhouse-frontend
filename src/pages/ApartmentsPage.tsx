@@ -6,6 +6,7 @@ import MasonryGallery from '../components/MasonryGallery'
 import { useServiceItems } from '../hooks/useServiceItems'
 import { useGalleryImages } from '../hooks/useGalleryImages'
 import ReservationModal from '../components/ReservationModal'
+import BookingModal from '../components/BookingModal'
 
 const UNITS = [
   {
@@ -31,7 +32,7 @@ const PERKS = [
   { label: 'Housekeeping', value: 'Available', sub: 'On request — so it always feels like home' },
 ]
 
-function DualCTA() {
+function DualCTA({ onBook }: { onBook: () => void }) {
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', unit: '', dates: '', message: '' })
   const [sent, setSent] = useState(false)
   const { ref, inView } = useInView(0.08)
@@ -72,30 +73,29 @@ function DualCTA() {
           className="flex-1 flex flex-col p-8 lg:p-12"
           style={{ backgroundColor: '#1a2e1f', opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateX(-16px)', transition: 'all 0.6s ease' }}
         >
-          <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: '#25D366' }}>
-            Quick Enquiry
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] font-bold mb-3" style={{ color: 'var(--color-gold)' }}>
+            Book a Stay
           </p>
           <h3 className="font-display font-black text-white leading-[0.95] mb-3"
             style={{ fontSize: 'var(--type-h3)', letterSpacing: '-0.02em' }}>
-            Chat on <em className="not-italic" style={{ color: '#25D366' }}>WhatsApp</em>
+            Request a <em className="not-italic" style={{ color: 'var(--color-gold)' }}>Booking</em>
           </h3>
           <p className="text-white/40 font-body text-xs leading-relaxed mb-8 max-w-xs">
-            Ask about availability, pricing or take a virtual tour. We'll reply within minutes.
+            Select the unit type below to start a booking request. We'll confirm availability within a few hours.
           </p>
           <div className="space-y-2 mb-8 flex-1">
             {UNITS.map(u => (
-              <a key={u.name}
-                href={`https://wa.me/${wa}?text=${encodeURIComponent(u.wa)}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-green-400/35 transition-all duration-200 group">
+              <button key={u.name}
+                onClick={onBook}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] hover:border-amber-400/35 transition-all duration-200 group text-left">
                 <div>
                   <p className="text-white/65 font-body text-sm group-hover:text-white transition-colors leading-none">{u.name}</p>
                   <p className="text-white/25 font-body text-[10px] mt-0.5">Sleeps {u.beds} · {u.tag}</p>
                 </div>
-                <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-green-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
+                <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 text-white/20 group-hover:text-amber-400 transition-colors flex-shrink-0 ml-3" stroke="currentColor" strokeWidth="2.5">
                   <path d="M3 8h10M9 4l4 4-4 4" />
                 </svg>
-              </a>
+              </button>
             ))}
             <a href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to enquire about short-term accommodation at CabHouse Apartments")}`}
               target="_blank" rel="noopener noreferrer"
@@ -272,6 +272,7 @@ const APT_PHOTOS = [
 
 export default function ApartmentsPage() {
   const [bookOpen, setBookOpen] = useState(false)
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
   const { ref, inView } = useInView(0.1)
   const dbUnits = useServiceItems('APT_UNIT')
   const units = dbUnits.length > 0
@@ -350,8 +351,9 @@ export default function ApartmentsPage() {
         subtitle="Tap any photo to view full size"
       />
 
-      <DualCTA />
+      <DualCTA onBook={() => setEnquiryOpen(true)} />
       {bookOpen && <ReservationModal defaultType="NIGHT_STAY" onClose={() => setBookOpen(false)} />}
+      {enquiryOpen && <BookingModal defaultService="APARTMENTS" onClose={() => setEnquiryOpen(false)} />}
     </Layout>
   )
 }

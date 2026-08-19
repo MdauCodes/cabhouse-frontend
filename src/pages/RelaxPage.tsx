@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useMediaUrl } from '../hooks/useMedia'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import MasonryGallery from '../components/MasonryGallery'
+import BookingModal from '../components/BookingModal'
 
 const RELAX_PHOTOS = [
   { src: '/assets/raw-33.jpeg', label: 'Overnight Stay' },
@@ -67,6 +69,7 @@ function Hero() {
 }
 
 export default function RelaxPage() {
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
   const { ref, inView } = useInView()
 
   return (
@@ -111,12 +114,12 @@ export default function RelaxPage() {
                       </div>
                     )}
                   </div>
-                  <a href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=Hi%2C%20I%27d%20like%20to%20book%20the%20${encodeURIComponent(s.name)}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="block text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors"
+                  <button
+                    onClick={() => setEnquiryOpen(true)}
+                    className="block w-full text-center text-white font-body font-semibold text-xs tracking-widest uppercase py-2.5 rounded-full transition-colors hover:brightness-110"
                     style={{ backgroundColor: '#1a2e1f' }}>
                     Book This
-                  </a>
+                  </button>
                 </div>
               ))}
             </div>
@@ -149,6 +152,7 @@ export default function RelaxPage() {
           </div>
         </div>
       </section>
+      {enquiryOpen && <BookingModal defaultService="PARK" onClose={() => setEnquiryOpen(false)} />}
     </Layout>
   )
 }

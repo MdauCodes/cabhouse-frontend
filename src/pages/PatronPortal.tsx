@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { api, patronAuth } from '../lib/api'
 import { SITE } from '../config/site'
 import { usePromotions } from '../hooks/usePromotions'
+import BookingModal from '../components/BookingModal'
 
 interface PatronData {
   id: string
@@ -142,6 +143,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
   const [activityFilter, setActivityFilter] = useState<'all' | 'earned' | 'redeemed'>('all')
   const [bookings, setBookings] = useState<MyReservation[]>([])
   const [bookingsLoaded, setBookingsLoaded] = useState(false)
+  const [bookService, setBookService] = useState<string | null>(null)
   const promotions = usePromotions()
 
   const token = patronAuth.getToken()
@@ -332,14 +334,26 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                         <p className="text-white font-body font-semibold text-sm mb-1">{promo.title}</p>
                         {promo.subtitle && <p className="text-white/40 font-body text-xs leading-relaxed">{promo.subtitle}</p>}
                         {promo.ctaLabel && promo.ctaUrl && (
-                          <a href={promo.ctaUrl} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 mt-2.5 text-xs font-semibold font-body"
-                            style={{ color: '#C8873A' }}>
-                            {promo.ctaLabel}
-                            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <path d="M3 8h10M9 4l4 4-4 4"/>
-                            </svg>
-                          </a>
+                          promo.ctaUrl.startsWith('booking:') ? (
+                            <button
+                              onClick={() => setBookService(promo.ctaUrl!.slice('booking:'.length))}
+                              className="inline-flex items-center gap-1 mt-2.5 text-xs font-semibold font-body"
+                              style={{ color: '#C8873A' }}>
+                              {promo.ctaLabel}
+                              <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M3 8h10M9 4l4 4-4 4"/>
+                              </svg>
+                            </button>
+                          ) : (
+                            <a href={promo.ctaUrl} target="_blank" rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 mt-2.5 text-xs font-semibold font-body"
+                              style={{ color: '#C8873A' }}>
+                              {promo.ctaLabel}
+                              <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M3 8h10M9 4l4 4-4 4"/>
+                              </svg>
+                            </a>
+                          )
                         )}
                       </div>
                     </div>
@@ -460,7 +474,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
               {
                 title: 'Park & Day Activities',
                 desc: 'Waterslides, pool, BBQ areas, and day packages for groups and families.',
-                href: '/park',
+                service: 'PARK',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8873A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/>
@@ -470,7 +484,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
               {
                 title: 'Stay & Relax',
                 desc: 'Comfortable cabins and apartment stays in a serene environment.',
-                href: '/relax',
+                service: 'PARK',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8873A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -480,7 +494,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
               {
                 title: 'Events & Venue Hire',
                 desc: 'Weddings, corporate retreats, and private events in scenic settings.',
-                href: '/events',
+                service: 'EVENTS',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8873A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
@@ -490,7 +504,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
               {
                 title: 'Dining Reservations',
                 desc: 'Reserve a table for breakfast, lunch, or dinner at the CabHouse restaurant.',
-                href: '/park',
+                service: 'RESTAURANT',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8873A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
@@ -498,8 +512,8 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                 ),
               },
             ].map(exp => (
-              <a key={exp.href + exp.title} href={exp.href}
-                className="flex items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-110"
+              <button key={exp.service + exp.title} onClick={() => setBookService(exp.service)}
+                className="flex items-center gap-4 rounded-2xl p-4 transition-all hover:brightness-110 text-left w-full"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(200,135,58,0.12)', border: '1px solid rgba(200,135,58,0.2)' }}>
@@ -512,7 +526,7 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6"/>
                 </svg>
-              </a>
+              </button>
             ))}
 
             <div className="rounded-2xl p-4 mt-2" style={{ background: 'rgba(200,135,58,0.06)', border: '1px solid rgba(200,135,58,0.15)' }}>
@@ -626,6 +640,9 @@ function Dashboard({ patron, onLogout }: { patron: PatronData; onLogout: () => v
           </div>
         )}
       </div>
+      {bookService && (
+        <BookingModal defaultService={bookService} onClose={() => setBookService(null)} />
+      )}
     </div>
   )
 }

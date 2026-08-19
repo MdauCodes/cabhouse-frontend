@@ -3,6 +3,7 @@ import Layout from '../components/Layout'
 import { useInView } from '../hooks/useInView'
 import { SITE } from '../config/site'
 import { useServiceItems } from '../hooks/useServiceItems'
+import BookingModal from '../components/BookingModal'
 
 const USES = [
   {
@@ -231,6 +232,7 @@ function HeroSection() {
 }
 
 export default function WaterPage() {
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
   const { ref, inView } = useInView(0.1)
   const dbUses = useServiceItems('WATER_USE')
   const uses = dbUses.length > 0
@@ -285,10 +287,9 @@ export default function WaterPage() {
             {/* Use cases */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
               {uses.map((u, i) => (
-                <a key={i}
-                  href={`https://wa.me/${SITE.contact.whatsapp.replace('+', '')}?text=${encodeURIComponent(u.wa)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="flex items-start gap-4 p-5 rounded-xl border border-black/10 bg-white/30 hover:bg-white/50 hover:border-black/20 transition-all duration-200 group">
+                <button key={i}
+                  onClick={() => setEnquiryOpen(true)}
+                  className="flex items-start gap-4 p-5 rounded-xl border border-black/10 bg-white/30 hover:bg-white/50 hover:border-black/20 transition-all duration-200 group text-left w-full">
                   <span className="w-8 h-8 rounded-full bg-black/10 text-brand-dark flex items-center justify-center font-display font-bold text-sm flex-shrink-0 group-hover:bg-brand-dark/20 transition-colors">
                     {i + 1}
                   </span>
@@ -296,7 +297,7 @@ export default function WaterPage() {
                     <p className="font-display font-bold text-brand-dark text-sm mb-1">{u.title}</p>
                     <p className="text-brand-dark/50 font-body text-xs leading-relaxed">{u.desc}</p>
                   </div>
-                </a>
+                </button>
               ))}
             </div>
 
@@ -322,6 +323,7 @@ export default function WaterPage() {
       </section>
 
       <DualCTA />
+      {enquiryOpen && <BookingModal defaultService="WATER" onClose={() => setEnquiryOpen(false)} />}
     </Layout>
   )
 }

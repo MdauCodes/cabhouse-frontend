@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import FloatingWhatsApp from '../components/FloatingWhatsApp'
 import { usePromotions, type PromotionTag, type PromotionData } from '../hooks/usePromotions'
 import { SITE } from '../config/site'
+import BookingModal from '../components/BookingModal'
 
 const TAG_CONFIG: Record<PromotionTag, { label: string; color: string; bg: string }> = {
   DEAL:       { label: 'Deal',        color: '#F59E0B', bg: 'rgba(245,158,11,0.12)' },
@@ -26,11 +28,12 @@ function expiresIn(iso: string | null): string | null {
   return null
 }
 
-function PromoCard({ promo }: { promo: PromotionData }) {
+function PromoCard({ promo, onBook }: { promo: PromotionData; onBook: (service: string) => void }) {
   const tag = TAG_CONFIG[promo.tag]
   const deadline = expiresIn(promo.expiresAt)
+  const isBookingLink = !!promo.ctaUrl?.startsWith('booking:')
   const ctaHref = promo.ctaUrl || `https://wa.me/${wa}?text=${encodeURIComponent(`Hi, I'm interested in: ${promo.title}`)}`
-  const isExternal = ctaHref.startsWith('http')
+  const isExternal = !isBookingLink && ctaHref.startsWith('http')
 
   return (
     <div
@@ -90,18 +93,31 @@ function PromoCard({ promo }: { promo: PromotionData }) {
         )}
 
         <div className="mt-auto pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <a
-            href={ctaHref}
-            target={isExternal ? '_blank' : undefined}
-            rel={isExternal ? 'noopener noreferrer' : undefined}
-            className="inline-flex items-center gap-2 font-body font-black text-[11px] uppercase tracking-[0.14em] px-6 py-3 rounded-xl transition-all duration-200 hover:brightness-110"
-            style={{ backgroundColor: tag.color, color: '#fff' }}
-          >
-            {promo.ctaLabel || 'Enquire on WhatsApp'}
-            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
-              <path d="M2 7h10M8 3l4 4-4 4" />
-            </svg>
-          </a>
+          {isBookingLink ? (
+            <button
+              onClick={() => onBook(promo.ctaUrl!.slice('booking:'.length))}
+              className="inline-flex items-center gap-2 font-body font-black text-[11px] uppercase tracking-[0.14em] px-6 py-3 rounded-xl transition-all duration-200 hover:brightness-110"
+              style={{ backgroundColor: tag.color, color: '#fff' }}
+            >
+              {promo.ctaLabel || 'Book Now'}
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+                <path d="M2 7h10M8 3l4 4-4 4" />
+              </svg>
+            </button>
+          ) : (
+            <a
+              href={ctaHref}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              className="inline-flex items-center gap-2 font-body font-black text-[11px] uppercase tracking-[0.14em] px-6 py-3 rounded-xl transition-all duration-200 hover:brightness-110"
+              style={{ backgroundColor: tag.color, color: '#fff' }}
+            >
+              {promo.ctaLabel || 'Enquire on WhatsApp'}
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+                <path d="M2 7h10M8 3l4 4-4 4" />
+              </svg>
+            </a>
+          )}
         </div>
       </div>
 
@@ -117,6 +133,7 @@ function PromoCard({ promo }: { promo: PromotionData }) {
 export default function PromotionsPage() {
   const navigate = useNavigate()
   const promotions = usePromotions()
+  const [bookService, setBookService] = useState<string | null>(null)
   const waBase = `https://wa.me/${wa}?text=${encodeURIComponent("Hi, I'd like to know about CabHouse's current offers")}`
 
   return (
@@ -185,7 +202,7 @@ export default function PromotionsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {promotions.map(p => <PromoCard key={p.id} promo={p} />)}
+            {promotions.map(p => <PromoCard key={p.id} promo={p} onBook={setBookService} />)}
           </div>
         )}
       </section>
@@ -233,6 +250,9 @@ export default function PromotionsPage() {
 
       <Footer />
       <FloatingWhatsApp />
+      {bookService && (
+        <BookingModal defaultService={bookService} onClose={() => setBookService(null)} />
+      )}
     </div>
   )
 }
